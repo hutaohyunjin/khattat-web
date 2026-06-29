@@ -473,7 +473,7 @@ export const thuluthLetters = [
   {
     id: "dad",
     letter: "ض",
-    name: "Daad (ض)",
+    name: "Dhad (ض)",
     nameAr: "ضاد",
     transliteration: "ḍ",
     group: 4,
@@ -928,7 +928,7 @@ export const lessons = [
   },
   {
     id: "group-4",
-    title: "Group 4: Seen, Sheen, Saad, Daad",
+    title: "Group 4: Seen, Sheen, Saad, Dhad",
     description: "Tackle the toothed and looped letters",
     type: "practice",
     xpReward: 40,
