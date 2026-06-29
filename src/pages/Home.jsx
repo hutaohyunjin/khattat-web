@@ -104,7 +104,7 @@ export default function Home() {
         <div className="mt-6 sys-window mb-8">
           <div className="sys-titlebar">
             <span className="sys-titlebar-dot" />
-            <span>Mission Board — {completedLessons.length}/{lessons.length} Complete</span>
+            <span>Mission Board · {completedLessons.length}/{lessons.length} Complete</span>
           </div>
           {/* Column headers */}
           <div style={{

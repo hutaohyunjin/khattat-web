@@ -97,7 +97,7 @@ export default function Progress() {
         <div className="mt-5 sys-window">
           <div className="sys-titlebar">
             <span className="sys-titlebar-dot" />
-            <span>Letter Mastery — {masteredCount}/{totalLetters}</span>
+            <span>Letter Mastery · {masteredCount}/{totalLetters}</span>
           </div>
           <div className="p-4">
             <div className="grid grid-cols-7 gap-1">

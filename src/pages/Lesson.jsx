@@ -116,7 +116,7 @@ export default function Lesson() {
               <div className="sys-window">
                 <div className="sys-titlebar">
                   <span className="sys-titlebar-dot" />
-                  <span>{String(currentSection + 1).padStart(2,'0')} / {String(sections.length).padStart(2,'0')} — {sections[currentSection].title}</span>
+                  <span>{String(currentSection + 1).padStart(2,'0')} / {String(sections.length).padStart(2,'0')} · {sections[currentSection].title}</span>
                 </div>
                 <p className="p-6 font-heading text-sm leading-relaxed" style={{ color: 'var(--ink-mid)' }}>
                   {sections[currentSection].text}

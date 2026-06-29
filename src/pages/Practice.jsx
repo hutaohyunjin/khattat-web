@@ -111,7 +111,7 @@ export default function Practice() {
                       <p className="font-mono text-[10px] mt-0.5" style={{ color: 'var(--ink-mid)' }}>{letter.transliteration}</p>
                     </div>
                     <span className="font-mono text-[10px]" style={{ color: isMastered ? 'var(--ink)' : 'var(--ink-faint)' }}>
-                      {isMastered ? '✓ done' : '—'}
+                      {isMastered ? '✓ done' : ''}
                     </span>
                   </div>
                 );

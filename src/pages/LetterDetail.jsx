@@ -98,7 +98,7 @@ export default function LetterDetail() {
 
               {/* Stroke guide */}
               <div className="sys-window">
-                <div className="sys-titlebar"><span className="sys-titlebar-dot" /><span>Stroke Guide — {letter.strokeGuide.length} steps</span></div>
+                <div className="sys-titlebar"><span className="sys-titlebar-dot" /><span>Stroke Guide · {letter.strokeGuide.length} steps</span></div>
                 <div style={{
                   display: 'grid', gridTemplateColumns: '2rem 1fr',
                   gap: 8, padding: '5px 12px',
