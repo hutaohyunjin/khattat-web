@@ -36,7 +36,7 @@ export default function Home() {
         <div className="flex items-center gap-4">
           <StreakBadge streak={progress?.current_streak} />
           <span className="font-mono text-[10px]" style={{ color: 'var(--zzz-yellow-dim)' }}>
-          {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          {new Date().toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}
           </span>
         </div>
       </div>
