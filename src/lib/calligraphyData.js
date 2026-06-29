@@ -928,7 +928,7 @@ export const lessons = [
   },
   {
     id: "group-4",
-    title: "Group 4: Sin, Shin, Sad, Dad",
+    title: "Group 4: Seen, Sheen, Saad, Daad",
     description: "Tackle the toothed and looped letters",
     type: "practice",
     xpReward: 40,
@@ -958,7 +958,7 @@ export const lessons = [
   },
   {
     id: "group-7",
-    title: "Group 7: Lam, Mim, Nun, Ha",
+    title: "Group 7: Lam, Meem, Noon, Ha",
     description: "Practice elegant verticals, circles, and curves",
     type: "practice",
     xpReward: 35,
