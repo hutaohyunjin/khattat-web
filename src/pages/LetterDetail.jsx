@@ -93,7 +93,7 @@ export default function LetterDetail() {
               {/* Description */}
               <div className="sys-window">
                 <div className="sys-titlebar"><span className="sys-titlebar-dot" /><span>About</span></div>
-                <p className="p-5 font-heading text-sm leading-relaxed font-semibold" style={{ color: 'var(--ink)' }}>{letter.description}</p>
+                <p className="p-5 font-heading text-sm leading-relaxed" style={{ color: 'var(--ink-mid)' }}>{letter.description}</p>
               </div>
 
               {/* Stroke guide */}
@@ -128,7 +128,7 @@ export default function LetterDetail() {
               {/* Proportion tip */}
               <div className="sys-window">
                 <div className="sys-titlebar"><span className="sys-titlebar-dot" /><span>Proportion Tip</span></div>
-                <p className="p-5 font-heading text-sm leading-relaxed font-semibold" style={{ color: 'var(--ink)' }}>{letter.proportionTip}</p>
+                <p className="p-5 font-heading text-sm leading-relaxed" style={{ color: 'var(--ink-mid)' }}>{letter.proportionTip}</p>
               </div>
             </motion.div>
           )}

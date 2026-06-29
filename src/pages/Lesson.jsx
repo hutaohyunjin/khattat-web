@@ -118,7 +118,7 @@ export default function Lesson() {
                   <span className="sys-titlebar-dot" />
                   <span>{String(currentSection + 1).padStart(2,'0')} / {String(sections.length).padStart(2,'0')} — {sections[currentSection].title}</span>
                 </div>
-                <p className="p-6 font-heading text-sm leading-relaxed font-semibold" style={{ color: 'var(--ink)' }}>
+                <p className="p-6 font-heading text-sm leading-relaxed" style={{ color: 'var(--ink-mid)' }}>
                   {sections[currentSection].text}
                 </p>
               </div>
