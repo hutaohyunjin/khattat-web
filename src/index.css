@@ -6,32 +6,32 @@
 
 @layer base {
   :root {
-    /* Base — paper off-white */
-    --background: 45 20% 96%;
-    --foreground: 0 0% 8%;
-    --card: 45 15% 98%;
-    --card-foreground: 0 0% 8%;
-    --popover: 45 15% 98%;
-    --popover-foreground: 0 0% 8%;
+    /* Base — cool blue-grey */
+    --background: 215 18% 96%;
+    --foreground: 220 15% 10%;
+    --card: 215 15% 98%;
+    --card-foreground: 220 15% 10%;
+    --popover: 215 15% 98%;
+    --popover-foreground: 220 15% 10%;
     /* Primary = ZZZ yellow */
     --primary: 43 90% 54%;
-    --primary-foreground: 0 0% 8%;
-    --secondary: 45 10% 90%;
-    --secondary-foreground: 0 0% 20%;
-    --muted: 45 10% 92%;
-    --muted-foreground: 0 0% 45%;
+    --primary-foreground: 220 15% 10%;
+    --secondary: 215 10% 90%;
+    --secondary-foreground: 220 15% 20%;
+    --muted: 215 10% 92%;
+    --muted-foreground: 215 8% 45%;
     --accent: 43 90% 54%;
-    --accent-foreground: 0 0% 8%;
+    --accent-foreground: 220 15% 10%;
     --destructive: 0 70% 45%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 20%;
-    --input: 45 10% 90%;
+    --border: 220 15% 20%;
+    --input: 215 10% 90%;
     --ring: 43 90% 54%;
     --chart-1: 43 90% 54%;
-    --chart-2: 0 0% 35%;
-    --chart-3: 0 0% 55%;
-    --chart-4: 0 0% 70%;
-    --chart-5: 0 0% 85%;
+    --chart-2: 215 8% 35%;
+    --chart-3: 215 8% 55%;
+    --chart-4: 215 8% 70%;
+    --chart-5: 215 8% 85%;
     --radius: 0rem;
     --font-heading: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
     --font-body: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
@@ -39,12 +39,12 @@
     --font-mono: 'Space Mono', ui-monospace, monospace;
 
     /* Design tokens */
-    --paper: #F2EFE6;
-    --paper-dark: #E8E4D8;
-    --ink: #141414;
-    --ink-mid: #555555;
-    --ink-faint: #999999;
-    --rule: #C8C4B8;
+    --paper: #EEF1F5;
+    --paper-dark: #E2E7EE;
+    --ink: #0F1520;
+    --ink-mid: #4A5568;
+    --ink-faint: #8A9AB0;
+    --rule: #BCC5D3;
 
     /* ZZZ accent palette */
     --zzz-yellow: #E8B234;
@@ -53,33 +53,33 @@
     --zzz-yellow-pale: rgba(232, 178, 52, 0.15);
     --zzz-yellow-glow: rgba(232, 178, 52, 0.35);
 
-    --sidebar-background: 45 20% 96%;
-    --sidebar-foreground: 0 0% 20%;
+    --sidebar-background: 215 18% 96%;
+    --sidebar-foreground: 220 15% 20%;
     --sidebar-primary: 43 90% 54%;
-    --sidebar-primary-foreground: 0 0% 8%;
-    --sidebar-accent: 45 10% 90%;
-    --sidebar-accent-foreground: 0 0% 20%;
-    --sidebar-border: 0 0% 20%;
+    --sidebar-primary-foreground: 220 15% 10%;
+    --sidebar-accent: 215 10% 90%;
+    --sidebar-accent-foreground: 220 15% 20%;
+    --sidebar-border: 220 15% 20%;
     --sidebar-ring: 43 90% 54%;
   }
 
   .dark {
-    --background: 45 20% 96%;
-    --foreground: 0 0% 8%;
-    --card: 45 15% 98%;
-    --card-foreground: 0 0% 8%;
+    --background: 215 18% 96%;
+    --foreground: 220 15% 10%;
+    --card: 215 15% 98%;
+    --card-foreground: 220 15% 10%;
     --primary: 43 90% 54%;
-    --primary-foreground: 0 0% 8%;
-    --secondary: 45 10% 90%;
-    --secondary-foreground: 0 0% 20%;
-    --muted: 45 10% 92%;
-    --muted-foreground: 0 0% 45%;
+    --primary-foreground: 220 15% 10%;
+    --secondary: 215 10% 90%;
+    --secondary-foreground: 220 15% 20%;
+    --muted: 215 10% 92%;
+    --muted-foreground: 215 8% 45%;
     --accent: 43 90% 54%;
-    --accent-foreground: 0 0% 8%;
+    --accent-foreground: 220 15% 10%;
     --destructive: 0 70% 45%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 20%;
-    --input: 45 10% 90%;
+    --border: 220 15% 20%;
+    --input: 215 10% 90%;
     --ring: 43 90% 54%;
   }
 }
@@ -99,7 +99,7 @@
 /* ── Dithered dot-matrix background ── */
 .dither-bg {
   background-color: var(--paper);
-  background-image: radial-gradient(circle, rgba(184,180,168,0.1) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(140,160,185,0.1) 1px, transparent 1px);
   background-size: 4px 4px;
 }
 
