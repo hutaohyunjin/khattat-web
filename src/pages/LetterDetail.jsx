@@ -174,8 +174,15 @@ export default function LetterDetail() {
               <PracticeCanvas letter={letter} onComplete={handlePracticeComplete} />
               <div className="sys-window">
                 <div className="sys-titlebar"><span className="sys-titlebar-dot" /><span>Tips</span></div>
-                <div className="p-4 space-y-2">
-                  {['Hold pen at 30° for thick-thin contrast', 'Follow stroke order from the Learn tab', 'Practice slowly — speed follows muscle memory', 'Repeat until strokes feel natural'].map((tip, i) => (
+                <p className="px-4 pt-3 font-mono text-[10px] tracking-wider" style={{ color: 'var(--zzz-yellow-dim)' }}>FOR REAL PAPER PRACTICE</p>
+                <div className="p-4 pt-2 space-y-2">
+                  {[
+                    'Use a reed pen (qalam) or calligraphy nib held at a 30–45° angle to the paper — this creates the natural thick-thin contrast of Arabic scripts',
+                    'Rest your wrist lightly on the paper and pull strokes toward you; never push the nib or it will catch',
+                    'Use smooth, slightly absorbent paper (e.g. layout paper or traditional ahar paper) — rough paper will fray your nib',
+                    'Follow the stroke order shown in the Learn tab exactly; lift the pen between strokes as indicated',
+                    'Practice each stroke slowly until it feels consistent — speed and flow come naturally with muscle memory',
+                  ].map((tip, i) => (
                     <div key={i} className="flex gap-3 font-mono text-[11px]" style={{ color: 'var(--ink-mid)' }}>
                       <span style={{ color: 'var(--ink-faint)' }}>{String(i+1).padStart(2,'0')}</span>
                       <span>{tip}</span>

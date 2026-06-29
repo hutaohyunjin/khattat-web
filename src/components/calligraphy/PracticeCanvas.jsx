@@ -6,6 +6,7 @@ export default function PracticeCanvas({ letter, onComplete }) {
   const [isDrawing, setIsDrawing] = useState(false);
   const [hasDrawn, setHasDrawn] = useState(false);
   const lastPoint = useRef(null);
+  const lastAngle = useRef(0);
 
   const setupCanvas = useCallback(() => {
     const canvas = canvasRef.current;
@@ -21,14 +22,13 @@ export default function PracticeCanvas({ letter, onComplete }) {
   useEffect(() => { setupCanvas(); }, [setupCanvas]);
 
   function drawGuide(ctx, w, h) {
-    // Paper background
-    ctx.fillStyle = '#F2EFE6';
+    ctx.fillStyle = '#EEF1F5';
     ctx.fillRect(0, 0, w, h);
 
     // Dither dots
     for (let x = 0; x < w; x += 4) {
       for (let y = 0; y < h; y += 4) {
-        ctx.fillStyle = 'rgba(184,180,168,0.5)';
+        ctx.fillStyle = 'rgba(140,160,185,0.15)';
         ctx.fillRect(x, y, 1, 1);
       }
     }
@@ -36,7 +36,7 @@ export default function PracticeCanvas({ letter, onComplete }) {
     const baselineY = h * 0.62;
 
     // Guide lines
-    ctx.strokeStyle = 'rgba(200,196,184,0.9)';
+    ctx.strokeStyle = 'rgba(188,197,211,0.9)';
     ctx.lineWidth = 0.5;
     ctx.setLineDash([4, 6]);
     for (let i = -4; i <= 4; i++) {
@@ -47,7 +47,7 @@ export default function PracticeCanvas({ letter, onComplete }) {
     ctx.setLineDash([]);
 
     // Baseline solid
-    ctx.strokeStyle = '#141414';
+    ctx.strokeStyle = '#0F1520';
     ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(16, baselineY); ctx.lineTo(w - 16, baselineY); ctx.stroke();
 
@@ -55,13 +55,13 @@ export default function PracticeCanvas({ letter, onComplete }) {
     ctx.font = `${h * 0.48}px "Noto Naskh Arabic", "Amiri", serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = 'rgba(20,20,20,0.07)';
+    ctx.fillStyle = 'rgba(15,21,32,0.07)';
     ctx.direction = 'rtl';
     ctx.fillText(letter.letter, w / 2, baselineY - h * 0.06);
 
     // Label
     ctx.font = '9px "Space Mono", monospace';
-    ctx.fillStyle = 'rgba(20,20,20,0.3)';
+    ctx.fillStyle = 'rgba(15,21,32,0.3)';
     ctx.textAlign = 'left';
     ctx.direction = 'ltr';
     ctx.fillText('BASELINE', 18, baselineY - 7);
@@ -80,26 +80,54 @@ export default function PracticeCanvas({ letter, onComplete }) {
     setIsDrawing(true);
     setHasDrawn(true);
     lastPoint.current = getPos(e);
+    lastAngle.current = 0;
   }
 
   function draw(e) {
     e.preventDefault();
-    if (!isDrawing) return;
+    if (!isDrawing || !lastPoint.current) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     const pos = getPos(e);
-    ctx.strokeStyle = '#141414';
-    ctx.lineWidth = 2.5;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
+    const dx = pos.x - lastPoint.current.x;
+    const dy = pos.y - lastPoint.current.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < 0.5) return;
+
+    // Calligraphy nib angle: fixed ~40° like a held reed pen
+    const nibAngle = Math.PI * 0.22; // ~40 degrees
+    const perpX = Math.cos(nibAngle);
+    const perpY = Math.sin(nibAngle);
+
+    // Stroke width = projection of movement onto nib perpendicular axis
+    // Thick when moving perpendicular to nib, thin when moving along nib
+    const movAngle = Math.atan2(dy, dx);
+    const angleDiff = Math.abs(Math.cos(movAngle - nibAngle));
+    const minWidth = 1.0;
+    const maxWidth = 9.0;
+    const lineWidth = minWidth + (maxWidth - minWidth) * angleDiff;
+
+    // Draw calligraphic stroke as a filled polygon (nib shape)
+    const halfW = lineWidth / 2;
+    const ox = perpX * halfW;
+    const oy = perpY * halfW;
+
     ctx.beginPath();
-    ctx.moveTo(lastPoint.current.x, lastPoint.current.y);
-    ctx.lineTo(pos.x, pos.y);
-    ctx.stroke();
+    ctx.moveTo(lastPoint.current.x - ox, lastPoint.current.y - oy);
+    ctx.lineTo(lastPoint.current.x + ox, lastPoint.current.y + oy);
+    ctx.lineTo(pos.x + ox, pos.y + oy);
+    ctx.lineTo(pos.x - ox, pos.y - oy);
+    ctx.closePath();
+    ctx.fillStyle = '#0F1520';
+    ctx.fill();
+
     lastPoint.current = pos;
   }
 
-  function stopDraw() { setIsDrawing(false); lastPoint.current = null; }
+  function stopDraw() {
+    setIsDrawing(false);
+    lastPoint.current = null;
+  }
 
   function clearCanvas() {
     const canvas = canvasRef.current;
@@ -115,6 +143,7 @@ export default function PracticeCanvas({ letter, onComplete }) {
       <div className="sys-titlebar">
         <span className="sys-titlebar-dot" />
         <span>Practice Canvas — {letter.name}</span>
+        <span className="ml-auto font-mono text-[9px] opacity-50">Calligraphy Nib · 40°</span>
       </div>
       <canvas
         ref={canvasRef}
