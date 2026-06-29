@@ -1,0 +1,26 @@
+{
+  "name": "LessonCompletion",
+  "type": "object",
+  "properties": {
+    "lesson_id": {
+      "type": "string"
+    },
+    "letter_id": {
+      "type": "string"
+    },
+    "score": {
+      "type": "number"
+    },
+    "xp_earned": {
+      "type": "number"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "lesson_id",
+    "xp_earned"
+  ]
+}

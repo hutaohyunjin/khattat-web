@@ -1,0 +1,48 @@
+{
+  "name": "UserProgress",
+  "type": "object",
+  "properties": {
+    "total_xp": {
+      "type": "number",
+      "default": 0
+    },
+    "current_streak": {
+      "type": "number",
+      "default": 0
+    },
+    "longest_streak": {
+      "type": "number",
+      "default": 0
+    },
+    "last_practice_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "level": {
+      "type": "number",
+      "default": 1
+    },
+    "completed_lessons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "mastered_letters": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "badges": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "total_xp",
+    "level"
+  ]
+}
