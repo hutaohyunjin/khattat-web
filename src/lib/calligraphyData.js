@@ -908,7 +908,7 @@ export const lessons = [
   },
   {
     id: "group-2",
-    title: "Group 2: Jim, Ha, Kha",
+    title: "Group 2: Jeem, Ha, Kha",
     description: "Master the bowl-shaped letters with their deep curves",
     type: "practice",
     xpReward: 35,
