@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, ChevronRight, ChevronLeft, BookOpen, Sparkles } from 'lucide-react';
+import { ArrowLeft, ChevronRight, ChevronLeft, BookOpen, Sparkles, Check } from 'lucide-react';
 import { lessons, thuluthLetters } from '@/lib/calligraphyData';
 import { useProgress } from '@/hooks/useProgress';
-import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 
 export default function Lesson() {
@@ -18,8 +17,8 @@ export default function Lesson() {
   const lesson = lessons.find(l => l.id === id);
   if (!lesson) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-500">Lesson not found</p>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#0D0F14' }}>
+        <p className="font-heading tracking-widest text-sm" style={{ color: '#555B6E' }}>LESSON NOT FOUND</p>
       </div>
     );
   }
@@ -32,10 +31,7 @@ export default function Lesson() {
   async function handleComplete() {
     if (!isAlreadyCompleted) {
       await addXP(lesson.xpReward, lesson.id);
-      toast({
-        title: `Lesson Complete! +${lesson.xpReward} XP`,
-        description: lesson.title,
-      });
+      toast({ title: `▶ +${lesson.xpReward} XP`, description: `${lesson.title} complete.` });
     }
     setCompleted(true);
   }
@@ -53,29 +49,65 @@ export default function Lesson() {
 
   if (completed) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-amber-50 to-white flex items-center justify-center px-6">
+      <div className="min-h-screen flex items-center justify-center px-6" style={{ background: '#0D0F14' }}>
+        <div className="absolute inset-0 zzz-stripe pointer-events-none" />
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="text-center max-w-sm"
+          className="text-center max-w-sm w-full relative"
         >
-          <div className="w-20 h-20 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center mx-auto shadow-xl shadow-amber-200">
-            <Sparkles className="w-10 h-10 text-white" />
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.1, type: 'spring' }}
+            className="w-20 h-20 flex items-center justify-center mx-auto mb-6"
+            style={{
+              clipPath: 'polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px))',
+              background: 'linear-gradient(135deg, #C9A030, #F5C940)',
+              boxShadow: '0 0 40px rgba(245,201,64,0.3)',
+            }}
+          >
+            <Sparkles className="w-9 h-9" style={{ color: '#0D0F14' }} />
+          </motion.div>
+
+          <div className="flex items-center gap-2 justify-center mb-2">
+            <div className="w-6 h-px" style={{ background: '#F5C940' }} />
+            <p className="text-[10px] tracking-widest font-bold font-heading" style={{ color: '#F5C940' }}>MISSION COMPLETE</p>
+            <div className="w-6 h-px" style={{ background: '#F5C940' }} />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mt-6">Lesson Complete!</h2>
-          <p className="text-gray-500 mt-2">{lesson.title}</p>
+          <h2 className="text-2xl font-bold font-heading tracking-wider mb-1" style={{ color: '#F0F0F0' }}>
+            LESSON CLEAR
+          </h2>
+          <p className="text-xs tracking-wider font-heading" style={{ color: '#555B6E' }}>{lesson.title.toUpperCase()}</p>
+
           {!isAlreadyCompleted && (
-            <div className="mt-4 inline-flex items-center gap-1 bg-amber-100 text-amber-700 px-4 py-2 rounded-full font-bold">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.3 }}
+              className="inline-flex items-center gap-2 mt-5 px-6 py-2 font-bold font-heading tracking-widest text-sm"
+              style={{ background: 'rgba(245,201,64,0.1)', color: '#F5C940', border: '1px solid rgba(245,201,64,0.3)' }}
+            >
+              <Sparkles className="w-4 h-4" />
               +{lesson.xpReward} XP
-            </div>
+            </motion.div>
           )}
+
           <div className="mt-8 space-y-3">
-            <Button onClick={goToNext} className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700">
-              Continue <ChevronRight className="w-4 h-4 ml-1" />
-            </Button>
-            <Button variant="outline" onClick={() => navigate('/')} className="w-full">
-              Back to Home
-            </Button>
+            <button
+              onClick={goToNext}
+              className="w-full py-3 font-bold tracking-widest font-heading text-sm transition-all zzz-clip-corner"
+              style={{ background: '#F5C940', color: '#0D0F14', boxShadow: '0 0 20px rgba(245,201,64,0.2)' }}
+            >
+              ▶ CONTINUE
+            </button>
+            <button
+              onClick={() => navigate('/')}
+              className="w-full py-3 font-bold tracking-widest font-heading text-sm transition-all zzz-clip-corner"
+              style={{ background: '#13161D', color: '#888EA8', border: '1px solid #2A2E3A' }}
+            >
+              ← MISSION BOARD
+            </button>
           </div>
         </motion.div>
       </div>
@@ -83,37 +115,47 @@ export default function Lesson() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <div className="min-h-screen" style={{ background: '#0D0F14' }}>
       {/* Header */}
-      <div className="bg-gradient-to-br from-[#1A1A2E] to-[#16213E] text-white px-6 pt-10 pb-6">
+      <div className="relative overflow-hidden px-6 pt-10 pb-6"
+        style={{ background: '#13161D', borderBottom: '1px solid #2A2E3A' }}>
+        <div className="absolute inset-0 zzz-stripe pointer-events-none" />
         <div className="max-w-lg mx-auto">
           <div className="flex items-center gap-3 mb-4">
-            <button onClick={() => navigate(-1)} className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
-              <ArrowLeft className="w-5 h-5" />
+            <button
+              onClick={() => navigate(-1)}
+              className="w-9 h-9 flex items-center justify-center transition-all"
+              style={{ background: '#0D0F14', border: '1px solid #2A2E3A', clipPath: 'polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px))' }}
+            >
+              <ArrowLeft className="w-4 h-4" style={{ color: '#888EA8' }} />
             </button>
             <div className="flex-1">
-              <h1 className="font-bold">{lesson.title}</h1>
-              <p className="text-white/50 text-xs mt-0.5">{lesson.description}</p>
+              <div className="flex items-center gap-2 mb-0.5">
+                <div className="w-1.5 h-1.5" style={{ background: '#F5C940' }} />
+                <span className="text-[9px] tracking-widest font-bold font-heading" style={{ color: '#F5C940' }}>MISSION</span>
+              </div>
+              <h1 className="font-bold font-heading tracking-wide text-sm" style={{ color: '#F0F0F0' }}>
+                {lesson.title.toUpperCase()}
+              </h1>
             </div>
+            <span className="text-[10px] font-bold font-heading tracking-wider px-2 py-1"
+              style={{ color: '#F5C940', border: '1px solid rgba(245,201,64,0.3)' }}>
+              +{lesson.xpReward}XP
+            </span>
           </div>
 
-          {/* Progress bar */}
           {isTheory && (
-            <div className="flex gap-1.5">
+            <div className="flex gap-1">
               {sections.map((_, i) => (
-                <div
-                  key={i}
-                  className={`flex-1 h-1.5 rounded-full transition-colors ${
-                    i <= currentSection ? 'bg-amber-400' : 'bg-white/20'
-                  }`}
-                />
+                <div key={i} className="flex-1 h-0.5 transition-all"
+                  style={{ background: i <= currentSection ? '#F5C940' : '#2A2E3A', boxShadow: i <= currentSection ? '0 0 6px rgba(245,201,64,0.4)' : 'none' }} />
               ))}
             </div>
           )}
         </div>
       </div>
 
-      <div className="max-w-lg mx-auto px-6 py-8">
+      <div className="max-w-lg mx-auto px-6 py-6 pb-8">
         {isTheory ? (
           <AnimatePresence mode="wait">
             <motion.div
@@ -121,51 +163,62 @@ export default function Lesson() {
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -30 }}
-              className="space-y-6"
+              className="space-y-5"
             >
-              <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
-                <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center mb-4">
-                  <BookOpen className="w-5 h-5 text-amber-600" />
+              <div className="p-6 zzz-clip-corner-lg" style={{ background: '#13161D', border: '1px solid #2A2E3A' }}>
+                <div className="w-9 h-9 flex items-center justify-center mb-4"
+                  style={{ background: 'rgba(245,201,64,0.1)', clipPath: 'polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px))' }}>
+                  <BookOpen className="w-4 h-4" style={{ color: '#F5C940' }} />
                 </div>
-                <h2 className="text-xl font-bold text-gray-900 mb-3">
-                  {sections[currentSection].title}
+                <p className="text-[10px] tracking-widest font-bold font-heading mb-2" style={{ color: '#F5C940' }}>
+                  {String(currentSection + 1).padStart(2, '0')} / {String(sections.length).padStart(2, '0')}
+                </p>
+                <h2 className="text-xl font-bold font-heading tracking-wide mb-4" style={{ color: '#F0F0F0' }}>
+                  {sections[currentSection].title.toUpperCase()}
                 </h2>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="leading-relaxed text-sm" style={{ color: '#888EA8' }}>
                   {sections[currentSection].text}
                 </p>
               </div>
 
               <div className="flex gap-3">
-                <Button
-                  variant="outline"
-                  className="flex-1"
+                <button
+                  className="flex-1 flex items-center justify-center gap-2 py-3 font-bold tracking-widest font-heading text-xs transition-all zzz-clip-corner"
                   disabled={currentSection === 0}
                   onClick={() => setCurrentSection(s => s - 1)}
+                  style={{
+                    background: '#13161D',
+                    border: '1px solid #2A2E3A',
+                    color: currentSection === 0 ? '#2A2E3A' : '#888EA8',
+                    cursor: currentSection === 0 ? 'not-allowed' : 'pointer',
+                  }}
                 >
-                  <ChevronLeft className="w-4 h-4 mr-1" /> Back
-                </Button>
+                  <ChevronLeft className="w-4 h-4" /> BACK
+                </button>
                 {currentSection < sections.length - 1 ? (
-                  <Button
-                    className="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700"
+                  <button
+                    className="flex-1 flex items-center justify-center gap-2 py-3 font-bold tracking-widest font-heading text-xs transition-all zzz-clip-corner"
                     onClick={() => setCurrentSection(s => s + 1)}
+                    style={{ background: '#F5C940', color: '#0D0F14', boxShadow: '0 0 16px rgba(245,201,64,0.2)' }}
                   >
-                    Next <ChevronRight className="w-4 h-4 ml-1" />
-                  </Button>
+                    NEXT <ChevronRight className="w-4 h-4" />
+                  </button>
                 ) : (
-                  <Button
-                    className="flex-1 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700"
+                  <button
+                    className="flex-1 flex items-center justify-center gap-2 py-3 font-bold tracking-widest font-heading text-xs transition-all zzz-clip-corner"
                     onClick={handleComplete}
+                    style={{ background: '#F5C940', color: '#0D0F14', boxShadow: '0 0 16px rgba(245,201,64,0.2)' }}
                   >
-                    Complete <Sparkles className="w-4 h-4 ml-1" />
-                  </Button>
+                    COMPLETE <Check className="w-4 h-4" />
+                  </button>
                 )}
               </div>
             </motion.div>
           </AnimatePresence>
         ) : (
-          <div className="space-y-6">
-            <p className="text-sm text-gray-500">
-              Practice each letter in this group. Tap a letter to study and practice it.
+          <div className="space-y-5">
+            <p className="text-xs tracking-wider font-heading" style={{ color: '#555B6E' }}>
+              PRACTICE EACH LETTER IN THIS GROUP. TAP A LETTER TO STUDY IT.
             </p>
             <div className="grid grid-cols-2 gap-3">
               {practiceLetters.map((letter, i) => {
@@ -175,34 +228,35 @@ export default function Lesson() {
                     key={letter.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.1 }}
+                    transition={{ delay: i * 0.08 }}
                     onClick={() => navigate(`/letter/${letter.id}`)}
-                    className={`flex flex-col items-center gap-2 p-6 rounded-2xl border transition-all hover:shadow-md ${
-                      isMastered
-                        ? 'bg-emerald-50 border-emerald-200'
-                        : 'bg-white border-gray-200 hover:border-amber-300'
-                    }`}
+                    className="flex flex-col items-center gap-2 p-6 transition-all zzz-clip-corner"
+                    style={{
+                      background: isMastered ? 'rgba(34,197,94,0.07)' : '#13161D',
+                      border: `1px solid ${isMastered ? 'rgba(34,197,94,0.25)' : '#2A2E3A'}`,
+                    }}
                   >
-                    <span
-                      className="text-5xl"
-                      style={{ fontFamily: "'Noto Naskh Arabic', 'Amiri', serif" }}
-                      dir="rtl"
-                    >
+                    <span className="text-5xl" style={{ fontFamily: "'Noto Naskh Arabic', 'Amiri', serif", color: isMastered ? '#4ade80' : '#F0F0F0' }} dir="rtl">
                       {letter.letter}
                     </span>
-                    <span className="text-sm font-semibold text-gray-700">{letter.name}</span>
-                    <span className="text-xs text-gray-400">{letter.nameAr}</span>
+                    <span className="text-xs font-bold tracking-widest font-heading" style={{ color: isMastered ? '#4ade80' : '#888EA8' }}>
+                      {letter.name.toUpperCase()}
+                    </span>
+                    {isMastered && (
+                      <span className="text-[9px] tracking-widest font-heading" style={{ color: '#4ade80' }}>✓ MASTERED</span>
+                    )}
                   </motion.button>
                 );
               })}
             </div>
 
-            <Button
-              className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700"
+            <button
               onClick={handleComplete}
+              className="w-full py-3 font-bold tracking-widest font-heading text-sm transition-all zzz-clip-corner flex items-center justify-center gap-2"
+              style={{ background: '#F5C940', color: '#0D0F14', boxShadow: '0 0 20px rgba(245,201,64,0.2)' }}
             >
-              Complete Lesson <Sparkles className="w-4 h-4 ml-1" />
-            </Button>
+              <Check className="w-4 h-4" /> COMPLETE LESSON
+            </button>
           </div>
         )}
       </div>

@@ -1,7 +1,6 @@
 import React from 'react';
 import { getXPForNextLevel, levelTitles, getLevelFromXP } from '@/lib/calligraphyData';
 import { motion } from 'framer-motion';
-import { Star } from 'lucide-react';
 
 export default function XPBar({ totalXP }) {
   const xp = totalXP || 0;
@@ -12,23 +11,27 @@ export default function XPBar({ totalXP }) {
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-md">
-            <Star className="w-4 h-4 text-white fill-white" />
+        <div className="flex items-center gap-3">
+          <div
+            className="w-9 h-9 flex items-center justify-center font-display font-bold text-sm zzz-clip-corner"
+            style={{ background: '#F5C940', color: '#0D0F14' }}
+          >
+            {level}
           </div>
           <div>
-            <p className="text-sm font-bold text-gray-900">Level {level}</p>
-            <p className="text-xs text-amber-700 font-medium">{title}</p>
+            <p className="text-xs font-bold tracking-widest font-heading" style={{ color: '#F5C940' }}>LV.{level}</p>
+            <p className="text-[10px] font-medium tracking-wider" style={{ color: '#888EA8' }}>{title.toUpperCase()}</p>
           </div>
         </div>
-        <p className="text-xs text-gray-500 font-medium">{current} / {needed} XP</p>
+        <p className="text-xs font-mono" style={{ color: '#F5C940' }}>{current}<span style={{ color: '#555B6E' }}>/{needed}</span></p>
       </div>
-      <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+      <div className="h-1.5 rounded-none overflow-hidden" style={{ background: '#1A1E27' }}>
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${progress}%` }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
-          className="h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full"
+          transition={{ duration: 1, ease: 'easeOut' }}
+          className="h-full"
+          style={{ background: 'linear-gradient(90deg, #C9A030, #F5C940)', boxShadow: '0 0 8px rgba(245,201,64,0.5)' }}
         />
       </div>
     </div>

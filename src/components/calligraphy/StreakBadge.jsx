@@ -7,12 +7,13 @@ export default function StreakBadge({ streak }) {
 
   return (
     <motion.div
-      initial={{ scale: 0.8 }}
-      animate={{ scale: 1 }}
-      className="flex items-center gap-1.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg shadow-orange-200"
+      initial={{ scale: 0.8, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      className="flex items-center gap-1.5 px-3 py-1.5 zzz-clip-corner text-xs font-bold tracking-widest font-heading"
+      style={{ background: '#F5C940', color: '#0D0F14', boxShadow: '0 0 12px rgba(245,201,64,0.4)' }}
     >
-      <Flame className="w-4 h-4" />
-      <span>{streak} day{streak !== 1 ? 's' : ''}</span>
+      <Flame className="w-3.5 h-3.5" />
+      <span>{streak}D</span>
     </motion.div>
   );
 }

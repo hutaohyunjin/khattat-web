@@ -10,6 +10,14 @@ module.exports = {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
+  			'zzz-yellow': 'var(--zzz-yellow)',
+  			'zzz-yellow-dim': 'var(--zzz-yellow-dim)',
+  			'zzz-bg': 'var(--zzz-bg)',
+  			'zzz-panel': 'var(--zzz-panel)',
+  			'zzz-panel-2': 'var(--zzz-panel-2)',
+  			'zzz-border': 'var(--zzz-border)',
+  		},
+  		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {

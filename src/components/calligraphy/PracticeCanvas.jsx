@@ -1,6 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { Eraser, RotateCcw, Check } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { RotateCcw, Check } from 'lucide-react';
 
 export default function PracticeCanvas({ letter, onComplete }) {
   const canvasRef = useRef(null);
@@ -24,56 +23,54 @@ export default function PracticeCanvas({ letter, onComplete }) {
   }, [setupCanvas]);
 
   function drawGuide(ctx, w, h) {
-    // Background
-    ctx.fillStyle = '#FFFDF7';
+    // ZZZ dark background
+    ctx.fillStyle = '#0D0F14';
     ctx.fillRect(0, 0, w, h);
 
-    // Grid lines
-    ctx.strokeStyle = '#E8E0D4';
+    // Subtle grid lines
+    ctx.strokeStyle = 'rgba(42,46,58,0.8)';
     ctx.lineWidth = 0.5;
-
-    // Horizontal guidelines
     const baselineY = h * 0.6;
-    ctx.setLineDash([5, 5]);
+
+    ctx.setLineDash([4, 6]);
     for (let i = 0; i < 5; i++) {
       const y = baselineY - i * (h * 0.08);
       ctx.beginPath();
-      ctx.moveTo(20, y);
-      ctx.lineTo(w - 20, y);
+      ctx.moveTo(16, y);
+      ctx.lineTo(w - 16, y);
       ctx.stroke();
     }
-    // Below baseline
     for (let i = 1; i < 4; i++) {
       const y = baselineY + i * (h * 0.08);
       ctx.beginPath();
-      ctx.moveTo(20, y);
-      ctx.lineTo(w - 20, y);
+      ctx.moveTo(16, y);
+      ctx.lineTo(w - 16, y);
       ctx.stroke();
     }
     ctx.setLineDash([]);
 
-    // Baseline (solid)
-    ctx.strokeStyle = '#C49B3C';
-    ctx.lineWidth = 1.5;
+    // Baseline — yellow accent
+    ctx.strokeStyle = 'rgba(245,201,64,0.4)';
+    ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(20, baselineY);
-    ctx.lineTo(w - 20, baselineY);
+    ctx.moveTo(16, baselineY);
+    ctx.lineTo(w - 16, baselineY);
     ctx.stroke();
 
     // Ghost letter
     ctx.font = `${h * 0.5}px "Noto Naskh Arabic", "Amiri", serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = 'rgba(196, 155, 60, 0.12)';
+    ctx.fillStyle = 'rgba(245,201,64,0.08)';
     ctx.direction = 'rtl';
     ctx.fillText(letter.letter, w / 2, baselineY - h * 0.05);
 
-    // Label
-    ctx.font = '11px system-ui';
-    ctx.fillStyle = '#999';
+    // Baseline label
+    ctx.font = '9px "Inter", system-ui';
+    ctx.fillStyle = 'rgba(245,201,64,0.35)';
     ctx.textAlign = 'left';
     ctx.direction = 'ltr';
-    ctx.fillText('baseline', 24, baselineY - 6);
+    ctx.fillText('BASELINE', 18, baselineY - 7);
   }
 
   function getPos(e) {
@@ -88,8 +85,7 @@ export default function PracticeCanvas({ letter, onComplete }) {
     e.preventDefault();
     setIsDrawing(true);
     setHasDrawn(true);
-    const pos = getPos(e);
-    lastPoint.current = pos;
+    lastPoint.current = getPos(e);
   }
 
   function draw(e) {
@@ -98,9 +94,8 @@ export default function PracticeCanvas({ letter, onComplete }) {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     const pos = getPos(e);
-
-    ctx.strokeStyle = '#1A1A2E';
-    ctx.lineWidth = 3;
+    ctx.strokeStyle = '#F0F0F0';
+    ctx.lineWidth = 2.5;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.beginPath();
@@ -126,7 +121,7 @@ export default function PracticeCanvas({ letter, onComplete }) {
 
   return (
     <div className="space-y-3">
-      <div className="relative rounded-2xl overflow-hidden border-2 border-amber-200 shadow-inner">
+      <div className="relative overflow-hidden" style={{ border: '1px solid #2A2E3A', clipPath: 'polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px))' }}>
         <canvas
           ref={canvasRef}
           className="w-full touch-none cursor-crosshair"
@@ -141,17 +136,27 @@ export default function PracticeCanvas({ letter, onComplete }) {
         />
       </div>
       <div className="flex gap-2">
-        <Button variant="outline" size="sm" onClick={clearCanvas} className="flex-1 gap-2">
-          <RotateCcw className="w-4 h-4" /> Clear
-        </Button>
-        <Button
-          size="sm"
+        <button
+          onClick={clearCanvas}
+          className="flex-1 flex items-center justify-center gap-2 py-2.5 text-xs font-bold tracking-widest font-heading transition-all zzz-clip-corner"
+          style={{ background: '#13161D', border: '1px solid #2A2E3A', color: '#888EA8' }}
+        >
+          <RotateCcw className="w-3.5 h-3.5" /> CLEAR
+        </button>
+        <button
           onClick={onComplete}
           disabled={!hasDrawn}
-          className="flex-1 gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700"
+          className="flex-1 flex items-center justify-center gap-2 py-2.5 text-xs font-bold tracking-widest font-heading transition-all zzz-clip-corner"
+          style={{
+            background: hasDrawn ? '#F5C940' : '#13161D',
+            border: hasDrawn ? 'none' : '1px solid #2A2E3A',
+            color: hasDrawn ? '#0D0F14' : '#2A2E3A',
+            cursor: hasDrawn ? 'pointer' : 'not-allowed',
+            boxShadow: hasDrawn ? '0 0 16px rgba(245,201,64,0.25)' : 'none',
+          }}
         >
-          <Check className="w-4 h-4" /> Done
-        </Button>
+          <Check className="w-3.5 h-3.5" /> DONE
+        </button>
       </div>
     </div>
   );
