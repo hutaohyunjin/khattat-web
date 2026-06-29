@@ -92,7 +92,7 @@ export default function Lesson() {
         <div className="pt-10 pb-8 border-b" style={{ borderColor: 'var(--ink)' }}>
           <p className="label-mono mb-3">{isTheory ? 'Theory' : 'Practice'}</p>
           <h1 className="display-lg">{lesson.title}</h1>
-          <p className="font-heading text-sm mt-3" style={{ color: 'var(--ink-mid)' }}>{lesson.description}</p>
+          <p className="font-heading text-sm mt-3 font-semibold" style={{ color: 'var(--ink)' }}>{lesson.description}</p>
           {isTheory && (
             <div className="flex gap-1 mt-5">
               {sections.map((_, i) => (
@@ -118,7 +118,7 @@ export default function Lesson() {
                   <span className="sys-titlebar-dot" />
                   <span>{String(currentSection + 1).padStart(2,'0')} / {String(sections.length).padStart(2,'0')} — {sections[currentSection].title}</span>
                 </div>
-                <p className="p-6 font-heading text-sm leading-relaxed" style={{ color: 'var(--ink-mid)' }}>
+                <p className="p-6 font-heading text-sm leading-relaxed font-semibold" style={{ color: 'var(--ink)' }}>
                   {sections[currentSection].text}
                 </p>
               </div>

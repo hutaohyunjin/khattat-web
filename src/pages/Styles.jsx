@@ -105,7 +105,7 @@ export default function Styles() {
                   <div key={title}>
                     <p className="label-mono mb-2">{title}</p>
                     <div className="rule-h mb-3" />
-                    <p className="font-heading text-sm leading-relaxed" style={{ color: 'var(--ink-mid)' }}>{text}</p>
+                    <p className="font-heading text-sm leading-relaxed font-semibold" style={{ color: 'var(--ink)' }}>{text}</p>
                   </div>
                 ))}
                 <div>
