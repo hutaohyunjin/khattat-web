@@ -13,7 +13,7 @@ export default function XPBar({ totalXP }) {
       <div className="flex items-end justify-between">
         <div>
           <p className="font-mono text-[9px] tracking-widest uppercase" style={{ color: 'var(--ink-mid)' }}>Current Rank</p>
-          <p className="font-display text-2xl leading-tight" style={{ color: 'var(--ink)' }}>{title}</p>
+          <p className="font-display text-2xl leading-tight uppercase" style={{ color: 'var(--ink)' }}>{title}</p>
         </div>
         <div className="text-right">
           <p className="font-mono text-[9px] tracking-widest uppercase" style={{ color: 'var(--ink-mid)' }}>Level</p>
@@ -27,7 +27,7 @@ export default function XPBar({ totalXP }) {
           animate={{ width: `${progress}%` }}
           transition={{ duration: 1.2, ease: 'easeOut' }}
           className="h-full"
-          style={{ background: 'var(--ink)' }}
+          style={{ background: 'var(--zzz-yellow)' }}
         />
       </div>
       <div className="flex justify-between">

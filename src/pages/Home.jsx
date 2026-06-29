@@ -31,12 +31,12 @@ export default function Home() {
 
       {/* Top bar — system menubar */}
       <div className="sticky top-0 z-40 flex items-center justify-between px-5 py-2"
-        style={{ background: 'var(--ink)', color: 'var(--paper)', borderBottom: '1px solid var(--ink)' }}>
+        style={{ background: 'var(--ink)', color: 'var(--zzz-yellow)', borderBottom: '2px solid var(--zzz-yellow)' }}>
         <span className="font-mono text-[11px] tracking-widest">✦ KHATTAT</span>
         <div className="flex items-center gap-4">
           <StreakBadge streak={progress?.current_streak} />
-          <span className="font-mono text-[10px]" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          <span className="font-mono text-[10px]" style={{ color: 'var(--zzz-yellow-dim)' }}>
+          {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
           </span>
         </div>
       </div>
@@ -90,7 +90,7 @@ export default function Home() {
                   </p>
                 </div>
                 <div className="flex flex-col items-end gap-3 flex-shrink-0">
-                  <span className="font-mono text-xs border px-2 py-0.5" style={{ borderColor: 'var(--ink)', color: 'var(--ink)' }}>
+                  <span className="font-mono text-xs px-2 py-0.5" style={{ border: '1px solid var(--zzz-yellow)', color: 'var(--zzz-yellow-dim)', background: 'var(--zzz-yellow-pale)' }}>
                     +{nextLesson.xpReward}xp
                   </span>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" style={{ color: 'var(--ink)' }} />

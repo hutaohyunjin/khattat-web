@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=DM+Serif+Display:ital@0;1&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Rajdhani:wght@500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,26 +6,28 @@
 
 @layer base {
   :root {
+    /* Base — paper off-white */
     --background: 45 20% 96%;
     --foreground: 0 0% 8%;
     --card: 45 15% 98%;
     --card-foreground: 0 0% 8%;
     --popover: 45 15% 98%;
     --popover-foreground: 0 0% 8%;
-    --primary: 0 0% 8%;
-    --primary-foreground: 45 20% 96%;
+    /* Primary = ZZZ yellow */
+    --primary: 43 90% 54%;
+    --primary-foreground: 0 0% 8%;
     --secondary: 45 10% 90%;
     --secondary-foreground: 0 0% 20%;
     --muted: 45 10% 92%;
     --muted-foreground: 0 0% 45%;
-    --accent: 0 0% 8%;
-    --accent-foreground: 45 20% 96%;
+    --accent: 43 90% 54%;
+    --accent-foreground: 0 0% 8%;
     --destructive: 0 70% 45%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 20%;
     --input: 45 10% 90%;
-    --ring: 0 0% 8%;
-    --chart-1: 0 0% 8%;
+    --ring: 43 90% 54%;
+    --chart-1: 43 90% 54%;
     --chart-2: 0 0% 35%;
     --chart-3: 0 0% 55%;
     --chart-4: 0 0% 70%;
@@ -33,24 +35,32 @@
     --radius: 0rem;
     --font-heading: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
     --font-body: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
-    --font-display: 'DM Serif Display', Georgia, serif;
+    --font-display: 'Rajdhani', ui-sans-serif, sans-serif;
     --font-mono: 'Space Mono', ui-monospace, monospace;
-    /* Cargo/retro tokens */
+
+    /* Design tokens */
     --paper: #F2EFE6;
     --paper-dark: #E8E4D8;
     --ink: #141414;
     --ink-mid: #555555;
     --ink-faint: #999999;
     --rule: #C8C4B8;
-    --accent-mark: #141414;
+
+    /* ZZZ accent palette */
+    --zzz-yellow: #E8B234;
+    --zzz-yellow-bright: #F5C842;
+    --zzz-yellow-dim: #C49020;
+    --zzz-yellow-pale: rgba(232, 178, 52, 0.15);
+    --zzz-yellow-glow: rgba(232, 178, 52, 0.35);
+
     --sidebar-background: 45 20% 96%;
     --sidebar-foreground: 0 0% 20%;
-    --sidebar-primary: 0 0% 8%;
-    --sidebar-primary-foreground: 45 20% 96%;
+    --sidebar-primary: 43 90% 54%;
+    --sidebar-primary-foreground: 0 0% 8%;
     --sidebar-accent: 45 10% 90%;
     --sidebar-accent-foreground: 0 0% 20%;
     --sidebar-border: 0 0% 20%;
-    --sidebar-ring: 0 0% 8%;
+    --sidebar-ring: 43 90% 54%;
   }
 
   .dark {
@@ -58,31 +68,26 @@
     --foreground: 0 0% 8%;
     --card: 45 15% 98%;
     --card-foreground: 0 0% 8%;
-    --popover: 45 15% 98%;
-    --popover-foreground: 0 0% 8%;
-    --primary: 0 0% 8%;
-    --primary-foreground: 45 20% 96%;
+    --primary: 43 90% 54%;
+    --primary-foreground: 0 0% 8%;
     --secondary: 45 10% 90%;
     --secondary-foreground: 0 0% 20%;
     --muted: 45 10% 92%;
     --muted-foreground: 0 0% 45%;
-    --accent: 0 0% 8%;
-    --accent-foreground: 45 20% 96%;
+    --accent: 43 90% 54%;
+    --accent-foreground: 0 0% 8%;
     --destructive: 0 70% 45%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 20%;
     --input: 45 10% 90%;
-    --ring: 0 0% 8%;
+    --ring: 43 90% 54%;
   }
 }
-
-
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
-
   body {
     @apply bg-background text-foreground font-body;
     -webkit-font-smoothing: antialiased;
@@ -91,14 +96,14 @@
   }
 }
 
-/* Dithered dot-matrix background — Cargo-style */
+/* ── Dithered dot-matrix background ── */
 .dither-bg {
   background-color: var(--paper);
   background-image: radial-gradient(circle, #b8b4a8 1px, transparent 1px);
   background-size: 4px 4px;
 }
 
-/* System window panel */
+/* ── System window panel ── */
 .sys-window {
   background: var(--paper);
   border: 1.5px solid var(--ink);
@@ -107,26 +112,26 @@
 
 .sys-titlebar {
   background: var(--ink);
-  color: var(--paper);
-  padding: 4px 10px;
+  color: var(--zzz-yellow);
+  padding: 5px 10px;
   display: flex;
   align-items: center;
   gap: 8px;
   font-family: 'Space Mono', monospace;
   font-size: 11px;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   user-select: none;
 }
 
 .sys-titlebar-dot {
-  width: 8px;
-  height: 8px;
-  background: var(--paper);
-  border: 1px solid rgba(255,255,255,0.3);
+  width: 7px;
+  height: 7px;
+  background: var(--zzz-yellow);
   flex-shrink: 0;
 }
 
-/* Table row style */
+/* ── Table row ── */
 .data-row {
   display: grid;
   border-bottom: 1px solid var(--rule);
@@ -134,61 +139,71 @@
   font-family: 'Space Mono', monospace;
   font-size: 11px;
   color: var(--ink);
-  transition: background 0.1s;
+  transition: background 0.12s, color 0.12s;
 }
 
 .data-row:hover {
   background: var(--ink);
-  color: var(--paper);
+  color: var(--zzz-yellow);
 }
 
-/* Big display type */
+/* ── Display type — Rajdhani (ZZZ headings) ── */
 .display-xl {
-  font-family: 'DM Serif Display', Georgia, serif;
-  font-size: clamp(3rem, 10vw, 7rem);
-  line-height: 0.92;
-  letter-spacing: -0.02em;
+  font-family: 'Rajdhani', ui-sans-serif, sans-serif;
+  font-weight: 700;
+  font-size: clamp(3.5rem, 12vw, 8rem);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
   color: var(--ink);
+  text-transform: uppercase;
 }
 
 .display-lg {
-  font-family: 'DM Serif Display', Georgia, serif;
-  font-size: clamp(2rem, 6vw, 4rem);
-  line-height: 0.95;
-  letter-spacing: -0.02em;
+  font-family: 'Rajdhani', ui-sans-serif, sans-serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 7vw, 4.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.01em;
   color: var(--ink);
+  text-transform: uppercase;
 }
 
 .label-mono {
   font-family: 'Space Mono', monospace;
   font-size: 10px;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--ink-mid);
+  color: var(--zzz-yellow-dim);
 }
 
+/* ── Buttons ── */
 .btn-system {
   font-family: 'Space Mono', monospace;
   font-size: 11px;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   background: var(--ink);
-  color: var(--paper);
-  border: none;
+  color: var(--zzz-yellow);
+  border: 1.5px solid var(--zzz-yellow);
   padding: 10px 20px;
   cursor: pointer;
-  transition: opacity 0.15s;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
   display: inline-flex;
   align-items: center;
   gap: 6px;
 }
-
-.btn-system:hover { opacity: 0.8; }
+.btn-system:hover {
+  background: var(--zzz-yellow);
+  color: var(--ink);
+  box-shadow: 0 0 12px var(--zzz-yellow-glow);
+}
 .btn-system:disabled { opacity: 0.3; cursor: not-allowed; }
 
 .btn-ghost {
   font-family: 'Space Mono', monospace;
   font-size: 11px;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   background: transparent;
   color: var(--ink);
   border: 1.5px solid var(--ink);
@@ -199,11 +214,23 @@
   align-items: center;
   gap: 6px;
 }
-.btn-ghost:hover { background: var(--ink); color: var(--paper); }
+.btn-ghost:hover {
+  border-color: var(--zzz-yellow);
+  color: var(--zzz-yellow-dim);
+  background: var(--zzz-yellow-pale);
+}
 .btn-ghost:disabled { opacity: 0.3; cursor: not-allowed; }
 
-.rule-h { height: 1.5px; background: var(--ink); }
+/* ── Rules ── */
+.rule-h { height: 1.5px; background: var(--zzz-yellow); }
 .rule-h-light { height: 1px; background: var(--rule); }
+
+/* ── ZZZ accent utilities ── */
+.accent-bar {
+  width: 3px;
+  background: var(--zzz-yellow);
+  flex-shrink: 0;
+}
 
 .safe-area-pb {
   padding-bottom: env(safe-area-inset-bottom, 0);

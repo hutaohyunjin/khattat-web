@@ -43,9 +43,9 @@ export default function Progress() {
     <div className="min-h-screen pb-24 dither-bg">
       {/* Top bar */}
       <div className="sticky top-0 z-40 flex items-center justify-between px-5 py-2"
-        style={{ background: 'var(--ink)', color: 'var(--paper)' }}>
-        <span className="font-mono text-[11px] tracking-widest">✦ KHATTAT</span>
-        <span className="font-mono text-[10px]" style={{ color: 'rgba(255,255,255,0.5)' }}>Ranks</span>
+        style={{ background: 'var(--ink)', color: 'var(--zzz-yellow)', borderBottom: '2px solid var(--zzz-yellow)' }}>
+        <span className="font-mono text-[11px] tracking-widest" style={{ color: 'var(--zzz-yellow)' }}>✦ KHATTAT</span>
+        <span className="font-mono text-[10px]" style={{ color: 'var(--zzz-yellow-dim)' }}>Ranks</span>
       </div>
 
       <div className="max-w-lg mx-auto px-5">
@@ -88,7 +88,7 @@ export default function Progress() {
               style={{ gridTemplateColumns: '1fr auto', alignItems: 'center', gap: 12, paddingTop: 12, paddingBottom: 12 }}
             >
               <span className="font-heading font-medium text-sm" style={{ color: 'var(--ink)' }}>{stat.label}</span>
-              <span className="font-mono text-sm font-bold" style={{ color: 'var(--ink)' }}>{stat.value}</span>
+              <span className="font-mono text-sm font-bold" style={{ color: 'var(--zzz-yellow-dim)' }}>{stat.value}</span>
             </div>
           ))}
         </div>
@@ -111,8 +111,8 @@ export default function Progress() {
                     style={{
                       fontFamily: "'Noto Naskh Arabic', serif",
                       background: isMastered ? 'var(--ink)' : 'var(--paper)',
-                      borderColor: isMastered ? 'var(--ink)' : 'var(--rule)',
-                      color: isMastered ? 'var(--paper)' : 'var(--ink-faint)',
+                      borderColor: isMastered ? 'var(--zzz-yellow)' : 'var(--rule)',
+                      color: isMastered ? 'var(--zzz-yellow)' : 'var(--ink-faint)',
                     }}
                     dir="rtl"
                   >
@@ -161,7 +161,7 @@ export default function Progress() {
                     {new Date(c.completed_at || c.created_date).toLocaleDateString()}
                   </p>
                 </div>
-                <span className="font-mono text-xs font-bold" style={{ color: 'var(--ink)' }}>+{c.xp_earned}</span>
+                <span className="font-mono text-xs font-bold" style={{ color: 'var(--zzz-yellow-dim)' }}>+{c.xp_earned}</span>
               </div>
             ))}
           </div>

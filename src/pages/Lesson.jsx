@@ -79,10 +79,10 @@ export default function Lesson() {
     <div className="min-h-screen dither-bg pb-8">
       {/* Top bar */}
       <div className="sticky top-0 z-40 flex items-center gap-3 px-5 py-2"
-        style={{ background: 'var(--ink)', color: 'var(--paper)' }}>
-        <button onClick={() => navigate(-1)}><ArrowLeft className="w-4 h-4" style={{ color: 'var(--paper)' }} /></button>
-        <span className="font-mono text-[11px] tracking-widest flex-1">✦ KHATTAT</span>
-        <span className="font-mono text-[10px] border px-2 py-0.5" style={{ borderColor: 'rgba(255,255,255,0.3)', color: 'rgba(255,255,255,0.6)' }}>
+        style={{ background: 'var(--ink)', color: 'var(--zzz-yellow)', borderBottom: '2px solid var(--zzz-yellow)' }}>
+        <button onClick={() => navigate(-1)}><ArrowLeft className="w-4 h-4" style={{ color: 'var(--zzz-yellow)' }} /></button>
+        <span className="font-mono text-[11px] tracking-widest flex-1" style={{ color: 'var(--zzz-yellow)' }}>✦ KHATTAT</span>
+        <span className="font-mono text-[10px] px-2 py-0.5" style={{ border: '1px solid var(--zzz-yellow)', color: 'var(--zzz-yellow)' }}>
           +{lesson.xpReward}xp
         </span>
       </div>

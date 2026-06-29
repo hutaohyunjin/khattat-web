@@ -25,8 +25,9 @@ export default function NavBar() {
               className="flex-1 flex flex-col items-center gap-1 py-3 relative transition-all"
               style={{
                 background: isActive ? 'var(--ink)' : 'transparent',
-                color: isActive ? 'var(--paper)' : 'var(--ink-mid)',
+                color: isActive ? 'var(--zzz-yellow)' : 'var(--ink-mid)',
                 borderRight: '1px solid var(--rule)',
+                borderTop: isActive ? '2px solid var(--zzz-yellow)' : '2px solid transparent',
               }}
             >
               <span className="font-mono text-[9px] opacity-50">{mono}</span>

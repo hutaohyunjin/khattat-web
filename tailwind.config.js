@@ -10,13 +10,18 @@ module.exports = {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
-  			/* Cargo/editorial tokens */
+  			/* Editorial tokens */
   			paper: 'var(--paper)',
   			'paper-dark': 'var(--paper-dark)',
   			ink: 'var(--ink)',
   			'ink-mid': 'var(--ink-mid)',
   			'ink-faint': 'var(--ink-faint)',
   			rule: 'var(--rule)',
+  			/* ZZZ accent */
+  			'zzz-yellow': 'var(--zzz-yellow)',
+  			'zzz-yellow-bright': 'var(--zzz-yellow-bright)',
+  			'zzz-yellow-dim': 'var(--zzz-yellow-dim)',
+  			'zzz-yellow-pale': 'var(--zzz-yellow-pale)',
   			/* shadcn tokens */
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
@@ -72,7 +77,7 @@ module.exports = {
   		fontFamily: {
   			heading: ['Space Grotesk', 'ui-sans-serif', 'system-ui', 'sans-serif'],
   			body: ['Space Grotesk', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-  			display: ['DM Serif Display', 'Georgia', 'serif'],
+  			display: ['Rajdhani', 'ui-sans-serif', 'sans-serif'],
   			mono: ['Space Mono', 'ui-monospace', 'monospace'],
   		},
   		keyframes: {

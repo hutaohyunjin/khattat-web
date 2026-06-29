@@ -11,9 +11,9 @@ export default function Styles() {
     <div className="min-h-screen pb-24 dither-bg">
       {/* Top bar */}
       <div className="sticky top-0 z-40 flex items-center justify-between px-5 py-2"
-        style={{ background: 'var(--ink)', color: 'var(--paper)' }}>
-        <span className="font-mono text-[11px] tracking-widest">✦ KHATTAT</span>
-        <span className="font-mono text-[10px]" style={{ color: 'rgba(255,255,255,0.5)' }}>Codex</span>
+        style={{ background: 'var(--ink)', color: 'var(--zzz-yellow)', borderBottom: '2px solid var(--zzz-yellow)' }}>
+        <span className="font-mono text-[11px] tracking-widest" style={{ color: 'var(--zzz-yellow)' }}>✦ KHATTAT</span>
+        <span className="font-mono text-[10px]" style={{ color: 'var(--zzz-yellow-dim)' }}>Codex</span>
       </div>
 
       <div className="max-w-lg mx-auto px-5">

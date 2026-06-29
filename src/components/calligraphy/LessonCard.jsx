@@ -33,7 +33,7 @@ export default function LessonCard({ lesson, index, isCompleted, isLocked, onCli
       </div>
 
       {/* XP */}
-      <span className="font-mono text-[10px] whitespace-nowrap" style={{ color: 'var(--ink-mid)' }}>
+      <span className="font-mono text-[10px] whitespace-nowrap" style={{ color: 'var(--zzz-yellow-dim)' }}>
         +{lesson.xpReward}xp
       </span>
 
