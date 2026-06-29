@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=DM+Serif+Display:ital@0;1&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,73 +6,73 @@
 
 @layer base {
   :root {
-    /* ZZZ-inspired dark theme tokens */
-    --background: 220 15% 8%;
-    --foreground: 0 0% 95%;
-    --card: 220 15% 11%;
-    --card-foreground: 0 0% 95%;
-    --popover: 220 15% 11%;
-    --popover-foreground: 0 0% 95%;
-    --primary: 45 95% 58%;
-    --primary-foreground: 220 15% 8%;
-    --secondary: 220 12% 16%;
-    --secondary-foreground: 0 0% 85%;
-    --muted: 220 12% 14%;
-    --muted-foreground: 220 8% 55%;
-    --accent: 45 95% 58%;
-    --accent-foreground: 220 15% 8%;
-    --destructive: 0 70% 55%;
+    --background: 45 20% 96%;
+    --foreground: 0 0% 8%;
+    --card: 45 15% 98%;
+    --card-foreground: 0 0% 8%;
+    --popover: 45 15% 98%;
+    --popover-foreground: 0 0% 8%;
+    --primary: 0 0% 8%;
+    --primary-foreground: 45 20% 96%;
+    --secondary: 45 10% 90%;
+    --secondary-foreground: 0 0% 20%;
+    --muted: 45 10% 92%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 0 0% 8%;
+    --accent-foreground: 45 20% 96%;
+    --destructive: 0 70% 45%;
     --destructive-foreground: 0 0% 98%;
-    --border: 220 10% 20%;
-    --input: 220 12% 14%;
-    --ring: 45 95% 58%;
-    --chart-1: 45 95% 58%;
-    --chart-2: 180 60% 45%;
-    --chart-3: 270 60% 60%;
-    --chart-4: 10 80% 55%;
-    --chart-5: 120 50% 45%;
-    --radius: 0.25rem;
-    --font-heading: 'Rajdhani', 'Inter', ui-sans-serif, system-ui, sans-serif;
-    --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
-    --font-display: 'Rajdhani', 'Inter', ui-sans-serif, system-ui, sans-serif;
-    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    --zzz-yellow: #F5C940;
-    --zzz-yellow-dim: #C9A030;
-    --zzz-bg: #0D0F14;
-    --zzz-panel: #13161D;
-    --zzz-panel-2: #1A1E27;
-    --zzz-border: #2A2E3A;
-    --zzz-glow: rgba(245, 201, 64, 0.15);
-    --sidebar-background: 220 15% 10%;
-    --sidebar-foreground: 0 0% 85%;
-    --sidebar-primary: 45 95% 58%;
-    --sidebar-primary-foreground: 220 15% 8%;
-    --sidebar-accent: 220 12% 16%;
-    --sidebar-accent-foreground: 0 0% 85%;
-    --sidebar-border: 220 10% 20%;
-    --sidebar-ring: 45 95% 58%;
+    --border: 0 0% 20%;
+    --input: 45 10% 90%;
+    --ring: 0 0% 8%;
+    --chart-1: 0 0% 8%;
+    --chart-2: 0 0% 35%;
+    --chart-3: 0 0% 55%;
+    --chart-4: 0 0% 70%;
+    --chart-5: 0 0% 85%;
+    --radius: 0rem;
+    --font-heading: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+    --font-body: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'DM Serif Display', Georgia, serif;
+    --font-mono: 'Space Mono', ui-monospace, monospace;
+    /* Cargo/retro tokens */
+    --paper: #F2EFE6;
+    --paper-dark: #E8E4D8;
+    --ink: #141414;
+    --ink-mid: #555555;
+    --ink-faint: #999999;
+    --rule: #C8C4B8;
+    --accent-mark: #141414;
+    --sidebar-background: 45 20% 96%;
+    --sidebar-foreground: 0 0% 20%;
+    --sidebar-primary: 0 0% 8%;
+    --sidebar-primary-foreground: 45 20% 96%;
+    --sidebar-accent: 45 10% 90%;
+    --sidebar-accent-foreground: 0 0% 20%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 0 0% 8%;
   }
 
   .dark {
-    --background: 220 15% 8%;
-    --foreground: 0 0% 95%;
-    --card: 220 15% 11%;
-    --card-foreground: 0 0% 95%;
-    --popover: 220 15% 11%;
-    --popover-foreground: 0 0% 95%;
-    --primary: 45 95% 58%;
-    --primary-foreground: 220 15% 8%;
-    --secondary: 220 12% 16%;
-    --secondary-foreground: 0 0% 85%;
-    --muted: 220 12% 14%;
-    --muted-foreground: 220 8% 55%;
-    --accent: 45 95% 58%;
-    --accent-foreground: 220 15% 8%;
-    --destructive: 0 70% 55%;
+    --background: 45 20% 96%;
+    --foreground: 0 0% 8%;
+    --card: 45 15% 98%;
+    --card-foreground: 0 0% 8%;
+    --popover: 45 15% 98%;
+    --popover-foreground: 0 0% 8%;
+    --primary: 0 0% 8%;
+    --primary-foreground: 45 20% 96%;
+    --secondary: 45 10% 90%;
+    --secondary-foreground: 0 0% 20%;
+    --muted: 45 10% 92%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 0 0% 8%;
+    --accent-foreground: 45 20% 96%;
+    --destructive: 0 70% 45%;
     --destructive-foreground: 0 0% 98%;
-    --border: 220 10% 20%;
-    --input: 220 12% 14%;
-    --ring: 45 95% 58%;
+    --border: 0 0% 20%;
+    --input: 45 10% 90%;
+    --ring: 0 0% 8%;
   }
 }
 
@@ -87,60 +87,123 @@
     @apply bg-background text-foreground font-body;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: var(--zzz-bg);
+    background-color: var(--paper);
   }
 }
 
-/* ZZZ-style utility classes */
-.zzz-panel {
-  background: var(--zzz-panel);
-  border: 1px solid var(--zzz-border);
+/* Dithered dot-matrix background — Cargo-style */
+.dither-bg {
+  background-color: var(--paper);
+  background-image: radial-gradient(circle, #b8b4a8 1px, transparent 1px);
+  background-size: 4px 4px;
 }
 
-.zzz-panel-2 {
-  background: var(--zzz-panel-2);
-  border: 1px solid var(--zzz-border);
+/* System window panel */
+.sys-window {
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  border-radius: 0;
 }
 
-.zzz-glow {
-  box-shadow: 0 0 20px var(--zzz-glow), 0 0 40px rgba(245, 201, 64, 0.05);
+.sys-titlebar {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 4px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  user-select: none;
 }
 
-.zzz-glow-text {
-  text-shadow: 0 0 15px rgba(245, 201, 64, 0.6);
+.sys-titlebar-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--paper);
+  border: 1px solid rgba(255,255,255,0.3);
+  flex-shrink: 0;
 }
 
-.zzz-clip-corner {
-  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+/* Table row style */
+.data-row {
+  display: grid;
+  border-bottom: 1px solid var(--rule);
+  padding: 8px 12px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--ink);
+  transition: background 0.1s;
 }
 
-.zzz-clip-corner-lg {
-  clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+.data-row:hover {
+  background: var(--ink);
+  color: var(--paper);
 }
 
-.zzz-stripe {
-  background: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 4px,
-    rgba(245, 201, 64, 0.04) 4px,
-    rgba(245, 201, 64, 0.04) 8px
-  );
+/* Big display type */
+.display-xl {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: clamp(3rem, 10vw, 7rem);
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  color: var(--ink);
 }
 
-.zzz-scanline::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0,0,0,0.08) 2px,
-    rgba(0,0,0,0.08) 4px
-  );
-  pointer-events: none;
+.display-lg {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: clamp(2rem, 6vw, 4rem);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: var(--ink);
 }
+
+.label-mono {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+}
+
+.btn-system {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-system:hover { opacity: 0.8; }
+.btn-system:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.btn-ghost {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  background: transparent;
+  color: var(--ink);
+  border: 1.5px solid var(--ink);
+  padding: 9px 18px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-ghost:hover { background: var(--ink); color: var(--paper); }
+.btn-ghost:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.rule-h { height: 1.5px; background: var(--ink); }
+.rule-h-light { height: 1px; background: var(--rule); }
 
 .safe-area-pb {
   padding-bottom: env(safe-area-inset-bottom, 0);

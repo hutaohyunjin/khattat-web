@@ -10,29 +10,29 @@ export default function XPBar({ totalXP }) {
 
   return (
     <div className="space-y-2">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div
-            className="w-9 h-9 flex items-center justify-center font-display font-bold text-sm zzz-clip-corner"
-            style={{ background: '#F5C940', color: '#0D0F14' }}
-          >
-            {level}
-          </div>
-          <div>
-            <p className="text-xs font-bold tracking-widest font-heading" style={{ color: '#F5C940' }}>LV.{level}</p>
-            <p className="text-[10px] font-medium tracking-wider" style={{ color: '#888EA8' }}>{title.toUpperCase()}</p>
-          </div>
+      <div className="flex items-end justify-between">
+        <div>
+          <p className="font-mono text-[9px] tracking-widest uppercase" style={{ color: 'var(--ink-mid)' }}>Current Rank</p>
+          <p className="font-display text-2xl leading-tight" style={{ color: 'var(--ink)' }}>{title}</p>
         </div>
-        <p className="text-xs font-mono" style={{ color: '#F5C940' }}>{current}<span style={{ color: '#555B6E' }}>/{needed}</span></p>
+        <div className="text-right">
+          <p className="font-mono text-[9px] tracking-widest uppercase" style={{ color: 'var(--ink-mid)' }}>Level</p>
+          <p className="font-mono text-xl font-bold" style={{ color: 'var(--ink)' }}>{String(level).padStart(2,'0')}</p>
+        </div>
       </div>
-      <div className="h-1.5 rounded-none overflow-hidden" style={{ background: '#1A1E27' }}>
+      <div className="h-px w-full" style={{ background: 'var(--rule)' }} />
+      <div className="h-1 w-full" style={{ background: 'var(--paper-dark)' }}>
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${progress}%` }}
-          transition={{ duration: 1, ease: 'easeOut' }}
+          transition={{ duration: 1.2, ease: 'easeOut' }}
           className="h-full"
-          style={{ background: 'linear-gradient(90deg, #C9A030, #F5C940)', boxShadow: '0 0 8px rgba(245,201,64,0.5)' }}
+          style={{ background: 'var(--ink)' }}
         />
+      </div>
+      <div className="flex justify-between">
+        <span className="font-mono text-[9px]" style={{ color: 'var(--ink-mid)' }}>{current} XP</span>
+        <span className="font-mono text-[9px]" style={{ color: 'var(--ink-faint)' }}>{needed} XP</span>
       </div>
     </div>
   );

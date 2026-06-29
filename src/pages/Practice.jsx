@@ -5,7 +5,11 @@ import { Search, Check } from 'lucide-react';
 import NavBar from '@/components/calligraphy/NavBar';
 import { thuluthLetters } from '@/lib/calligraphyData';
 import { useProgress } from '@/hooks/useProgress';
-import { Input } from '@/components/ui/input';
+
+const GROUPS = [1,2,3,4,5,6,7,8].map(id => ({
+  id,
+  name: ['Alif','Jim','Dal','Sin','Tah','Fa','Lam','Waw'][id-1] + ' Group',
+}));
 
 export default function Practice() {
   const { progress } = useProgress();
@@ -13,126 +17,108 @@ export default function Practice() {
   const [search, setSearch] = useState('');
   const masteredLetters = progress?.mastered_letters || [];
 
-  const groups = [
-    { id: 1, name: 'Alif Group', letters: thuluthLetters.filter(l => l.group === 1) },
-    { id: 2, name: 'Jim Group', letters: thuluthLetters.filter(l => l.group === 2) },
-    { id: 3, name: 'Dal Group', letters: thuluthLetters.filter(l => l.group === 3) },
-    { id: 4, name: 'Sin Group', letters: thuluthLetters.filter(l => l.group === 4) },
-    { id: 5, name: 'Tah Group', letters: thuluthLetters.filter(l => l.group === 5) },
-    { id: 6, name: 'Fa Group', letters: thuluthLetters.filter(l => l.group === 6) },
-    { id: 7, name: 'Lam Group', letters: thuluthLetters.filter(l => l.group === 7) },
-    { id: 8, name: 'Waw Group', letters: thuluthLetters.filter(l => l.group === 8) }
-  ];
-
-  const filteredGroups = groups.map(g => ({
+  const groups = GROUPS.map(g => ({
     ...g,
-    letters: g.letters.filter(l =>
-      l.name.toLowerCase().includes(search.toLowerCase()) ||
-      l.letter.includes(search) ||
-      l.nameAr.includes(search)
-    )
+    letters: thuluthLetters.filter(l => {
+      const matchGroup = l.group === g.id;
+      const matchSearch = !search || l.name.toLowerCase().includes(search.toLowerCase()) || l.letter.includes(search);
+      return matchGroup && matchSearch;
+    }),
   })).filter(g => g.letters.length > 0);
 
   const masteredCount = masteredLetters.length;
   const totalCount = thuluthLetters.length;
 
   return (
-    <div className="min-h-screen pb-24" style={{ background: '#0D0F14' }}>
-      {/* Header */}
-      <div className="relative overflow-hidden px-6 pt-12 pb-8"
-        style={{ background: '#13161D', borderBottom: '1px solid #2A2E3A' }}>
-        <div className="absolute inset-0 zzz-stripe pointer-events-none" />
-        <div className="absolute top-0 right-0 w-0.5 h-16" style={{ background: '#F5C940' }} />
-        <div className="absolute top-0 right-0 w-16 h-0.5" style={{ background: '#F5C940' }} />
-        <div className="max-w-2xl mx-auto">
-          <div className="flex items-center gap-2 mb-1">
-            <div className="w-1.5 h-1.5" style={{ background: '#F5C940' }} />
-            <p className="text-[10px] tracking-widest font-bold font-heading" style={{ color: '#F5C940' }}>TRAINING</p>
-          </div>
-          <h1 className="text-2xl font-bold font-heading tracking-wider" style={{ color: '#F0F0F0' }}>THULUTH PRACTICE</h1>
-          <p className="text-xs tracking-wider mt-1 font-heading" style={{ color: '#555B6E' }}>MASTER EACH LETTER OF THE ARABIC ALPHABET</p>
-          <div className="mt-4 flex items-center gap-3">
-            <span className="font-bold font-heading text-lg" style={{ color: '#F5C940' }}>{masteredCount}</span>
-            <span className="text-xs font-heading tracking-wider" style={{ color: '#555B6E' }}>/ {totalCount} LETTERS MASTERED</span>
-            <div className="flex-1 h-1 ml-2" style={{ background: '#1A1E27' }}>
-              <div className="h-full transition-all" style={{ width: `${(masteredCount / totalCount) * 100}%`, background: 'linear-gradient(90deg, #C9A030, #F5C940)', boxShadow: '0 0 6px rgba(245,201,64,0.5)' }} />
+    <div className="min-h-screen pb-24 dither-bg">
+      {/* Top bar */}
+      <div className="sticky top-0 z-40 flex items-center justify-between px-5 py-2"
+        style={{ background: 'var(--ink)', color: 'var(--paper)' }}>
+        <span className="font-mono text-[11px] tracking-widest">✦ KHATTAT</span>
+        <span className="font-mono text-[10px]" style={{ color: 'rgba(255,255,255,0.5)' }}>Practice</span>
+      </div>
+
+      <div className="max-w-lg mx-auto px-5">
+        {/* Hero */}
+        <div className="pt-10 pb-8 border-b" style={{ borderColor: 'var(--ink)' }}>
+          <p className="label-mono mb-3">Thuluth Script</p>
+          <h1 className="display-xl">
+            Letter<br />
+            <em style={{ color: 'var(--ink-mid)' }}>Practice</em>
+          </h1>
+          <div className="flex items-center gap-4 mt-5">
+            <div>
+              <p className="label-mono">Mastered</p>
+              <p className="font-mono text-2xl font-bold" style={{ color: 'var(--ink)' }}>
+                {String(masteredCount).padStart(2,'0')}<span className="text-base font-normal" style={{ color: 'var(--ink-faint)' }}>/{totalCount}</span>
+              </p>
+            </div>
+            <div className="flex-1 h-1" style={{ background: 'var(--paper-dark)' }}>
+              <div className="h-full" style={{ width: `${(masteredCount / totalCount) * 100}%`, background: 'var(--ink)' }} />
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="max-w-2xl mx-auto px-6 mt-5 space-y-6">
         {/* Search */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#555B6E' }} />
+        <div className="mt-5 relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5" style={{ color: 'var(--ink-faint)' }} />
           <input
-            placeholder="SEARCH LETTERS..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 text-sm font-heading tracking-wider placeholder:tracking-widest focus:outline-none"
-            style={{
-              background: '#13161D',
-              border: '1px solid #2A2E3A',
-              color: '#F0F0F0',
-              clipPath: 'polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px))',
-            }}
+            placeholder="Search letters..."
+            className="w-full pl-9 pr-4 py-2.5 font-mono text-xs focus:outline-none"
+            style={{ background: 'var(--paper)', border: '1.5px solid var(--ink)', color: 'var(--ink)' }}
           />
         </div>
 
-        {/* Letter Groups */}
-        {filteredGroups.map((group, gi) => (
-          <motion.div
-            key={group.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: gi * 0.05 }}
-          >
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-1.5 h-1.5" style={{ background: '#F5C940' }} />
-              <h3 className="text-[10px] font-bold tracking-widest font-heading" style={{ color: '#888EA8' }}>
-                {group.name.toUpperCase()}
-              </h3>
-              <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, #2A2E3A, transparent)' }} />
-            </div>
-            <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
+        {/* Letter groups */}
+        <div className="mt-5 space-y-5 mb-8">
+          {groups.map(group => (
+            <div key={group.id} className="sys-window">
+              <div className="sys-titlebar">
+                <span className="sys-titlebar-dot" />
+                <span>{group.name}</span>
+                <span className="ml-auto opacity-50">{group.letters.filter(l => masteredLetters.includes(l.id)).length}/{group.letters.length}</span>
+              </div>
+              {/* Table header */}
+              <div style={{
+                display: 'grid', gridTemplateColumns: '48px 1fr auto',
+                gap: 12, padding: '5px 12px',
+                borderBottom: '1px solid var(--rule)', background: 'var(--paper-dark)',
+              }}>
+                <span className="label-mono">Form</span>
+                <span className="label-mono">Name</span>
+                <span className="label-mono">Status</span>
+              </div>
               {group.letters.map((letter, li) => {
                 const isMastered = masteredLetters.includes(letter.id);
                 return (
-                  <motion.button
+                  <div
                     key={letter.id}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: gi * 0.04 + li * 0.02 }}
+                    className="data-row cursor-pointer"
+                    style={{ gridTemplateColumns: '48px 1fr auto', alignItems: 'center', gap: 12, paddingTop: 10, paddingBottom: 10 }}
                     onClick={() => navigate(`/letter/${letter.id}`)}
-                    className="relative flex flex-col items-center gap-1.5 p-3 transition-all group"
-                    style={{
-                      background: isMastered ? 'rgba(34,197,94,0.08)' : '#13161D',
-                      border: `1px solid ${isMastered ? 'rgba(34,197,94,0.3)' : '#2A2E3A'}`,
-                      clipPath: 'polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px))',
-                    }}
                   >
-                    {isMastered && (
-                      <div className="absolute top-1 right-1 w-4 h-4 flex items-center justify-center"
-                        style={{ background: '#22c55e' }}>
-                        <Check className="w-2.5 h-2.5 text-white" />
-                      </div>
-                    )}
                     <span
-                      className="text-3xl leading-none"
-                      style={{ fontFamily: "'Noto Naskh Arabic', 'Amiri', serif", color: isMastered ? '#4ade80' : '#F0F0F0' }}
+                      className="text-3xl text-center leading-none"
+                      style={{ fontFamily: "'Noto Naskh Arabic', serif", display: 'block' }}
                       dir="rtl"
                     >
                       {letter.letter}
                     </span>
-                    <span className="text-[9px] font-bold tracking-wider font-heading" style={{ color: isMastered ? '#4ade80' : '#555B6E' }}>
-                      {letter.name.toUpperCase()}
+                    <div>
+                      <p className="font-heading font-medium text-sm">{letter.name}</p>
+                      <p className="font-mono text-[10px] mt-0.5" style={{ color: 'var(--ink-mid)' }}>{letter.transliteration}</p>
+                    </div>
+                    <span className="font-mono text-[10px]" style={{ color: isMastered ? 'var(--ink)' : 'var(--ink-faint)' }}>
+                      {isMastered ? '✓ done' : '—'}
                     </span>
-                  </motion.button>
+                  </div>
                 );
               })}
             </div>
-          </motion.div>
-        ))}
+          ))}
+        </div>
       </div>
 
       <NavBar />

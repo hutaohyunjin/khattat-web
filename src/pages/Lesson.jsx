@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, ChevronRight, ChevronLeft, BookOpen, Sparkles, Check } from 'lucide-react';
+import { ArrowLeft, ChevronRight, ChevronLeft, Check } from 'lucide-react';
 import { lessons, thuluthLetters } from '@/lib/calligraphyData';
 import { useProgress } from '@/hooks/useProgress';
 import { useToast } from '@/components/ui/use-toast';
@@ -15,23 +15,23 @@ export default function Lesson() {
   const [completed, setCompleted] = useState(false);
 
   const lesson = lessons.find(l => l.id === id);
-  if (!lesson) {
-    return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: '#0D0F14' }}>
-        <p className="font-heading tracking-widest text-sm" style={{ color: '#555B6E' }}>LESSON NOT FOUND</p>
-      </div>
-    );
-  }
+  if (!lesson) return (
+    <div className="min-h-screen dither-bg flex items-center justify-center">
+      <p className="font-mono text-xs" style={{ color: 'var(--ink-mid)' }}>Lesson not found</p>
+    </div>
+  );
 
   const isAlreadyCompleted = (progress?.completed_lessons || []).includes(lesson.id);
   const isTheory = lesson.type === 'theory';
   const sections = isTheory ? lesson.content.sections : [];
-  const practiceLetters = !isTheory ? (lesson.letters || []).map(lid => thuluthLetters.find(l => l.id === lid)).filter(Boolean) : [];
+  const practiceLetters = !isTheory
+    ? (lesson.letters || []).map(lid => thuluthLetters.find(l => l.id === lid)).filter(Boolean)
+    : [];
 
   async function handleComplete() {
     if (!isAlreadyCompleted) {
       await addXP(lesson.xpReward, lesson.id);
-      toast({ title: `▶ +${lesson.xpReward} XP`, description: `${lesson.title} complete.` });
+      toast({ title: `+${lesson.xpReward} XP`, description: lesson.title });
     }
     setCompleted(true);
   }
@@ -49,65 +49,26 @@ export default function Lesson() {
 
   if (completed) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-6" style={{ background: '#0D0F14' }}>
-        <div className="absolute inset-0 zzz-stripe pointer-events-none" />
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          className="text-center max-w-sm w-full relative"
-        >
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.1, type: 'spring' }}
-            className="w-20 h-20 flex items-center justify-center mx-auto mb-6"
-            style={{
-              clipPath: 'polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px))',
-              background: 'linear-gradient(135deg, #C9A030, #F5C940)',
-              boxShadow: '0 0 40px rgba(245,201,64,0.3)',
-            }}
-          >
-            <Sparkles className="w-9 h-9" style={{ color: '#0D0F14' }} />
-          </motion.div>
-
-          <div className="flex items-center gap-2 justify-center mb-2">
-            <div className="w-6 h-px" style={{ background: '#F5C940' }} />
-            <p className="text-[10px] tracking-widest font-bold font-heading" style={{ color: '#F5C940' }}>MISSION COMPLETE</p>
-            <div className="w-6 h-px" style={{ background: '#F5C940' }} />
-          </div>
-          <h2 className="text-2xl font-bold font-heading tracking-wider mb-1" style={{ color: '#F0F0F0' }}>
-            LESSON CLEAR
-          </h2>
-          <p className="text-xs tracking-wider font-heading" style={{ color: '#555B6E' }}>{lesson.title.toUpperCase()}</p>
-
-          {!isAlreadyCompleted && (
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.3 }}
-              className="inline-flex items-center gap-2 mt-5 px-6 py-2 font-bold font-heading tracking-widest text-sm"
-              style={{ background: 'rgba(245,201,64,0.1)', color: '#F5C940', border: '1px solid rgba(245,201,64,0.3)' }}
-            >
-              <Sparkles className="w-4 h-4" />
-              +{lesson.xpReward} XP
-            </motion.div>
-          )}
-
-          <div className="mt-8 space-y-3">
-            <button
-              onClick={goToNext}
-              className="w-full py-3 font-bold tracking-widest font-heading text-sm transition-all zzz-clip-corner"
-              style={{ background: '#F5C940', color: '#0D0F14', boxShadow: '0 0 20px rgba(245,201,64,0.2)' }}
-            >
-              ▶ CONTINUE
-            </button>
-            <button
-              onClick={() => navigate('/')}
-              className="w-full py-3 font-bold tracking-widest font-heading text-sm transition-all zzz-clip-corner"
-              style={{ background: '#13161D', color: '#888EA8', border: '1px solid #2A2E3A' }}
-            >
-              ← MISSION BOARD
-            </button>
+      <div className="min-h-screen dither-bg flex items-center justify-center px-5">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-sm">
+          <div className="sys-window">
+            <div className="sys-titlebar"><span className="sys-titlebar-dot" /><span>Lesson Complete</span></div>
+            <div className="p-8 text-center">
+              <p className="label-mono mb-3">Mission Clear</p>
+              <h2 className="display-lg mb-2">{lesson.title}</h2>
+              {!isAlreadyCompleted && (
+                <p className="font-mono text-2xl font-bold mt-4" style={{ color: 'var(--ink)' }}>+{lesson.xpReward} xp</p>
+              )}
+            </div>
+            <div className="rule-h" />
+            <div className="flex">
+              <button onClick={() => navigate('/')} className="flex-1 py-4 font-mono text-[11px] tracking-wider border-r hover:bg-paper-dark transition-colors" style={{ borderColor: 'var(--rule)', color: 'var(--ink-mid)' }}>
+                ← Home
+              </button>
+              <button onClick={goToNext} className="flex-1 py-4 font-mono text-[11px] tracking-wider transition-colors" style={{ background: 'var(--ink)', color: 'var(--paper)' }}>
+                Continue →
+              </button>
+            </div>
           </div>
         </motion.div>
       </div>
@@ -115,147 +76,115 @@ export default function Lesson() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: '#0D0F14' }}>
-      {/* Header */}
-      <div className="relative overflow-hidden px-6 pt-10 pb-6"
-        style={{ background: '#13161D', borderBottom: '1px solid #2A2E3A' }}>
-        <div className="absolute inset-0 zzz-stripe pointer-events-none" />
-        <div className="max-w-lg mx-auto">
-          <div className="flex items-center gap-3 mb-4">
-            <button
-              onClick={() => navigate(-1)}
-              className="w-9 h-9 flex items-center justify-center transition-all"
-              style={{ background: '#0D0F14', border: '1px solid #2A2E3A', clipPath: 'polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px))' }}
-            >
-              <ArrowLeft className="w-4 h-4" style={{ color: '#888EA8' }} />
-            </button>
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-0.5">
-                <div className="w-1.5 h-1.5" style={{ background: '#F5C940' }} />
-                <span className="text-[9px] tracking-widest font-bold font-heading" style={{ color: '#F5C940' }}>MISSION</span>
-              </div>
-              <h1 className="font-bold font-heading tracking-wide text-sm" style={{ color: '#F0F0F0' }}>
-                {lesson.title.toUpperCase()}
-              </h1>
-            </div>
-            <span className="text-[10px] font-bold font-heading tracking-wider px-2 py-1"
-              style={{ color: '#F5C940', border: '1px solid rgba(245,201,64,0.3)' }}>
-              +{lesson.xpReward}XP
-            </span>
-          </div>
+    <div className="min-h-screen dither-bg pb-8">
+      {/* Top bar */}
+      <div className="sticky top-0 z-40 flex items-center gap-3 px-5 py-2"
+        style={{ background: 'var(--ink)', color: 'var(--paper)' }}>
+        <button onClick={() => navigate(-1)}><ArrowLeft className="w-4 h-4" style={{ color: 'var(--paper)' }} /></button>
+        <span className="font-mono text-[11px] tracking-widest flex-1">✦ KHATTAT</span>
+        <span className="font-mono text-[10px] border px-2 py-0.5" style={{ borderColor: 'rgba(255,255,255,0.3)', color: 'rgba(255,255,255,0.6)' }}>
+          +{lesson.xpReward}xp
+        </span>
+      </div>
 
+      <div className="max-w-lg mx-auto px-5">
+        {/* Hero */}
+        <div className="pt-10 pb-8 border-b" style={{ borderColor: 'var(--ink)' }}>
+          <p className="label-mono mb-3">{isTheory ? 'Theory' : 'Practice'}</p>
+          <h1 className="display-lg">{lesson.title}</h1>
+          <p className="font-heading text-sm mt-3" style={{ color: 'var(--ink-mid)' }}>{lesson.description}</p>
           {isTheory && (
-            <div className="flex gap-1">
+            <div className="flex gap-1 mt-5">
               {sections.map((_, i) => (
-                <div key={i} className="flex-1 h-0.5 transition-all"
-                  style={{ background: i <= currentSection ? '#F5C940' : '#2A2E3A', boxShadow: i <= currentSection ? '0 0 6px rgba(245,201,64,0.4)' : 'none' }} />
+                <div key={i} className="flex-1 h-1 transition-all"
+                  style={{ background: i <= currentSection ? 'var(--ink)' : 'var(--rule)' }} />
               ))}
             </div>
           )}
         </div>
-      </div>
 
-      <div className="max-w-lg mx-auto px-6 py-6 pb-8">
-        {isTheory ? (
+        {/* Theory content */}
+        {isTheory && (
           <AnimatePresence mode="wait">
             <motion.div
               key={currentSection}
-              initial={{ opacity: 0, x: 30 }}
+              initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -30 }}
-              className="space-y-5"
+              exit={{ opacity: 0, x: -20 }}
+              className="mt-6"
             >
-              <div className="p-6 zzz-clip-corner-lg" style={{ background: '#13161D', border: '1px solid #2A2E3A' }}>
-                <div className="w-9 h-9 flex items-center justify-center mb-4"
-                  style={{ background: 'rgba(245,201,64,0.1)', clipPath: 'polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px))' }}>
-                  <BookOpen className="w-4 h-4" style={{ color: '#F5C940' }} />
+              <div className="sys-window">
+                <div className="sys-titlebar">
+                  <span className="sys-titlebar-dot" />
+                  <span>{String(currentSection + 1).padStart(2,'0')} / {String(sections.length).padStart(2,'0')} — {sections[currentSection].title}</span>
                 </div>
-                <p className="text-[10px] tracking-widest font-bold font-heading mb-2" style={{ color: '#F5C940' }}>
-                  {String(currentSection + 1).padStart(2, '0')} / {String(sections.length).padStart(2, '0')}
-                </p>
-                <h2 className="text-xl font-bold font-heading tracking-wide mb-4" style={{ color: '#F0F0F0' }}>
-                  {sections[currentSection].title.toUpperCase()}
-                </h2>
-                <p className="leading-relaxed text-sm" style={{ color: '#888EA8' }}>
+                <p className="p-6 font-heading text-sm leading-relaxed" style={{ color: 'var(--ink-mid)' }}>
                   {sections[currentSection].text}
                 </p>
               </div>
 
-              <div className="flex gap-3">
+              <div className="flex gap-3 mt-4">
                 <button
-                  className="flex-1 flex items-center justify-center gap-2 py-3 font-bold tracking-widest font-heading text-xs transition-all zzz-clip-corner"
                   disabled={currentSection === 0}
                   onClick={() => setCurrentSection(s => s - 1)}
-                  style={{
-                    background: '#13161D',
-                    border: '1px solid #2A2E3A',
-                    color: currentSection === 0 ? '#2A2E3A' : '#888EA8',
-                    cursor: currentSection === 0 ? 'not-allowed' : 'pointer',
-                  }}
+                  className="flex-1 btn-ghost justify-center"
+                  style={{ opacity: currentSection === 0 ? 0.3 : 1 }}
                 >
-                  <ChevronLeft className="w-4 h-4" /> BACK
+                  <ChevronLeft className="w-3.5 h-3.5" /> Back
                 </button>
                 {currentSection < sections.length - 1 ? (
-                  <button
-                    className="flex-1 flex items-center justify-center gap-2 py-3 font-bold tracking-widest font-heading text-xs transition-all zzz-clip-corner"
-                    onClick={() => setCurrentSection(s => s + 1)}
-                    style={{ background: '#F5C940', color: '#0D0F14', boxShadow: '0 0 16px rgba(245,201,64,0.2)' }}
-                  >
-                    NEXT <ChevronRight className="w-4 h-4" />
+                  <button onClick={() => setCurrentSection(s => s + 1)} className="flex-1 btn-system justify-center">
+                    Next <ChevronRight className="w-3.5 h-3.5" />
                   </button>
                 ) : (
-                  <button
-                    className="flex-1 flex items-center justify-center gap-2 py-3 font-bold tracking-widest font-heading text-xs transition-all zzz-clip-corner"
-                    onClick={handleComplete}
-                    style={{ background: '#F5C940', color: '#0D0F14', boxShadow: '0 0 16px rgba(245,201,64,0.2)' }}
-                  >
-                    COMPLETE <Check className="w-4 h-4" />
+                  <button onClick={handleComplete} className="flex-1 btn-system justify-center">
+                    Complete <Check className="w-3.5 h-3.5" />
                   </button>
                 )}
               </div>
             </motion.div>
           </AnimatePresence>
-        ) : (
-          <div className="space-y-5">
-            <p className="text-xs tracking-wider font-heading" style={{ color: '#555B6E' }}>
-              PRACTICE EACH LETTER IN THIS GROUP. TAP A LETTER TO STUDY IT.
-            </p>
-            <div className="grid grid-cols-2 gap-3">
+        )}
+
+        {/* Practice letters */}
+        {!isTheory && (
+          <div className="mt-6 space-y-5">
+            <div className="sys-window">
+              <div className="sys-titlebar"><span className="sys-titlebar-dot" /><span>Letters in this group</span></div>
+              <div style={{
+                display: 'grid', gridTemplateColumns: '60px 1fr auto',
+                gap: 12, padding: '5px 12px',
+                borderBottom: '1px solid var(--rule)', background: 'var(--paper-dark)',
+              }}>
+                <span className="label-mono">Form</span>
+                <span className="label-mono">Name</span>
+                <span className="label-mono">Status</span>
+              </div>
               {practiceLetters.map((letter, i) => {
                 const isMastered = (progress?.mastered_letters || []).includes(letter.id);
                 return (
-                  <motion.button
+                  <div
                     key={letter.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.08 }}
+                    className="data-row cursor-pointer"
+                    style={{ gridTemplateColumns: '60px 1fr auto', alignItems: 'center', gap: 12, paddingTop: 12, paddingBottom: 12 }}
                     onClick={() => navigate(`/letter/${letter.id}`)}
-                    className="flex flex-col items-center gap-2 p-6 transition-all zzz-clip-corner"
-                    style={{
-                      background: isMastered ? 'rgba(34,197,94,0.07)' : '#13161D',
-                      border: `1px solid ${isMastered ? 'rgba(34,197,94,0.25)' : '#2A2E3A'}`,
-                    }}
                   >
-                    <span className="text-5xl" style={{ fontFamily: "'Noto Naskh Arabic', 'Amiri', serif", color: isMastered ? '#4ade80' : '#F0F0F0' }} dir="rtl">
-                      {letter.letter}
+                    <span className="text-4xl text-center block leading-none"
+                      style={{ fontFamily: "'Noto Naskh Arabic', serif" }} dir="rtl">{letter.letter}</span>
+                    <div>
+                      <p className="font-heading font-medium text-sm">{letter.name}</p>
+                      <p className="font-mono text-[10px] mt-0.5" style={{ color: 'var(--ink-mid)' }}>{letter.nameAr}</p>
+                    </div>
+                    <span className="font-mono text-[10px]" style={{ color: isMastered ? 'var(--ink)' : 'var(--ink-faint)' }}>
+                      {isMastered ? '✓' : '→'}
                     </span>
-                    <span className="text-xs font-bold tracking-widest font-heading" style={{ color: isMastered ? '#4ade80' : '#888EA8' }}>
-                      {letter.name.toUpperCase()}
-                    </span>
-                    {isMastered && (
-                      <span className="text-[9px] tracking-widest font-heading" style={{ color: '#4ade80' }}>✓ MASTERED</span>
-                    )}
-                  </motion.button>
+                  </div>
                 );
               })}
             </div>
 
-            <button
-              onClick={handleComplete}
-              className="w-full py-3 font-bold tracking-widest font-heading text-sm transition-all zzz-clip-corner flex items-center justify-center gap-2"
-              style={{ background: '#F5C940', color: '#0D0F14', boxShadow: '0 0 20px rgba(245,201,64,0.2)' }}
-            >
-              <Check className="w-4 h-4" /> COMPLETE LESSON
+            <button onClick={handleComplete} className="w-full btn-system justify-center">
+              Complete Lesson <Check className="w-3.5 h-3.5" />
             </button>
           </div>
         )}

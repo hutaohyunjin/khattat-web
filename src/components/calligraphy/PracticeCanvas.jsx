@@ -18,56 +18,50 @@ export default function PracticeCanvas({ letter, onComplete }) {
     drawGuide(ctx, rect.width, rect.height);
   }, [letter]);
 
-  useEffect(() => {
-    setupCanvas();
-  }, [setupCanvas]);
+  useEffect(() => { setupCanvas(); }, [setupCanvas]);
 
   function drawGuide(ctx, w, h) {
-    // ZZZ dark background
-    ctx.fillStyle = '#0D0F14';
+    // Paper background
+    ctx.fillStyle = '#F2EFE6';
     ctx.fillRect(0, 0, w, h);
 
-    // Subtle grid lines
-    ctx.strokeStyle = 'rgba(42,46,58,0.8)';
-    ctx.lineWidth = 0.5;
-    const baselineY = h * 0.6;
-
-    ctx.setLineDash([4, 6]);
-    for (let i = 0; i < 5; i++) {
-      const y = baselineY - i * (h * 0.08);
-      ctx.beginPath();
-      ctx.moveTo(16, y);
-      ctx.lineTo(w - 16, y);
-      ctx.stroke();
+    // Dither dots
+    for (let x = 0; x < w; x += 4) {
+      for (let y = 0; y < h; y += 4) {
+        ctx.fillStyle = 'rgba(184,180,168,0.5)';
+        ctx.fillRect(x, y, 1, 1);
+      }
     }
-    for (let i = 1; i < 4; i++) {
+
+    const baselineY = h * 0.62;
+
+    // Guide lines
+    ctx.strokeStyle = 'rgba(200,196,184,0.9)';
+    ctx.lineWidth = 0.5;
+    ctx.setLineDash([4, 6]);
+    for (let i = -4; i <= 4; i++) {
+      if (i === 0) continue;
       const y = baselineY + i * (h * 0.08);
-      ctx.beginPath();
-      ctx.moveTo(16, y);
-      ctx.lineTo(w - 16, y);
-      ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(16, y); ctx.lineTo(w - 16, y); ctx.stroke();
     }
     ctx.setLineDash([]);
 
-    // Baseline — yellow accent
-    ctx.strokeStyle = 'rgba(245,201,64,0.4)';
+    // Baseline solid
+    ctx.strokeStyle = '#141414';
     ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(16, baselineY);
-    ctx.lineTo(w - 16, baselineY);
-    ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(16, baselineY); ctx.lineTo(w - 16, baselineY); ctx.stroke();
 
     // Ghost letter
-    ctx.font = `${h * 0.5}px "Noto Naskh Arabic", "Amiri", serif`;
+    ctx.font = `${h * 0.48}px "Noto Naskh Arabic", "Amiri", serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = 'rgba(245,201,64,0.08)';
+    ctx.fillStyle = 'rgba(20,20,20,0.07)';
     ctx.direction = 'rtl';
-    ctx.fillText(letter.letter, w / 2, baselineY - h * 0.05);
+    ctx.fillText(letter.letter, w / 2, baselineY - h * 0.06);
 
-    // Baseline label
-    ctx.font = '9px "Inter", system-ui';
-    ctx.fillStyle = 'rgba(245,201,64,0.35)';
+    // Label
+    ctx.font = '9px "Space Mono", monospace';
+    ctx.fillStyle = 'rgba(20,20,20,0.3)';
     ctx.textAlign = 'left';
     ctx.direction = 'ltr';
     ctx.fillText('BASELINE', 18, baselineY - 7);
@@ -94,7 +88,7 @@ export default function PracticeCanvas({ letter, onComplete }) {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     const pos = getPos(e);
-    ctx.strokeStyle = '#F0F0F0';
+    ctx.strokeStyle = '#141414';
     ctx.lineWidth = 2.5;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
@@ -105,10 +99,7 @@ export default function PracticeCanvas({ letter, onComplete }) {
     lastPoint.current = pos;
   }
 
-  function stopDraw() {
-    setIsDrawing(false);
-    lastPoint.current = null;
-  }
+  function stopDraw() { setIsDrawing(false); lastPoint.current = null; }
 
   function clearCanvas() {
     const canvas = canvasRef.current;
@@ -120,42 +111,32 @@ export default function PracticeCanvas({ letter, onComplete }) {
   }
 
   return (
-    <div className="space-y-3">
-      <div className="relative overflow-hidden" style={{ border: '1px solid #2A2E3A', clipPath: 'polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px))' }}>
-        <canvas
-          ref={canvasRef}
-          className="w-full touch-none cursor-crosshair"
-          style={{ height: 280 }}
-          onMouseDown={startDraw}
-          onMouseMove={draw}
-          onMouseUp={stopDraw}
-          onMouseLeave={stopDraw}
-          onTouchStart={startDraw}
-          onTouchMove={draw}
-          onTouchEnd={stopDraw}
-        />
+    <div className="sys-window">
+      <div className="sys-titlebar">
+        <span className="sys-titlebar-dot" />
+        <span>Practice Canvas — {letter.name}</span>
       </div>
-      <div className="flex gap-2">
-        <button
-          onClick={clearCanvas}
-          className="flex-1 flex items-center justify-center gap-2 py-2.5 text-xs font-bold tracking-widest font-heading transition-all zzz-clip-corner"
-          style={{ background: '#13161D', border: '1px solid #2A2E3A', color: '#888EA8' }}
-        >
-          <RotateCcw className="w-3.5 h-3.5" /> CLEAR
+      <canvas
+        ref={canvasRef}
+        className="w-full touch-none cursor-crosshair"
+        style={{ height: 280, display: 'block' }}
+        onMouseDown={startDraw} onMouseMove={draw} onMouseUp={stopDraw} onMouseLeave={stopDraw}
+        onTouchStart={startDraw} onTouchMove={draw} onTouchEnd={stopDraw}
+      />
+      <div className="flex border-t" style={{ borderColor: 'var(--ink)' }}>
+        <button onClick={clearCanvas}
+          className="flex-1 flex items-center justify-center gap-2 py-3 font-mono text-[11px] tracking-wider border-r transition-colors hover:bg-paper-dark"
+          style={{ borderColor: 'var(--rule)', color: 'var(--ink-mid)' }}>
+          <RotateCcw className="w-3.5 h-3.5" /> Clear
         </button>
-        <button
-          onClick={onComplete}
-          disabled={!hasDrawn}
-          className="flex-1 flex items-center justify-center gap-2 py-2.5 text-xs font-bold tracking-widest font-heading transition-all zzz-clip-corner"
+        <button onClick={onComplete} disabled={!hasDrawn}
+          className="flex-1 flex items-center justify-center gap-2 py-3 font-mono text-[11px] tracking-wider transition-colors"
           style={{
-            background: hasDrawn ? '#F5C940' : '#13161D',
-            border: hasDrawn ? 'none' : '1px solid #2A2E3A',
-            color: hasDrawn ? '#0D0F14' : '#2A2E3A',
+            background: hasDrawn ? 'var(--ink)' : 'transparent',
+            color: hasDrawn ? 'var(--paper)' : 'var(--ink-faint)',
             cursor: hasDrawn ? 'pointer' : 'not-allowed',
-            boxShadow: hasDrawn ? '0 0 16px rgba(245,201,64,0.25)' : 'none',
-          }}
-        >
-          <Check className="w-3.5 h-3.5" /> DONE
+          }}>
+          <Check className="w-3.5 h-3.5" /> Done
         </button>
       </div>
     </div>

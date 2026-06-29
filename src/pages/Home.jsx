@@ -1,14 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { BookOpen, Pen, Trophy, ChevronRight, Sparkles, Zap } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import NavBar from '@/components/calligraphy/NavBar';
 import XPBar from '@/components/calligraphy/XPBar';
 import StreakBadge from '@/components/calligraphy/StreakBadge';
 import LessonCard from '@/components/calligraphy/LessonCard';
 import { useProgress } from '@/hooks/useProgress';
 import { lessons } from '@/lib/calligraphyData';
-import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
   const { progress, loading } = useProgress();
@@ -16,11 +15,8 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: '#0D0F14' }}>
-        <div className="text-center space-y-3">
-          <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin mx-auto" style={{ borderColor: '#F5C940', borderTopColor: 'transparent' }} />
-          <p className="text-xs tracking-widest font-heading" style={{ color: '#555B6E' }}>LOADING...</p>
-        </div>
+      <div className="min-h-screen dither-bg flex items-center justify-center">
+        <p className="font-mono text-[11px] tracking-widest uppercase" style={{ color: 'var(--ink-mid)' }}>Loading...</p>
       </div>
     );
   }
@@ -28,123 +24,103 @@ export default function Home() {
   const completedLessons = progress?.completed_lessons || [];
   const nextLessonIndex = completedLessons.length;
   const nextLesson = lessons[nextLessonIndex];
-
-  const quickActions = [
-    { to: '/styles', icon: BookOpen, label: 'STYLES', sub: 'Scripts' },
-    { to: '/practice', icon: Pen, label: 'PRACTICE', sub: 'Letters' },
-    { to: '/progress', icon: Trophy, label: 'RANKS', sub: 'Progress' },
-  ];
+  const totalXP = progress?.total_xp || 0;
 
   return (
-    <div className="min-h-screen pb-24" style={{ background: '#0D0F14' }}>
-      {/* Header */}
-      <div className="relative overflow-hidden px-6 pt-12 pb-8"
-        style={{ background: 'linear-gradient(135deg, #0D0F14 0%, #13161D 60%, #16190F 100%)', borderBottom: '1px solid #2A2E3A' }}>
+    <div className="min-h-screen pb-24 dither-bg">
 
-        {/* Background decoration */}
-        <div className="absolute inset-0 zzz-stripe pointer-events-none" />
-        <div className="absolute top-0 right-0 w-64 h-64 pointer-events-none"
-          style={{ background: 'radial-gradient(circle at top right, rgba(245,201,64,0.06) 0%, transparent 70%)' }} />
-
-        {/* Corner accent */}
-        <div className="absolute top-0 right-0 w-16 h-16 pointer-events-none">
-          <div className="absolute top-0 right-0 w-full h-0.5" style={{ background: '#F5C940' }} />
-          <div className="absolute top-0 right-0 w-0.5 h-full" style={{ background: '#F5C940' }} />
+      {/* Top bar — system menubar */}
+      <div className="sticky top-0 z-40 flex items-center justify-between px-5 py-2"
+        style={{ background: 'var(--ink)', color: 'var(--paper)', borderBottom: '1px solid var(--ink)' }}>
+        <span className="font-mono text-[11px] tracking-widest">✦ KHATTAT</span>
+        <div className="flex items-center gap-4">
+          <StreakBadge streak={progress?.current_streak} />
+          <span className="font-mono text-[10px]" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          </span>
         </div>
-
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="max-w-lg mx-auto">
-          <div className="flex items-start justify-between mb-6">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <div className="w-1.5 h-1.5" style={{ background: '#F5C940' }} />
-                <p className="text-[10px] tracking-widest font-bold font-heading" style={{ color: '#F5C940' }}>WELCOME BACK</p>
-              </div>
-              <h1 className="text-3xl font-bold font-heading tracking-wide" style={{ color: '#F0F0F0' }}>
-                KHAT<span style={{ color: '#F5C940' }}>TAT</span>
-              </h1>
-              <p className="text-xs tracking-widest mt-0.5 font-heading" style={{ color: '#555B6E' }}>
-                الخَطَّاط · ARABIC CALLIGRAPHY
-              </p>
-            </div>
-            <StreakBadge streak={progress?.current_streak} />
-          </div>
-
-          {/* XP Panel */}
-          <div className="p-4 zzz-clip-corner" style={{ background: '#13161D', border: '1px solid #2A2E3A' }}>
-            <XPBar totalXP={progress?.total_xp} />
-          </div>
-        </motion.div>
       </div>
 
-      <div className="max-w-lg mx-auto px-6 mt-6 space-y-6">
+      <div className="max-w-lg mx-auto px-5">
 
-        {/* Quick Actions */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-          className="grid grid-cols-3 gap-3">
-          {quickActions.map(({ to, icon: Icon, label, sub }) => (
-            <Link
-              key={to}
-              to={to}
-              className="flex flex-col items-center gap-2 p-4 group transition-all zzz-clip-corner"
-              style={{ background: '#13161D', border: '1px solid #2A2E3A' }}
-            >
-              <Icon className="w-5 h-5 transition-colors" style={{ color: '#F5C940' }} />
-              <div className="text-center">
-                <p className="text-[10px] font-bold tracking-widest font-heading" style={{ color: '#F0F0F0' }}>{label}</p>
-                <p className="text-[9px] tracking-wider font-heading" style={{ color: '#555B6E' }}>{sub}</p>
-              </div>
-            </Link>
-          ))}
-        </motion.div>
+        {/* Hero — big display type */}
+        <div className="pt-10 pb-8 border-b" style={{ borderColor: 'var(--ink)' }}>
+          <p className="label-mono mb-3">Arabic Calligraphy Training</p>
+          <h1 className="display-xl mb-4">
+            The<br />
+            <em style={{ fontStyle: 'italic', color: 'var(--ink-mid)' }}>Art of</em><br />
+            Khaṭṭ
+          </h1>
+          <p className="font-heading text-sm leading-relaxed max-w-xs" style={{ color: 'var(--ink-mid)' }}>
+            Master classical Arabic scripts through structured lessons and guided practice.
+          </p>
+        </div>
 
-        {/* Continue Learning */}
+        {/* XP / Rank panel */}
+        <div className="mt-6 sys-window">
+          <div className="sys-titlebar">
+            <span className="sys-titlebar-dot" />
+            <span>Rank Progress</span>
+          </div>
+          <div className="p-4">
+            <XPBar totalXP={totalXP} />
+          </div>
+        </div>
+
+        {/* Next Mission */}
         {nextLesson && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-1.5 h-1.5" style={{ background: '#F5C940' }} />
-              <h2 className="text-xs font-bold tracking-widest font-heading" style={{ color: '#888EA8' }}>CONTINUE MISSION</h2>
+          <div className="mt-6 sys-window">
+            <div className="sys-titlebar">
+              <span className="sys-titlebar-dot" />
+              <span>Next Lesson</span>
             </div>
             <button
               onClick={() => navigate(`/lesson/${nextLesson.id}`)}
-              className="w-full text-left transition-all relative overflow-hidden zzz-clip-corner-lg group"
-              style={{ background: '#13161D', border: '1px solid rgba(245,201,64,0.3)', boxShadow: '0 0 20px rgba(245,201,64,0.08)' }}
+              className="w-full text-left p-5 group"
+              style={{ background: 'var(--paper)' }}
             >
-              {/* Glow overlay on hover */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                style={{ background: 'linear-gradient(135deg, rgba(245,201,64,0.04), transparent)' }} />
-
-              <div className="p-5 flex items-center gap-4">
-                <div className="w-12 h-12 flex items-center justify-center flex-shrink-0"
-                  style={{ background: 'rgba(245,201,64,0.12)', clipPath: 'polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px))' }}>
-                  <Zap className="w-5 h-5" style={{ color: '#F5C940' }} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[10px] tracking-widest font-bold font-heading mb-0.5" style={{ color: '#F5C940' }}>NEXT LESSON</p>
-                  <p className="font-bold text-sm font-heading tracking-wide truncate" style={{ color: '#F0F0F0' }}>
-                    {nextLesson.title.toUpperCase()}
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="label-mono mb-1">Mission #{String(nextLessonIndex + 1).padStart(2, '0')}</p>
+                  <p className="font-display text-2xl leading-tight" style={{ color: 'var(--ink)' }}>
+                    {nextLesson.title}
                   </p>
-                  <p className="text-xs mt-0.5 truncate" style={{ color: '#555B6E' }}>{nextLesson.description}</p>
+                  <p className="font-mono text-[10px] mt-2" style={{ color: 'var(--ink-mid)' }}>
+                    {nextLesson.description}
+                  </p>
                 </div>
-                <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                  <span className="text-[10px] font-bold font-heading" style={{ color: '#F5C940' }}>+{nextLesson.xpReward}XP</span>
-                  <ChevronRight className="w-4 h-4" style={{ color: '#F5C940' }} />
+                <div className="flex flex-col items-end gap-3 flex-shrink-0">
+                  <span className="font-mono text-xs border px-2 py-0.5" style={{ borderColor: 'var(--ink)', color: 'var(--ink)' }}>
+                    +{nextLesson.xpReward}xp
+                  </span>
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" style={{ color: 'var(--ink)' }} />
                 </div>
               </div>
-
-              {/* Bottom accent */}
-              <div className="h-0.5 w-full" style={{ background: 'linear-gradient(90deg, #F5C940, transparent)' }} />
             </button>
-          </motion.div>
+          </div>
         )}
 
-        {/* Lesson Path */}
-        <div>
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-1.5 h-1.5" style={{ background: '#F5C940' }} />
-            <h2 className="text-xs font-bold tracking-widest font-heading" style={{ color: '#888EA8' }}>MISSION BOARD</h2>
-            <div className="flex-1 h-px ml-2" style={{ background: 'linear-gradient(90deg, #2A2E3A, transparent)' }} />
+        {/* Lesson Index */}
+        <div className="mt-6 sys-window mb-8">
+          <div className="sys-titlebar">
+            <span className="sys-titlebar-dot" />
+            <span>Mission Board — {completedLessons.length}/{lessons.length} Complete</span>
           </div>
-          <div className="space-y-0">
+          {/* Column headers */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '2.5rem 1fr auto auto',
+            gap: '12px',
+            padding: '6px 12px',
+            borderBottom: '1px solid var(--rule)',
+            background: 'var(--paper-dark)',
+          }}>
+            <span className="label-mono">#</span>
+            <span className="label-mono">Lesson</span>
+            <span className="label-mono">XP</span>
+            <span className="label-mono" style={{ minWidth: 14 }}></span>
+          </div>
+          <div>
             {lessons.map((lesson, i) => {
               const isCompleted = completedLessons.includes(lesson.id);
               const isLocked = i > 0 && !completedLessons.includes(lessons[i - 1].id) && !isCompleted;

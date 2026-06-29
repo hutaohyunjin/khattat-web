@@ -10,14 +10,14 @@ module.exports = {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
-  			'zzz-yellow': 'var(--zzz-yellow)',
-  			'zzz-yellow-dim': 'var(--zzz-yellow-dim)',
-  			'zzz-bg': 'var(--zzz-bg)',
-  			'zzz-panel': 'var(--zzz-panel)',
-  			'zzz-panel-2': 'var(--zzz-panel-2)',
-  			'zzz-border': 'var(--zzz-border)',
-  		},
-  		colors: {
+  			/* Cargo/editorial tokens */
+  			paper: 'var(--paper)',
+  			'paper-dark': 'var(--paper-dark)',
+  			ink: 'var(--ink)',
+  			'ink-mid': 'var(--ink-mid)',
+  			'ink-faint': 'var(--ink-faint)',
+  			rule: 'var(--rule)',
+  			/* shadcn tokens */
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
@@ -70,27 +70,19 @@ module.exports = {
   			}
   		},
   		fontFamily: {
-  			heading: ['var(--font-heading)'],
-  			body: ['var(--font-body)'],
-  			display: ['var(--font-display)'],
-  			mono: ['var(--font-mono)']
+  			heading: ['Space Grotesk', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+  			body: ['Space Grotesk', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+  			display: ['DM Serif Display', 'Georgia', 'serif'],
+  			mono: ['Space Mono', 'ui-monospace', 'monospace'],
   		},
   		keyframes: {
   			'accordion-down': {
-  				from: {
-  					height: '0'
-  				},
-  				to: {
-  					height: 'var(--radix-accordion-content-height)'
-  				}
+  				from: { height: '0' },
+  				to: { height: 'var(--radix-accordion-content-height)' }
   			},
   			'accordion-up': {
-  				from: {
-  					height: 'var(--radix-accordion-content-height)'
-  				},
-  				to: {
-  					height: '0'
-  				}
+  				from: { height: 'var(--radix-accordion-content-height)' },
+  				to: { height: '0' }
   			}
   		},
   		animation: {
