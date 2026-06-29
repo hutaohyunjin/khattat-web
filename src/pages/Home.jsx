@@ -51,7 +51,7 @@ export default function Home() {
             <em style={{ fontStyle: 'italic', color: 'var(--ink-mid)' }}>Art of</em><br />
             Khatt
           </h1>
-          <p className="font-heading text-sm leading-relaxed max-w-xs" style={{ color: 'var(--ink-mid)' }}>
+          <p className="font-heading text-sm leading-relaxed max-w-xs font-semibold" style={{ color: 'var(--ink)' }}>
             Master classical Arabic scripts through structured lessons and guided practice.
           </p>
         </div>
