@@ -128,7 +128,7 @@ export default function Lesson() {
                   disabled={currentSection === 0}
                   onClick={() => setCurrentSection(s => s - 1)}
                   className="flex-1 btn-ghost justify-center"
-                  style={{ opacity: currentSection === 0 ? 0.3 : 1, borderColor: 'var(--ink)', color: 'var(--ink)' }}
+                  style={{ opacity: currentSection === 0 ? 0.3 : 1, borderColor: 'var(--ink)', color: 'var(--ink)', background: 'transparent' }}
                 >
                   <ChevronLeft className="w-3.5 h-3.5" /> Back
                 </button>

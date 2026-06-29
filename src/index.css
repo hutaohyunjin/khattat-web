@@ -99,7 +99,7 @@
 /* ── Dithered dot-matrix background ── */
 .dither-bg {
   background-color: var(--paper);
-  background-image: radial-gradient(circle, #b8b4a8 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(184,180,168,0.4) 1px, transparent 1px);
   background-size: 4px 4px;
 }
 
@@ -215,9 +215,9 @@
   gap: 6px;
 }
 .btn-ghost:hover {
-  border-color: var(--zzz-yellow);
-  color: var(--zzz-yellow-dim);
-  background: var(--zzz-yellow-pale);
+  border-color: var(--ink);
+  color: var(--ink);
+  background: var(--paper-dark);
 }
 .btn-ghost:disabled { opacity: 0.3; cursor: not-allowed; }
 
