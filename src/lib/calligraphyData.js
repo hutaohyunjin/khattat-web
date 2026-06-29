@@ -109,7 +109,7 @@ export const thuluthLetters = [
   {
     id: "alif",
     letter: "ا",
-    name: "Alif",
+    name: "Aleef (ا)",
     nameAr: "ألف",
     transliteration: "ā / a",
     group: 1,
@@ -135,7 +135,7 @@ export const thuluthLetters = [
   {
     id: "ba",
     letter: "ب",
-    name: "Ba",
+    name: "Ba (ب)",
     nameAr: "باء",
     transliteration: "b",
     group: 1,
@@ -161,7 +161,7 @@ export const thuluthLetters = [
   {
     id: "ta",
     letter: "ت",
-    name: "Ta",
+    name: "Ta (ت)",
     nameAr: "تاء",
     transliteration: "t",
     group: 1,
@@ -187,7 +187,7 @@ export const thuluthLetters = [
   {
     id: "tha",
     letter: "ث",
-    name: "Tha",
+    name: "Tha (ث)",
     nameAr: "ثاء",
     transliteration: "th",
     group: 1,
@@ -213,7 +213,7 @@ export const thuluthLetters = [
   {
     id: "jim",
     letter: "ج",
-    name: "Jim",
+    name: "Jeem (ج)",
     nameAr: "جيم",
     transliteration: "j",
     group: 2,
@@ -239,7 +239,7 @@ export const thuluthLetters = [
   {
     id: "ha_small",
     letter: "ح",
-    name: "Ha",
+    name: "Ha (ح)",
     nameAr: "حاء",
     transliteration: "ḥ",
     group: 2,
@@ -265,7 +265,7 @@ export const thuluthLetters = [
   {
     id: "kha",
     letter: "خ",
-    name: "Kha",
+    name: "Kha (خ)",
     nameAr: "خاء",
     transliteration: "kh",
     group: 2,
@@ -291,7 +291,7 @@ export const thuluthLetters = [
   {
     id: "dal",
     letter: "د",
-    name: "Dal",
+    name: "Dal (د)",
     nameAr: "دال",
     transliteration: "d",
     group: 3,
@@ -317,7 +317,7 @@ export const thuluthLetters = [
   {
     id: "dhal",
     letter: "ذ",
-    name: "Dhal",
+    name: "Dhal (ذ)",
     nameAr: "ذال",
     transliteration: "dh",
     group: 3,
@@ -343,7 +343,7 @@ export const thuluthLetters = [
   {
     id: "ra",
     letter: "ر",
-    name: "Ra",
+    name: "Ra (ر)",
     nameAr: "راء",
     transliteration: "r",
     group: 3,
@@ -369,7 +369,7 @@ export const thuluthLetters = [
   {
     id: "zay",
     letter: "ز",
-    name: "Zay",
+    name: "Zay (ز)",
     nameAr: "زاي",
     transliteration: "z",
     group: 3,
@@ -395,7 +395,7 @@ export const thuluthLetters = [
   {
     id: "sin",
     letter: "س",
-    name: "Sin",
+    name: "Seen (س)",
     nameAr: "سين",
     transliteration: "s",
     group: 4,
@@ -421,7 +421,7 @@ export const thuluthLetters = [
   {
     id: "shin",
     letter: "ش",
-    name: "Shin",
+    name: "Sheen (ش)",
     nameAr: "شين",
     transliteration: "sh",
     group: 4,
@@ -447,7 +447,7 @@ export const thuluthLetters = [
   {
     id: "sad",
     letter: "ص",
-    name: "Sad",
+    name: "Saad (ص)",
     nameAr: "صاد",
     transliteration: "ṣ",
     group: 4,
@@ -473,7 +473,7 @@ export const thuluthLetters = [
   {
     id: "dad",
     letter: "ض",
-    name: "Dad",
+    name: "Daad (ض)",
     nameAr: "ضاد",
     transliteration: "ḍ",
     group: 4,
@@ -499,7 +499,7 @@ export const thuluthLetters = [
   {
     id: "tah",
     letter: "ط",
-    name: "Tah",
+    name: "Tah (ط)",
     nameAr: "طاء",
     transliteration: "ṭ",
     group: 5,
@@ -525,7 +525,7 @@ export const thuluthLetters = [
   {
     id: "dhah",
     letter: "ظ",
-    name: "Dhah",
+    name: "Dhah (ظ)",
     nameAr: "ظاء",
     transliteration: "ẓ",
     group: 5,
@@ -551,7 +551,7 @@ export const thuluthLetters = [
   {
     id: "ain",
     letter: "ع",
-    name: "Ain",
+    name: "Aeen (ع)",
     nameAr: "عين",
     transliteration: "ʿ",
     group: 5,
@@ -577,7 +577,7 @@ export const thuluthLetters = [
   {
     id: "ghain",
     letter: "غ",
-    name: "Ghain",
+    name: "Ghaeen (غ)",
     nameAr: "غين",
     transliteration: "gh",
     group: 5,
@@ -603,7 +603,7 @@ export const thuluthLetters = [
   {
     id: "fa",
     letter: "ف",
-    name: "Fa",
+    name: "Fa (ف)",
     nameAr: "فاء",
     transliteration: "f",
     group: 6,
@@ -629,7 +629,7 @@ export const thuluthLetters = [
   {
     id: "qaf",
     letter: "ق",
-    name: "Qaf",
+    name: "Qaaf (ق)",
     nameAr: "قاف",
     transliteration: "q",
     group: 6,
@@ -655,7 +655,7 @@ export const thuluthLetters = [
   {
     id: "kaf",
     letter: "ك",
-    name: "Kaf",
+    name: "Kaaf (ك)",
     nameAr: "كاف",
     transliteration: "k",
     group: 6,
@@ -681,7 +681,7 @@ export const thuluthLetters = [
   {
     id: "lam",
     letter: "ل",
-    name: "Lam",
+    name: "Lam (ل)",
     nameAr: "لام",
     transliteration: "l",
     group: 7,
@@ -707,7 +707,7 @@ export const thuluthLetters = [
   {
     id: "mim",
     letter: "م",
-    name: "Mim",
+    name: "Meem (م)",
     nameAr: "ميم",
     transliteration: "m",
     group: 7,
@@ -733,7 +733,7 @@ export const thuluthLetters = [
   {
     id: "nun",
     letter: "ن",
-    name: "Nun",
+    name: "Noon (ن)",
     nameAr: "نون",
     transliteration: "n",
     group: 7,
@@ -759,7 +759,7 @@ export const thuluthLetters = [
   {
     id: "ha_big",
     letter: "ه",
-    name: "Ha",
+    name: "Ha (ه)",
     nameAr: "هاء",
     transliteration: "h",
     group: 7,
@@ -785,7 +785,7 @@ export const thuluthLetters = [
   {
     id: "waw",
     letter: "و",
-    name: "Waw",
+    name: "Waw (و)",
     nameAr: "واو",
     transliteration: "w / ū",
     group: 8,
@@ -811,7 +811,7 @@ export const thuluthLetters = [
   {
     id: "ya",
     letter: "ي",
-    name: "Ya",
+    name: "Ya (ي)",
     nameAr: "ياء",
     transliteration: "y / ī",
     group: 8,
