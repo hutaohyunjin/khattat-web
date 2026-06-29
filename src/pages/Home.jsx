@@ -49,7 +49,7 @@ export default function Home() {
           <h1 className="display-xl mb-4">
             The<br />
             <em style={{ fontStyle: 'italic', color: 'var(--ink-mid)' }}>Art of</em><br />
-            Khaṭṭ
+            Khatt
           </h1>
           <p className="font-heading text-sm leading-relaxed max-w-xs" style={{ color: 'var(--ink-mid)' }}>
             Master classical Arabic scripts through structured lessons and guided practice.
