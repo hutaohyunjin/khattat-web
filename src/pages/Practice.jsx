@@ -8,7 +8,7 @@ import { useProgress } from '@/hooks/useProgress';
 
 const GROUPS = [1,2,3,4,5,6,7,8].map(id => ({
   id,
-  name: ['Alif','Jim','Dal','Sin','Tah','Fa','Lam','Waw'][id-1] + ' Group',
+  name: ['Alif','Jeem','Dal','Seen','Tah','Fa','Lam','Waw'][id-1] + ' Group',
 }));
 
 export default function Practice() {

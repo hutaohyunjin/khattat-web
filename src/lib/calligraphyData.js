@@ -109,7 +109,7 @@ export const thuluthLetters = [
   {
     id: "alif",
     letter: "ا",
-    name: "Aleef (ا)",
+    name: "Alif (ا)",
     nameAr: "ألف",
     transliteration: "ā / a",
     group: 1,
