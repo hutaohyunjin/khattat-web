@@ -4,13 +4,42 @@ import XPBar from '@/components/calligraphy/XPBar';
 import { useProgress } from '@/hooks/useProgress';
 import { thuluthLetters, lessons, levelTitles, getLevelFromXP } from '@/lib/calligraphyData';
 import { base44 } from '@/api/base44Client';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 export default function Progress() {
   const { progress, loading } = useProgress();
   const [completions, setCompletions] = useState([]);
 
+  const [letterCompletions, setLetterCompletions] = useState([]);
+
   useEffect(() => {
     base44.entities.LessonCompletion.list('-created_date', 10).then(setCompletions).catch(() => {});
+    base44.entities.LessonCompletion.list('-created_date', 200).then(all => {
+      // Only keep records where a letter was mastered
+      const withLetters = all.filter(c => c.letter_id);
+      // Group by ISO week (Mon–Sun)
+      const weekMap = {};
+      withLetters.forEach(c => {
+        const date = new Date(c.completed_at || c.created_date);
+        // Get Monday of that week
+        const day = date.getDay(); // 0=Sun
+        const diff = (day === 0 ? -6 : 1 - day);
+        const monday = new Date(date);
+        monday.setDate(date.getDate() + diff);
+        monday.setHours(0, 0, 0, 0);
+        const key = monday.toISOString().split('T')[0];
+        weekMap[key] = (weekMap[key] || 0) + 1;
+      });
+      const sorted = Object.entries(weekMap)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .slice(-8) // last 8 weeks
+        .map(([week, count]) => {
+          const d = new Date(week);
+          const label = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+          return { week: label, count };
+        });
+      setLetterCompletions(sorted);
+    }).catch(() => {});
   }, []);
 
   if (loading) {
@@ -93,6 +122,50 @@ export default function Progress() {
 
           {/* Right: Letter mastery + recent activity */}
           <div className="lg:col-span-2 space-y-6">
+
+            {/* Weekly mastery chart */}
+            <div className="sys-window">
+              <div className="sys-titlebar">
+                <span className="sys-titlebar-dot" />
+                <span>Letters Mastered per Week</span>
+              </div>
+              <div className="p-5">
+                {letterCompletions.length === 0 ? (
+                  <p style={{ fontFamily: 'Space Mono', fontSize: 10, color: 'var(--ink-faint)', letterSpacing: '0.1em' }}>
+                    No letter practice data yet.
+                  </p>
+                ) : (
+                  <ResponsiveContainer width="100%" height={180}>
+                    <BarChart data={letterCompletions} barSize={24}>
+                      <XAxis
+                        dataKey="week"
+                        tick={{ fontFamily: 'Space Mono', fontSize: 9, fill: 'var(--ink-mid)', letterSpacing: 1 }}
+                        axisLine={{ stroke: 'var(--rule)' }}
+                        tickLine={false}
+                      />
+                      <YAxis
+                        allowDecimals={false}
+                        tick={{ fontFamily: 'Space Mono', fontSize: 9, fill: 'var(--ink-faint)' }}
+                        axisLine={false}
+                        tickLine={false}
+                        width={24}
+                      />
+                      <Tooltip
+                        cursor={{ fill: 'var(--paper-dark)' }}
+                        contentStyle={{ fontFamily: 'Space Mono', fontSize: 10, border: '1px solid var(--rule)', background: 'var(--paper)', borderRadius: 0 }}
+                        formatter={(v) => [`${v} letter${v !== 1 ? 's' : ''}`, 'Mastered']}
+                      />
+                      <Bar dataKey="count" radius={0}>
+                        {letterCompletions.map((_, i) => (
+                          <Cell key={i} fill={i === letterCompletions.length - 1 ? 'var(--zzz-yellow)' : 'var(--ink)'} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                )}
+              </div>
+            </div>
+
             <div className="sys-window">
               <div className="sys-titlebar">
                 <span className="sys-titlebar-dot" />
