@@ -30,10 +30,18 @@ export default function Home() {
 
       {/* Hero — two column */}
       <section className="pt-12 border-b border-rule">
-        <div className="max-w-6xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+        <div className="max-w-6xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <div>
-            <p className="label-mono mb-4" style={{ color: 'var(--zzz-yellow-dim)' }}>Arabic Calligraphy Practice</p>
-            <h1 className="display-xl" style={{ lineHeight: 0.88 }}>
+            <p className="label-mono mb-4" style={{ color: 'var(--zzz-yellow-dim)', letterSpacing: '0.2em' }}>Arabic Calligraphy Practice</p>
+            <h1 style={{
+              fontFamily: 'Barlow Condensed',
+              fontWeight: 900,
+              fontSize: 'clamp(4rem, 12vw, 8rem)',
+              lineHeight: 0.9,
+              letterSpacing: '-0.01em',
+              color: 'var(--ink)',
+              textTransform: 'uppercase',
+            }}>
               THE<br />
               <span style={{ color: 'var(--ink-mid)' }}>ART OF</span><br />
               KHATT
@@ -43,12 +51,12 @@ export default function Home() {
             </p>
           </div>
           {/* Calligraphy image right */}
-          <div className="flex items-end justify-center md:justify-end">
+          <div className="flex items-center justify-center md:justify-end">
             <img
               src="https://media.base44.com/images/public/6a41bd2ca6771bd95aa5d5f2/9d4aa91bc_arabickhattat.png"
               alt="خطاط"
-              className="w-full max-w-md object-contain"
-              style={{ maxHeight: 280, marginBottom: '-2rem' }}
+              className="w-full object-contain"
+              style={{ maxHeight: 260, maxWidth: 420 }}
             />
           </div>
         </div>
