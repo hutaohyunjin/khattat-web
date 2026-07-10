@@ -49,7 +49,7 @@ export default function Lesson() {
 
   if (completed) {
     return (
-      <div className="min-h-screen dither-bg flex items-center justify-center px-5">
+      <div className="min-h-screen bg-white flex items-center justify-center px-5">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-sm">
           <div className="sys-window">
             <div className="sys-titlebar"><span className="sys-titlebar-dot" /><span>Lesson Complete</span></div>
@@ -76,21 +76,22 @@ export default function Lesson() {
   }
 
   return (
-    <div className="min-h-screen dither-bg pb-8">
+    <div className="min-h-screen bg-white pb-8">
       {/* Top bar */}
-      <div className="sticky top-0 z-40 flex items-center gap-3 px-5 py-2"
-        style={{ background: 'var(--ink)', color: 'var(--zzz-yellow)', borderBottom: '2px solid var(--zzz-yellow)' }}>
-        <button onClick={() => navigate(-1)}><ArrowLeft className="w-4 h-4" style={{ color: 'var(--zzz-yellow)' }} /></button>
-        <span className="font-mono text-[11px] tracking-widest flex-1" style={{ color: 'var(--zzz-yellow)' }}>✦ KHATTAT</span>
-        <span className="font-mono text-[10px] px-2 py-0.5" style={{ border: '1px solid var(--zzz-yellow)', color: 'var(--zzz-yellow)' }}>
+      <div className="sticky top-0 z-40 flex items-center gap-3 px-6 py-3 bg-white border-b border-rule">
+        <button onClick={() => navigate(-1)}>
+          <ArrowLeft className="w-4 h-4" style={{ color: 'var(--ink)' }} />
+        </button>
+        <span style={{ fontFamily: 'Barlow Condensed', fontWeight: 700, fontSize: 14, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--ink)', flex: 1 }}>KHATTAT</span>
+        <span style={{ fontFamily: 'Space Mono', fontSize: 10, letterSpacing: 2, border: '1px solid var(--zzz-yellow)', color: 'var(--zzz-yellow-dim)', padding: '2px 8px', background: 'var(--zzz-yellow-pale)' }}>
           +{lesson.xpReward}xp
         </span>
       </div>
 
-      <div className="max-w-lg mx-auto px-5">
+      <div className="max-w-2xl mx-auto px-6">
         {/* Hero */}
-        <div className="pt-10 pb-8 border-b" style={{ borderColor: 'var(--ink)' }}>
-          <p className="label-mono mb-3">{isTheory ? 'Theory' : 'Practice'}</p>
+        <div className="pt-10 pb-8 border-b border-rule">
+          <p className="label-mono mb-3" style={{ color: 'var(--zzz-yellow-dim)' }}>{isTheory ? 'Theory' : 'Practice'}</p>
           <h1 className="display-lg">{lesson.title}</h1>
           <p className="font-heading text-sm mt-3 font-semibold" style={{ color: 'var(--ink)' }}>{lesson.description}</p>
           {isTheory && (

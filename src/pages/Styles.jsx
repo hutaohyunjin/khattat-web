@@ -8,26 +8,21 @@ export default function Styles() {
   const [selected, setSelected] = useState(null);
 
   return (
-    <div className="min-h-screen pb-24 dither-bg">
-      {/* Top bar */}
-      <div className="sticky top-0 z-40 flex items-center justify-between px-5 py-2"
-        style={{ background: 'var(--ink)', color: 'var(--zzz-yellow)', borderBottom: '2px solid var(--zzz-yellow)' }}>
-        <span className="font-mono text-[11px] tracking-widest" style={{ color: 'var(--zzz-yellow)' }}>✦ KHATTAT</span>
-        <span className="font-mono text-[10px]" style={{ color: 'var(--zzz-yellow-dim)' }}>Codex</span>
-      </div>
+    <div className="min-h-screen bg-white">
+      <NavBar />
 
-      <div className="max-w-lg mx-auto px-5">
+      <div className="max-w-6xl mx-auto px-6">
         {/* Hero */}
-        <div className="pt-10 pb-8 border-b" style={{ borderColor: 'var(--ink)' }}>
-          <p className="label-mono mb-3">Script Library</p>
+        <div className="pt-20 pb-10 border-b border-rule">
+          <p className="label-mono mb-4" style={{ color: 'var(--zzz-yellow-dim)' }}>Script Library</p>
           <h1 className="display-xl">
-            Calli­<br />graphy<br />
-            <em style={{ color: 'var(--ink-mid)' }}>Styles</em>
+            CALLI­<br />GRAPHY<br />
+            <span style={{ color: 'var(--ink-mid)' }}>STYLES</span>
           </h1>
         </div>
 
         {/* Styles table */}
-        <div className="mt-6 sys-window mb-8">
+        <div className="mt-8 sys-window mb-12">
           <div className="sys-titlebar">
             <span className="sys-titlebar-dot" />
             <span>All Scripts · {calligraphyStyles.length} entries</span>
@@ -35,7 +30,7 @@ export default function Styles() {
           {/* Header */}
           <div style={{
             display: 'grid', gridTemplateColumns: '1fr auto auto',
-            gap: '12px', padding: '6px 12px',
+            gap: '12px', padding: '8px 16px',
             borderBottom: '1px solid var(--rule)', background: 'var(--paper-dark)',
           }}>
             <span className="label-mono">Script</span>
@@ -62,7 +57,7 @@ export default function Styles() {
         </div>
       </div>
 
-      {/* Detail Modal — system window */}
+      {/* Detail Modal */}
       <AnimatePresence>
         {selected && (
           <motion.div
@@ -133,7 +128,6 @@ export default function Styles() {
         )}
       </AnimatePresence>
 
-      <NavBar />
     </div>
   );
 }

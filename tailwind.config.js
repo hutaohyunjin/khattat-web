@@ -75,9 +75,9 @@ module.exports = {
   			}
   		},
   		fontFamily: {
-  			heading: ['Space Grotesk', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-  			body: ['Space Grotesk', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-  			display: ['Rajdhani', 'ui-sans-serif', 'sans-serif'],
+  			heading: ['Barlow', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+  			body: ['Barlow', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+  			display: ['Barlow Condensed', 'ui-sans-serif', 'sans-serif'],
   			mono: ['Space Mono', 'ui-monospace', 'monospace'],
   		},
   		keyframes: {

@@ -1,11 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ArrowRight, Lock, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
 import NavBar from '@/components/calligraphy/NavBar';
 import XPBar from '@/components/calligraphy/XPBar';
-import StreakBadge from '@/components/calligraphy/StreakBadge';
-import LessonCard from '@/components/calligraphy/LessonCard';
 import { useProgress } from '@/hooks/useProgress';
 import { lessons } from '@/lib/calligraphyData';
 
@@ -15,8 +13,8 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="min-h-screen dither-bg flex items-center justify-center">
-        <p className="font-mono text-[11px] tracking-widest uppercase" style={{ color: 'var(--ink-mid)' }}>Loading...</p>
+      <div className="min-h-screen flex items-center justify-center">
+        <p style={{ fontFamily: 'Space Mono', fontSize: 11, letterSpacing: '0.1em', color: 'var(--ink-faint)' }}>LOADING...</p>
       </div>
     );
   }
@@ -27,119 +25,157 @@ export default function Home() {
   const totalXP = progress?.total_xp || 0;
 
   return (
-    <div className="min-h-screen pb-24 dither-bg">
+    <div className="min-h-screen bg-white">
+      <NavBar />
 
-      {/* Top bar — system menubar */}
-      <div className="sticky top-0 z-40 flex items-center justify-between px-5 py-2"
-        style={{ background: 'var(--ink)', color: 'var(--zzz-yellow)', borderBottom: '2px solid var(--zzz-yellow)' }}>
-        <span className="font-mono text-[11px] tracking-widest">✦ KHATTAT</span>
-        <div className="flex items-center gap-4">
-          <StreakBadge streak={progress?.current_streak} />
-          <span className="font-mono text-[10px]" style={{ color: 'var(--zzz-yellow-dim)' }}>
-          {new Date().toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}
-          </span>
-        </div>
-      </div>
-
-      <div className="max-w-lg mx-auto px-5">
-
-        {/* Hero — big display type */}
-        <div className="pt-10 pb-8 border-b" style={{ borderColor: 'var(--ink)' }}>
-          <p className="label-mono mb-3">Arabic Calligraphy Training</p>
-          <h1 className="display-xl mb-4">
-            The<br />
-            <em style={{ fontStyle: 'italic', color: 'var(--ink-mid)' }}>Art of</em><br />
-            Khatt
-          </h1>
-          <p className="font-heading text-sm leading-relaxed max-w-xs font-semibold" style={{ color: 'var(--ink)' }}>
-            Master classical Arabic scripts through structured lessons and guided practice.
-          </p>
-        </div>
-
-        {/* XP / Rank panel */}
-        <div className="mt-6 sys-window">
-          <div className="sys-titlebar">
-            <span className="sys-titlebar-dot" />
-            <span>Rank Progress</span>
+      {/* Hero — two column */}
+      <section className="pt-12 border-b border-rule">
+        <div className="max-w-6xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+          <div>
+            <p className="label-mono mb-4" style={{ color: 'var(--zzz-yellow-dim)' }}>Arabic Calligraphy Practice</p>
+            <h1 className="display-xl" style={{ lineHeight: 0.88 }}>
+              THE<br />
+              <span style={{ color: 'var(--ink-mid)' }}>ART OF</span><br />
+              KHATT
+            </h1>
+            <p className="mt-6 max-w-xs" style={{ fontFamily: 'Barlow', fontSize: 16, color: 'var(--ink-mid)', lineHeight: 1.6 }}>
+              Master classical Arabic scripts through structured lessons and guided practice.
+            </p>
           </div>
-          <div className="p-4">
-            <XPBar totalXP={totalXP} />
+          {/* Calligraphy image right */}
+          <div className="flex items-center justify-center md:justify-end">
+            <img
+              src="https://images.unsplash.com/photo-1585505933738-a85cf0393bbc?w=900&q=80"
+              alt="Arabic calligraphy"
+              className="w-full max-w-md object-cover"
+              style={{ filter: 'grayscale(0.1) contrast(1.05)', maxHeight: 260 }}
+            />
           </div>
         </div>
+      </section>
 
-        {/* Next Mission */}
-        {nextLesson && (
-          <div className="mt-6 sys-window">
+      {/* Main content */}
+      <div className="max-w-6xl mx-auto px-6 py-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        {/* Left col — rank + next lesson */}
+        <div className="lg:col-span-1 space-y-6">
+
+          {/* Rank Progress */}
+          <div className="sys-window">
             <div className="sys-titlebar">
               <span className="sys-titlebar-dot" />
-              <span>Next Lesson</span>
+              <span>Rank Progress</span>
             </div>
-            <button
-              onClick={() => navigate(`/lesson/${nextLesson.id}`)}
-              className="w-full text-left p-5 group"
-              style={{ background: 'var(--paper)' }}
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="label-mono mb-1">Mission #{String(nextLessonIndex + 1).padStart(2, '0')}</p>
-                  <p className="font-display text-2xl leading-tight" style={{ color: 'var(--ink)' }}>
-                    {nextLesson.title}
-                  </p>
-                  <p className="font-mono text-[10px] mt-2" style={{ color: 'var(--ink-mid)' }}>
-                    {nextLesson.description}
-                  </p>
-                </div>
-                <div className="flex flex-col items-end gap-3 flex-shrink-0">
-                  <span className="font-mono text-xs px-2 py-0.5" style={{ border: '1px solid var(--zzz-yellow)', color: 'var(--zzz-yellow-dim)', background: 'var(--zzz-yellow-pale)' }}>
-                    +{nextLesson.xpReward}xp
-                  </span>
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" style={{ color: 'var(--ink)' }} />
-                </div>
-              </div>
-            </button>
+            <div className="p-5">
+              <XPBar totalXP={totalXP} />
+            </div>
           </div>
-        )}
 
-        {/* Lesson Index */}
-        <div className="mt-6 sys-window mb-8">
-          <div className="sys-titlebar">
-            <span className="sys-titlebar-dot" />
-            <span>Mission Board · {completedLessons.length}/{lessons.length} Complete</span>
-          </div>
-          {/* Column headers */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '2.5rem 1fr auto auto',
-            gap: '12px',
-            padding: '6px 12px',
-            borderBottom: '1px solid var(--rule)',
-            background: 'var(--paper-dark)',
-          }}>
-            <span className="label-mono">#</span>
-            <span className="label-mono">Lesson</span>
-            <span className="label-mono">XP</span>
-            <span className="label-mono" style={{ minWidth: 14 }}></span>
-          </div>
-          <div>
+          {/* Next Lesson */}
+          {nextLesson && (
+            <div className="sys-window">
+              <div className="sys-titlebar">
+                <span className="sys-titlebar-dot" />
+                <span>Next Lesson</span>
+              </div>
+              <button
+                onClick={() => navigate(`/lesson/${nextLesson.id}`)}
+                className="w-full text-left p-5 group hover:bg-paper-dark transition-colors"
+              >
+                <p className="label-mono mb-1" style={{ color: 'var(--zzz-yellow-dim)' }}>
+                  Mission #{String(nextLessonIndex + 1).padStart(2, '0')}
+                </p>
+                <div className="flex items-start justify-between gap-3 mt-2">
+                  <div>
+                    <p style={{ fontFamily: 'Barlow Condensed', fontWeight: 700, fontSize: 20, textTransform: 'uppercase', color: 'var(--ink)', lineHeight: 1.1 }}>
+                      {nextLesson.title}
+                    </p>
+                    <p className="mt-1.5" style={{ fontFamily: 'Barlow', fontSize: 12, color: 'var(--ink-mid)' }}>
+                      {nextLesson.description}
+                    </p>
+                  </div>
+                  <ArrowRight className="w-4 h-4 flex-shrink-0 mt-1 group-hover:translate-x-1 transition-transform" style={{ color: 'var(--ink-faint)' }} />
+                </div>
+                <span className="inline-block mt-3 px-2 py-0.5" style={{ fontFamily: 'Space Mono', fontSize: 10, border: '1px solid var(--zzz-yellow)', color: 'var(--zzz-yellow-dim)', background: 'var(--zzz-yellow-pale)', letterSpacing: 2 }}>
+                  +{nextLesson.xpReward}xp
+                </span>
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Right col — mission board */}
+        <div className="lg:col-span-2">
+          <div className="sys-window">
+            <div className="sys-titlebar justify-between">
+              <div className="flex items-center gap-2">
+                <span className="sys-titlebar-dot" />
+                <span>Mission Board</span>
+              </div>
+              <span style={{ fontFamily: 'Space Mono', fontSize: 10, color: 'var(--ink-faint)' }}>
+                {completedLessons.length}/{lessons.length} Complete
+              </span>
+            </div>
+
+            {/* Table header */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: '2rem 1fr 4rem 1.5rem',
+              gap: 12,
+              padding: '8px 16px',
+              borderBottom: '1px solid var(--rule)',
+              background: 'var(--paper-dark)',
+            }}>
+              <span style={{ fontFamily: 'Space Mono', fontSize: 9, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--ink-faint)' }}>#</span>
+              <span style={{ fontFamily: 'Space Mono', fontSize: 9, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--ink-faint)' }}>Lesson</span>
+              <span style={{ fontFamily: 'Space Mono', fontSize: 9, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--ink-faint)', textAlign: 'right' }}>XP</span>
+              <span />
+            </div>
+
             {lessons.map((lesson, i) => {
               const isCompleted = completedLessons.includes(lesson.id);
               const isLocked = i > 0 && !completedLessons.includes(lessons[i - 1].id) && !isCompleted;
               return (
-                <LessonCard
+                <div
                   key={lesson.id}
-                  lesson={lesson}
-                  index={i}
-                  isCompleted={isCompleted}
-                  isLocked={isLocked}
-                  onClick={() => navigate(`/lesson/${lesson.id}`)}
-                />
+                  className="data-row"
+                  style={{
+                    gridTemplateColumns: '2rem 1fr 4rem 1.5rem',
+                    alignItems: 'center',
+                    gap: 12,
+                    paddingTop: 14,
+                    paddingBottom: 14,
+                    opacity: isLocked ? 0.4 : 1,
+                    cursor: isLocked ? 'not-allowed' : 'pointer',
+                    background: isCompleted ? 'var(--paper-dark)' : undefined,
+                  }}
+                  onClick={isLocked ? undefined : () => navigate(`/lesson/${lesson.id}`)}
+                >
+                  <span style={{ fontFamily: 'Space Mono', fontSize: 11, color: 'var(--ink-mid)', textAlign: 'center' }}>
+                    {isCompleted
+                      ? <Check className="w-3.5 h-3.5 inline" style={{ color: 'var(--zzz-yellow-dim)' }} />
+                      : isLocked
+                        ? <Lock className="w-3 h-3 inline" style={{ color: 'var(--ink-faint)' }} />
+                        : String(i + 1).padStart(2, '0')}
+                  </span>
+                  <div className="min-w-0">
+                    <p style={{ fontFamily: 'Barlow', fontWeight: 600, fontSize: 14, color: 'var(--ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {lesson.title}
+                    </p>
+                    <p style={{ fontFamily: 'Barlow', fontSize: 11, color: 'var(--ink-faint)', marginTop: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {lesson.description}
+                    </p>
+                  </div>
+                  <span style={{ fontFamily: 'Space Mono', fontSize: 10, color: 'var(--zzz-yellow-dim)', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                    +{lesson.xpReward}xp
+                  </span>
+                  {!isLocked && <ArrowRight className="w-3.5 h-3.5" style={{ color: 'var(--ink-faint)' }} />}
+                </div>
               );
             })}
           </div>
         </div>
       </div>
-
-      <NavBar />
     </div>
   );
 }

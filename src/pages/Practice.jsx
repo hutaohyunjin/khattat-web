@@ -30,21 +30,16 @@ export default function Practice() {
   const totalCount = thuluthLetters.length;
 
   return (
-    <div className="min-h-screen pb-24 dither-bg">
-      {/* Top bar */}
-      <div className="sticky top-0 z-40 flex items-center justify-between px-5 py-2"
-        style={{ background: 'var(--ink)', color: 'var(--paper)' }}>
-        <span className="font-mono text-[11px] tracking-widest">✦ KHATTAT</span>
-        <span className="font-mono text-[10px]" style={{ color: 'rgba(255,255,255,0.5)' }}>Practice</span>
-      </div>
+    <div className="min-h-screen bg-white">
+      <NavBar />
 
-      <div className="max-w-lg mx-auto px-5">
+      <div className="max-w-6xl mx-auto px-6">
         {/* Hero */}
-        <div className="pt-10 pb-8 border-b" style={{ borderColor: 'var(--ink)' }}>
-          <p className="label-mono mb-3">Thuluth Script</p>
+        <div className="pt-20 pb-10 border-b border-rule">
+          <p className="label-mono mb-4" style={{ color: 'var(--zzz-yellow-dim)' }}>Thuluth Script</p>
           <h1 className="display-xl">
-            Letter<br />
-            <em style={{ color: 'var(--ink-mid)' }}>Practice</em>
+            LETTER<br />
+            <span style={{ color: 'var(--ink-mid)' }}>PRACTICE</span>
           </h1>
           <div className="flex items-center gap-4 mt-5">
             <div>
@@ -60,19 +55,19 @@ export default function Practice() {
         </div>
 
         {/* Search */}
-        <div className="mt-5 relative">
+        <div className="mt-6 relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5" style={{ color: 'var(--ink-faint)' }} />
           <input
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search letters..."
-            className="w-full pl-9 pr-4 py-2.5 font-mono text-xs focus:outline-none"
-            style={{ background: 'var(--paper)', border: '1.5px solid var(--ink)', color: 'var(--ink)' }}
+            className="w-full pl-9 pr-4 py-2.5 focus:outline-none"
+            style={{ background: 'var(--paper)', border: '1px solid var(--rule)', color: 'var(--ink)', fontFamily: 'Barlow', fontSize: 14 }}
           />
         </div>
 
         {/* Letter groups */}
-        <div className="mt-5 space-y-5 mb-8">
+        <div className="mt-6 space-y-5 mb-12">
           {groups.map(group => (
             <div key={group.id} className="sys-window">
               <div className="sys-titlebar">
@@ -121,7 +116,6 @@ export default function Practice() {
         </div>
       </div>
 
-      <NavBar />
     </div>
   );
 }
