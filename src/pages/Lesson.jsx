@@ -49,7 +49,7 @@ export default function Lesson() {
   }
 
   return (
-    <div className="min-h-screen bg-white pb-8">
+    <div className="min-h-screen pb-8" style={{ background: 'var(--paper)' }}>
     <CelebrationModal
       show={completed}
       xp={isAlreadyCompleted ? 0 : lesson.xpReward}
@@ -58,7 +58,7 @@ export default function Lesson() {
       onHome={() => navigate('/')}
     />
       {/* Top bar */}
-      <div className="sticky top-0 z-40 flex items-center gap-3 px-6 py-3 bg-white border-b border-rule">
+      <div className="sticky top-0 z-40 flex items-center gap-3 px-6 py-3 border-b border-rule" style={{ background: 'var(--paper)' }}>
         <button onClick={() => navigate(-1)}>
           <ArrowLeft className="w-4 h-4" style={{ color: 'var(--ink)' }} />
         </button>

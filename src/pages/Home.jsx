@@ -25,7 +25,7 @@ export default function Home() {
   const totalXP = progress?.total_xp || 0;
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen" style={{ background: 'var(--paper)' }}>
       <NavBar />
 
       {/* Hero — two column */}
@@ -87,7 +87,7 @@ export default function Home() {
                 </p>
                 <div className="flex items-start justify-between gap-3 mt-2">
                   <div>
-                    <p style={{ fontFamily: 'Barlow Condensed', fontWeight: 700, fontSize: 20, textTransform: 'uppercase', color: 'var(--ink)', lineHeight: 1.1 }}>
+                    <p style={{ fontFamily: 'Rajdhani', fontWeight: 700, fontSize: 20, textTransform: 'uppercase', color: 'var(--ink)', lineHeight: 1.1 }}>
                       {nextLesson.title}
                     </p>
                     <p className="mt-1.5" style={{ fontFamily: 'Barlow', fontSize: 12, color: 'var(--ink-mid)' }}>

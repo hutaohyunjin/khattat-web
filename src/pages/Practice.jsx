@@ -30,7 +30,7 @@ export default function Practice() {
   const totalCount = thuluthLetters.length;
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen" style={{ background: 'var(--paper)' }}>
       <NavBar />
 
       <div className="max-w-6xl mx-auto px-6">

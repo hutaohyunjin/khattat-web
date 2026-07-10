@@ -6,27 +6,27 @@
 
 @layer base {
   :root {
-    /* Base — clean white */
-    --background: 0 0% 100%;
-    --foreground: 220 20% 15%;
-    --card: 0 0% 100%;
-    --card-foreground: 220 20% 15%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 15%;
-    /* Primary = orange-red */
-    --primary: 16 100% 50%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 220 10% 95%;
-    --secondary-foreground: 220 20% 15%;
-    --muted: 220 10% 95%;
-    --muted-foreground: 220 8% 50%;
-    --accent: 16 100% 50%;
-    --accent-foreground: 0 0% 100%;
+    /* Base — dark game */
+    --background: 5 5% 5%;
+    --foreground: 30 10% 94%;
+    --card: 5 5% 5%;
+    --card-foreground: 30 10% 94%;
+    --popover: 5 5% 8%;
+    --popover-foreground: 30 10% 94%;
+    /* Primary = orange */
+    --primary: 20 100% 50%;
+    --primary-foreground: 0 0% 5%;
+    --secondary: 5 5% 10%;
+    --secondary-foreground: 30 10% 80%;
+    --muted: 5 5% 10%;
+    --muted-foreground: 30 5% 50%;
+    --accent: 20 100% 50%;
+    --accent-foreground: 0 0% 5%;
     --destructive: 0 70% 45%;
     --destructive-foreground: 0 0% 98%;
-    --border: 220 10% 88%;
-    --input: 220 10% 95%;
-    --ring: 16 100% 50%;
+    --border: 20 8% 18%;
+    --input: 5 5% 10%;
+    --ring: 20 100% 50%;
     --chart-1: 16 100% 50%;
     --chart-2: 220 8% 35%;
     --chart-3: 220 8% 55%;
@@ -39,48 +39,48 @@
     --font-mono: 'Space Mono', ui-monospace, monospace;
 
     /* Design tokens */
-    --paper: #FFFFFF;
-    --paper-dark: #F5F5F5;
-    --ink: #1C2333;
-    --ink-mid: #5A6478;
-    --ink-faint: #9BA5B5;
-    --rule: #E2E5EC;
+    --paper: #0D0D0D;
+    --paper-dark: #161616;
+    --ink: #F0EDE8;
+    --ink-mid: #A09890;
+    --ink-faint: #504840;
+    --rule: #2A2520;
 
     /* Orange accent palette */
-    --zzz-yellow: #FF4D00;
-    --zzz-yellow-bright: #FF6B2B;
-    --zzz-yellow-dim: #CC3D00;
-    --zzz-yellow-pale: rgba(255, 77, 0, 0.10);
-    --zzz-yellow-glow: rgba(255, 77, 0, 0.25);
+    --zzz-yellow: #FF5500;
+    --zzz-yellow-bright: #FF7733;
+    --zzz-yellow-dim: #FF5500;
+    --zzz-yellow-pale: rgba(255, 85, 0, 0.12);
+    --zzz-yellow-glow: rgba(255, 85, 0, 0.35);
 
-    --sidebar-background: 215 18% 96%;
-    --sidebar-foreground: 220 15% 20%;
-    --sidebar-primary: 22 100% 55%;
-    --sidebar-primary-foreground: 220 15% 10%;
-    --sidebar-accent: 215 10% 90%;
-    --sidebar-accent-foreground: 220 15% 20%;
-    --sidebar-border: 220 15% 20%;
-    --sidebar-ring: 22 100% 55%;
+    --sidebar-background: 5 5% 8%;
+    --sidebar-foreground: 30 10% 80%;
+    --sidebar-primary: 20 100% 50%;
+    --sidebar-primary-foreground: 0 0% 5%;
+    --sidebar-accent: 5 5% 12%;
+    --sidebar-accent-foreground: 30 10% 80%;
+    --sidebar-border: 20 8% 18%;
+    --sidebar-ring: 20 100% 50%;
   }
 
   .dark {
-    --background: 0 0% 100%;
-    --foreground: 220 20% 15%;
-    --card: 0 0% 100%;
-    --card-foreground: 220 20% 15%;
-    --primary: 16 100% 50%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 220 10% 95%;
-    --secondary-foreground: 220 20% 15%;
-    --muted: 220 10% 95%;
-    --muted-foreground: 220 8% 50%;
-    --accent: 16 100% 50%;
-    --accent-foreground: 0 0% 100%;
+    --background: 5 5% 5%;
+    --foreground: 30 10% 94%;
+    --card: 5 5% 5%;
+    --card-foreground: 30 10% 94%;
+    --primary: 20 100% 50%;
+    --primary-foreground: 0 0% 5%;
+    --secondary: 5 5% 10%;
+    --secondary-foreground: 30 10% 80%;
+    --muted: 5 5% 10%;
+    --muted-foreground: 30 5% 50%;
+    --accent: 20 100% 50%;
+    --accent-foreground: 0 0% 5%;
     --destructive: 0 70% 45%;
     --destructive-foreground: 0 0% 98%;
-    --border: 220 10% 88%;
-    --input: 220 10% 95%;
-    --ring: 16 100% 50%;
+    --border: 20 8% 18%;
+    --input: 5 5% 10%;
+    --ring: 20 100% 50%;
   }
 }
 
@@ -101,28 +101,29 @@
   }
 }
 
-/* ── Clean white background ── */
+/* ── Dark game background ── */
 .dither-bg {
   background-color: var(--paper);
 }
 
 /* ── Card panel ── */
 .sys-window {
-  background: var(--paper);
+  background: var(--paper-dark);
   border: 1px solid var(--rule);
+  border-top: 2px solid var(--zzz-yellow);
   border-radius: 0;
 }
 
 .sys-titlebar {
   background: var(--paper);
-  color: var(--zzz-yellow-dim);
+  color: var(--zzz-yellow);
   padding: 10px 16px;
   display: flex;
   align-items: center;
   gap: 8px;
   font-family: 'Space Mono', monospace;
   font-size: 10px;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   user-select: none;
   border-bottom: 1px solid var(--rule);
@@ -133,6 +134,7 @@
   height: 6px;
   background: var(--zzz-yellow);
   flex-shrink: 0;
+  box-shadow: 0 0 6px var(--zzz-yellow);
 }
 
 /* ── Table row ── */
@@ -143,11 +145,13 @@
   font-family: 'Barlow', ui-sans-serif, sans-serif;
   font-size: 13px;
   color: var(--ink);
-  transition: background 0.12s;
+  transition: background 0.12s, border-left 0.12s;
+  border-left: 2px solid transparent;
 }
 
 .data-row:hover {
-  background: var(--paper-dark);
+  background: rgba(255, 85, 0, 0.06);
+  border-left-color: var(--zzz-yellow);
 }
 
 /* ── Display type — Barlow Condensed ── */
@@ -183,32 +187,33 @@
 .btn-system {
   font-family: 'Space Mono', monospace;
   font-size: 11px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  background: var(--ink);
-  color: #ffffff;
-  border: 1.5px solid var(--ink);
-  padding: 10px 20px;
+  background: var(--zzz-yellow);
+  color: #0D0D0D;
+  border: 1.5px solid var(--zzz-yellow);
+  padding: 11px 22px;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  transition: background 0.15s, box-shadow 0.15s;
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  font-weight: 700;
 }
 .btn-system:hover {
-  background: var(--zzz-yellow);
-  border-color: var(--zzz-yellow);
-  color: #ffffff;
+  background: var(--zzz-yellow-bright);
+  border-color: var(--zzz-yellow-bright);
+  box-shadow: 0 0 16px var(--zzz-yellow-glow);
 }
 .btn-system:disabled { opacity: 0.3; cursor: not-allowed; }
 
 .btn-ghost {
   font-family: 'Space Mono', monospace;
   font-size: 11px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   background: transparent;
-  color: var(--ink);
+  color: var(--ink-mid);
   border: 1.5px solid var(--rule);
   padding: 9px 18px;
   cursor: pointer;
@@ -218,9 +223,9 @@
   gap: 6px;
 }
 .btn-ghost:hover {
-  border-color: var(--ink);
-  color: var(--ink);
-  background: var(--paper-dark);
+  border-color: var(--zzz-yellow);
+  color: var(--zzz-yellow);
+  background: var(--zzz-yellow-pale);
 }
 .btn-ghost:disabled { opacity: 0.3; cursor: not-allowed; }
 

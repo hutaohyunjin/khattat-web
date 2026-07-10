@@ -15,7 +15,7 @@ export default function NavBar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-rule">
+    <header className="fixed top-0 left-0 right-0 z-50 border-b" style={{ background: 'var(--paper)', borderColor: 'var(--rule)' }}>
       <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-12">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-1.5">
@@ -64,7 +64,7 @@ export default function NavBar() {
 
       {/* Mobile menu */}
       {open && (
-        <div className="md:hidden border-t border-rule bg-white">
+        <div className="md:hidden border-t border-rule" style={{ background: 'var(--paper)' }}>
           {links.map(({ to, label, num }) => {
             const active = location.pathname === to;
             return (
