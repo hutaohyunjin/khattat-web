@@ -41,17 +41,7 @@ export default function Practice() {
             LETTER<br />
             <span style={{ color: 'var(--ink-mid)' }}>PRACTICE</span>
           </h1>
-          <div className="flex items-center gap-4 mt-5">
-            <div>
-              <p className="label-mono">Mastered</p>
-              <p className="font-mono text-2xl font-bold" style={{ color: 'var(--ink)' }}>
-                {String(masteredCount).padStart(2,'0')}<span className="text-base font-normal" style={{ color: 'var(--ink-faint)' }}>/{totalCount}</span>
-              </p>
-            </div>
-            <div className="flex-1 h-1" style={{ background: 'var(--paper-dark)' }}>
-              <div className="h-full" style={{ width: `${(masteredCount / totalCount) * 100}%`, background: 'var(--ink)' }} />
-            </div>
-          </div>
+
         </div>
 
         {/* Search */}
