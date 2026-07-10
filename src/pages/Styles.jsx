@@ -15,10 +15,17 @@ export default function Styles() {
         {/* Hero */}
         <div className="pt-20 pb-10 border-b border-rule">
           <p className="label-mono mb-4" style={{ color: 'var(--zzz-yellow-dim)' }}>Script Library</p>
-          <h1 className="display-xl">
-            CALLI­<br />GRAPHY<br />
-            <span style={{ color: 'var(--ink-mid)' }}>STYLES</span>
-          </h1>
+          <div className="flex items-center gap-6">
+            <h1 className="display-xl">
+              CALLI­<br />GRAPHY<br />
+              <span style={{ color: 'var(--ink-mid)' }}>STYLES</span>
+            </h1>
+            <img
+              src="https://media.base44.com/images/public/6a41bd2ca6771bd95aa5d5f2/2dc8e63f5_Khattat_2.png"
+              alt="الخط"
+              style={{ height: 160, width: 'auto', opacity: 0.85, mixBlendMode: 'multiply', flexShrink: 0 }}
+            />
+          </div>
         </div>
 
         {/* Styles table */}
