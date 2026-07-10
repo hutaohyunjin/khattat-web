@@ -45,10 +45,10 @@ export default function Home() {
           {/* Calligraphy image right */}
           <div className="flex items-center justify-center md:justify-end">
             <img
-              src="https://images.unsplash.com/photo-1585505933738-a85cf0393bbc?w=900&q=80"
-              alt="Arabic calligraphy"
-              className="w-full max-w-md object-cover"
-              style={{ filter: 'grayscale(0.1) contrast(1.05)', maxHeight: 260 }}
+              src="https://media.base44.com/images/public/6a41bd2ca6771bd95aa5d5f2/9d4aa91bc_arabickhattat.png"
+              alt="خطاط"
+              className="w-full max-w-md object-contain"
+              style={{ maxHeight: 280 }}
             />
           </div>
         </div>
