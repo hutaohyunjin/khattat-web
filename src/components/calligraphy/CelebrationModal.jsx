@@ -1,18 +1,13 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 
-const GIFS = [
-  'https://media.base44.com/images/public/6a41bd2ca6771bd95aa5d5f2/80f884608_mozai-mo-zai.gif',
-  'https://media.base44.com/images/public/6a41bd2ca6771bd95aa5d5f2/5a177f071_happy-catto.gif',
-];
+const CELEBRATION_GIF = 'https://media.base44.com/images/public/6a41bd2ca6771bd95aa5d5f2/2dc8e63f5_Khattat_2.png';
 
 export default function CelebrationModal({ show, xp, title, onContinue, onHome }) {
-  const gifRef = useRef(GIFS[Math.floor(Math.random() * GIFS.length)]);
 
   useEffect(() => {
     if (!show) return;
-    gifRef.current = GIFS[Math.floor(Math.random() * GIFS.length)];
 
     const duration = 3000;
     const end = Date.now() + duration;
@@ -62,22 +57,21 @@ export default function CelebrationModal({ show, xp, title, onContinue, onHome }
               {/* GIF */}
               <div className="flex justify-center pt-6 px-6">
                 <img
-                  src={gifRef.current}
+                  src={CELEBRATION_GIF}
                   alt="Celebration"
-                  className="w-36 h-36 object-cover rounded-sm"
-                  style={{ border: '2px solid var(--zzz-yellow)' }}
+                  className="w-48 object-contain"
+                  style={{ mixBlendMode: 'multiply' }}
                 />
               </div>
 
               {/* Text */}
-              <div className="p-6 text-center">
-                <p className="label-mono mb-2" style={{ color: 'var(--zzz-yellow-dim)' }}>Congratulations!</p>
-                <h2 className="display-lg mb-1">{title}</h2>
-                <p style={{ fontFamily: 'Barlow', fontSize: 14, color: 'var(--ink-mid)', marginTop: 4 }}>
+              <div className="px-6 pb-6 pt-2 text-center">
+                <p className="label-mono mb-1" style={{ color: 'var(--zzz-yellow-dim)' }}>Congratulations!</p>
+                <p style={{ fontFamily: 'Barlow', fontSize: 14, color: 'var(--ink-mid)' }}>
                   Lesson completed!
                 </p>
                 {xp > 0 && (
-                  <p className="font-mono text-2xl font-bold mt-4" style={{ color: 'var(--ink)' }}>
+                  <p className="font-mono text-xl font-bold mt-3" style={{ color: 'var(--ink)' }}>
                     +{xp} xp
                   </p>
                 )}
