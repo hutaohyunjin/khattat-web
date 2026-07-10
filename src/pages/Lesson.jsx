@@ -5,6 +5,7 @@ import { ArrowLeft, ChevronRight, ChevronLeft, Check } from 'lucide-react';
 import { lessons, thuluthLetters } from '@/lib/calligraphyData';
 import { useProgress } from '@/hooks/useProgress';
 import { useToast } from '@/components/ui/use-toast';
+import CelebrationModal from '@/components/calligraphy/CelebrationModal';
 
 export default function Lesson() {
   const { id } = useParams();
@@ -47,36 +48,15 @@ export default function Lesson() {
     }
   }
 
-  if (completed) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center px-5">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-sm">
-          <div className="sys-window">
-            <div className="sys-titlebar"><span className="sys-titlebar-dot" /><span>Lesson Complete</span></div>
-            <div className="p-8 text-center">
-              <p className="label-mono mb-3">Mission Clear</p>
-              <h2 className="display-lg mb-2">{lesson.title}</h2>
-              {!isAlreadyCompleted && (
-                <p className="font-mono text-2xl font-bold mt-4" style={{ color: 'var(--ink)' }}>+{lesson.xpReward} xp</p>
-              )}
-            </div>
-            <div className="rule-h" />
-            <div className="flex">
-              <button onClick={() => navigate('/')} className="flex-1 py-4 font-mono text-[11px] tracking-wider border-r hover:bg-paper-dark transition-colors" style={{ borderColor: 'var(--rule)', color: 'var(--ink-mid)' }}>
-                ← Home
-              </button>
-              <button onClick={goToNext} className="flex-1 py-4 font-mono text-[11px] tracking-wider transition-colors" style={{ background: 'var(--ink)', color: 'var(--paper)' }}>
-                Continue →
-              </button>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-white pb-8">
+    <CelebrationModal
+      show={completed}
+      xp={isAlreadyCompleted ? 0 : lesson.xpReward}
+      title={lesson.title}
+      onContinue={goToNext}
+      onHome={() => navigate('/')}
+    />
       {/* Top bar */}
       <div className="sticky top-0 z-40 flex items-center gap-3 px-6 py-3 bg-white border-b border-rule">
         <button onClick={() => navigate(-1)}>
