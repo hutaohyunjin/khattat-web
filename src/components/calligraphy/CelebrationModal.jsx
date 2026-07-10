@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 
@@ -7,30 +7,18 @@ const GIFS = [
   'https://media.base44.com/images/public/6a41bd2ca6771bd95aa5d5f2/278062575_happy-catto.gif',
 ];
 
-export default function CelebrationModal({ show, xp, title, onContinue, onHome }) {
-  const gifRef = useRef(GIFS[Math.floor(Math.random() * GIFS.length)]);
+export default function CelebrationModal({ show, xp, onContinue, onHome }) {
+  const [gif, setGif] = useState(GIFS[0]);
 
   useEffect(() => {
     if (!show) return;
-    gifRef.current = GIFS[Math.floor(Math.random() * GIFS.length)];
+    setGif(GIFS[Math.floor(Math.random() * GIFS.length)]);
 
     const duration = 3000;
     const end = Date.now() + duration;
     const frame = () => {
-      confetti({
-        particleCount: 6,
-        angle: 60,
-        spread: 55,
-        origin: { x: 0 },
-        colors: ['#FF4D00', '#1C2333', '#FF6B2B', '#FFFFFF'],
-      });
-      confetti({
-        particleCount: 6,
-        angle: 120,
-        spread: 55,
-        origin: { x: 1 },
-        colors: ['#FF4D00', '#1C2333', '#FF6B2B', '#FFFFFF'],
-      });
+      confetti({ particleCount: 6, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#FF4D00', '#1C2333', '#FF6B2B', '#FFFFFF'] });
+      confetti({ particleCount: 6, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#FF4D00', '#1C2333', '#FF6B2B', '#FFFFFF'] });
       if (Date.now() < end) requestAnimationFrame(frame);
     };
     frame();
@@ -62,7 +50,7 @@ export default function CelebrationModal({ show, xp, title, onContinue, onHome }
               {/* GIF */}
               <div className="flex justify-center pt-6 px-6">
                 <img
-                  src={gifRef.current}
+                  src={gif}
                   alt="Celebration"
                   className="w-40 h-40 object-cover"
                   style={{ border: '2px solid var(--zzz-yellow)' }}
@@ -72,13 +60,9 @@ export default function CelebrationModal({ show, xp, title, onContinue, onHome }
               {/* Text */}
               <div className="px-6 pb-6 pt-2 text-center">
                 <p className="label-mono mb-1" style={{ color: 'var(--zzz-yellow-dim)' }}>Congratulations!</p>
-                <p style={{ fontFamily: 'Barlow', fontSize: 14, color: 'var(--ink-mid)' }}>
-                  Lesson completed!
-                </p>
+                <p style={{ fontFamily: 'Barlow', fontSize: 14, color: 'var(--ink-mid)' }}>Lesson completed!</p>
                 {xp > 0 && (
-                  <p className="font-mono text-xl font-bold mt-3" style={{ color: 'var(--ink)' }}>
-                    +{xp} xp
-                  </p>
+                  <p className="font-mono text-xl font-bold mt-3" style={{ color: 'var(--ink)' }}>+{xp} xp</p>
                 )}
               </div>
 
