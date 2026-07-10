@@ -1,13 +1,18 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 
-const CELEBRATION_GIF = 'https://media.base44.com/images/public/6a41bd2ca6771bd95aa5d5f2/2dc8e63f5_Khattat_2.png';
+const GIFS = [
+  'https://media.base44.com/images/public/6a41bd2ca6771bd95aa5d5f2/501c2c2f4_mozai-mo-zai.gif',
+  'https://media.base44.com/images/public/6a41bd2ca6771bd95aa5d5f2/278062575_happy-catto.gif',
+];
 
 export default function CelebrationModal({ show, xp, title, onContinue, onHome }) {
+  const gifRef = useRef(GIFS[Math.floor(Math.random() * GIFS.length)]);
 
   useEffect(() => {
     if (!show) return;
+    gifRef.current = GIFS[Math.floor(Math.random() * GIFS.length)];
 
     const duration = 3000;
     const end = Date.now() + duration;
@@ -57,10 +62,10 @@ export default function CelebrationModal({ show, xp, title, onContinue, onHome }
               {/* GIF */}
               <div className="flex justify-center pt-6 px-6">
                 <img
-                  src={CELEBRATION_GIF}
+                  src={gifRef.current}
                   alt="Celebration"
-                  className="w-48 object-contain"
-                  style={{ mixBlendMode: 'multiply' }}
+                  className="w-40 h-40 object-cover"
+                  style={{ border: '2px solid var(--zzz-yellow)' }}
                 />
               </div>
 
