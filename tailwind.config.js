@@ -75,7 +75,7 @@ module.exports = {
   			}
   		},
   		fontFamily: {
-  			heading: ['Barlow', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+  			heading: ['Rajdhani', 'ui-sans-serif', 'system-ui', 'sans-serif'],
   			body: ['Barlow', 'ui-sans-serif', 'system-ui', 'sans-serif'],
   			display: ['Barlow Condensed', 'ui-sans-serif', 'sans-serif'],
   			mono: ['Space Mono', 'ui-monospace', 'monospace'],

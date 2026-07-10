@@ -33,7 +33,7 @@
     --chart-4: 220 8% 70%;
     --chart-5: 220 8% 85%;
     --radius: 0rem;
-    --font-heading: 'Barlow', ui-sans-serif, system-ui, sans-serif;
+    --font-heading: 'Rajdhani', ui-sans-serif, system-ui, sans-serif;
     --font-body: 'Barlow', ui-sans-serif, system-ui, sans-serif;
     --font-display: 'Barlow Condensed', ui-sans-serif, sans-serif;
     --font-mono: 'Space Mono', ui-monospace, monospace;
@@ -87,6 +87,10 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+  }
+  .font-heading, h1, h2, h3, h4, h5, h6 {
+    font-family: 'Rajdhani', ui-sans-serif, system-ui, sans-serif;
+    font-weight: 700;
   }
   body {
     @apply bg-background text-foreground font-body;
