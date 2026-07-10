@@ -1003,13 +1003,13 @@ export function getXPForNextLevel(xp) {
 }
 
 export const levelTitles = [
-  "Novice Scribe",
+  "Novice",
   "Apprentice",
   "Student",
   "Practitioner",
   "Artisan",
   "Skilled Calligrapher",
-  "Master Scribe",
+  "Master",
   "Grand Calligrapher",
   "Khattāt",
   "Master Khattāt",
