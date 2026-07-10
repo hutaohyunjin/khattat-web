@@ -43,12 +43,12 @@ export default function Home() {
             </p>
           </div>
           {/* Calligraphy image right */}
-          <div className="flex items-center justify-center md:justify-end">
+          <div className="flex items-end justify-center md:justify-end">
             <img
               src="https://media.base44.com/images/public/6a41bd2ca6771bd95aa5d5f2/9d4aa91bc_arabickhattat.png"
               alt="خطاط"
               className="w-full max-w-md object-contain"
-              style={{ maxHeight: 280 }}
+              style={{ maxHeight: 280, marginBottom: '-2rem' }}
             />
           </div>
         </div>
