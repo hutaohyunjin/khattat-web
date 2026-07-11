@@ -6,6 +6,7 @@ import { lessons, thuluthLetters } from '@/lib/calligraphyData';
 import { useProgress } from '@/hooks/useProgress';
 import { useToast } from '@/components/ui/use-toast';
 import CelebrationModal from '@/components/calligraphy/CelebrationModal';
+import PracticeCanvas from '@/components/calligraphy/PracticeCanvas';
 
 export default function Lesson() {
   const { id } = useParams();
@@ -14,6 +15,8 @@ export default function Lesson() {
   const { toast } = useToast();
   const [currentSection, setCurrentSection] = useState(0);
   const [completed, setCompleted] = useState(false);
+  const [practiceStep, setPracticeStep] = useState(0); // index into practiceLetters
+  const [drawnLetters, setDrawnLetters] = useState(new Set()); // ids of letters drawn
 
   const lesson = lessons.find(l => l.id === id);
   if (!lesson) return (
@@ -127,46 +130,69 @@ export default function Lesson() {
           </AnimatePresence>
         )}
 
-        {/* Practice letters */}
-        {!isTheory && (
+        {/* Practice letters — step through each letter with canvas */}
+        {!isTheory && practiceLetters.length > 0 && (
           <div className="mt-6 space-y-5">
-            <div className="sys-window">
-              <div className="sys-titlebar"><span className="sys-titlebar-dot" /><span>Letters in this group</span></div>
-              <div style={{
-                display: 'grid', gridTemplateColumns: '60px 1fr auto',
-                gap: 12, padding: '5px 12px',
-                borderBottom: '1px solid var(--rule)', background: 'var(--paper-dark)',
-              }}>
-                <span className="label-mono">Form</span>
-                <span className="label-mono">Name</span>
-                <span className="label-mono">Status</span>
-              </div>
-              {practiceLetters.map((letter, i) => {
-                const isMastered = (progress?.mastered_letters || []).includes(letter.id);
-                return (
-                  <div
-                    key={letter.id}
-                    className="data-row cursor-pointer"
-                    style={{ gridTemplateColumns: '60px 1fr auto', alignItems: 'center', gap: 12, paddingTop: 12, paddingBottom: 12 }}
-                    onClick={() => navigate(`/letter/${letter.id}`)}
-                  >
-                    <span className="text-4xl text-center block leading-none"
-                      style={{ fontFamily: "'Noto Naskh Arabic', serif" }} dir="rtl">{letter.letter}</span>
-                    <div>
-                      <p className="font-heading font-medium text-sm">{letter.name}</p>
-                      <p className="font-mono text-[10px] mt-0.5" style={{ color: 'var(--ink-mid)' }}>{letter.nameAr}</p>
-                    </div>
-                    <span className="font-mono text-[10px]" style={{ color: isMastered ? 'var(--ink)' : 'var(--ink-faint)' }}>
-                      {isMastered ? '✓' : '→'}
-                    </span>
-                  </div>
-                );
-              })}
+            {/* Progress dots */}
+            <div className="flex gap-1">
+              {practiceLetters.map((_, i) => (
+                <div key={i} className="flex-1 h-1 transition-all"
+                  style={{ background: i < practiceStep ? 'var(--zzz-yellow)' : i === practiceStep ? 'var(--ink)' : 'var(--rule)' }} />
+              ))}
             </div>
 
-            <button onClick={handleComplete} className="w-full btn-system justify-center">
-              Complete Lesson <Check className="w-3.5 h-3.5" />
-            </button>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={practiceStep}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-4"
+              >
+                {practiceStep < practiceLetters.length ? (() => {
+                  const letter = practiceLetters[practiceStep];
+                  return (
+                    <>
+                      {/* Letter info */}
+                      <div className="sys-window">
+                        <div className="sys-titlebar">
+                          <span className="sys-titlebar-dot" />
+                          <span>Letter {String(practiceStep + 1).padStart(2,'0')} / {String(practiceLetters.length).padStart(2,'0')} · {letter.name}</span>
+                        </div>
+                        <div className="p-5 flex gap-5 items-start">
+                          <span className="text-6xl leading-none flex-shrink-0"
+                            style={{ fontFamily: "'Noto Naskh Arabic', serif" }} dir="rtl">
+                            {letter.letter}
+                          </span>
+                          <div>
+                            <p style={{ fontFamily: 'Space Mono', fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--zzz-yellow-dim)' }}>{letter.transliteration}</p>
+                            <p className="font-heading font-semibold text-sm mt-1" style={{ color: 'var(--ink)' }}>{letter.nameAr}</p>
+                            {letter.strokes && (
+                              <p className="mt-2 font-body text-xs leading-relaxed" style={{ color: 'var(--ink-mid)', maxWidth: 260 }}>
+                                {letter.strokes[0]}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Canvas */}
+                      <PracticeCanvas
+                        letter={letter}
+                        onComplete={() => {
+                          setDrawnLetters(prev => new Set([...prev, letter.id]));
+                          if (practiceStep < practiceLetters.length - 1) {
+                            setPracticeStep(s => s + 1);
+                          } else {
+                            handleComplete();
+                          }
+                        }}
+                      />
+                    </>
+                  );
+                })() : null}
+              </motion.div>
+            </AnimatePresence>
           </div>
         )}
       </div>
