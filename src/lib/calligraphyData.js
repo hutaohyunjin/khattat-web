@@ -849,7 +849,7 @@ export const lessons = [
       sections: [
         {
           title: "What is Arabic Calligraphy?",
-          text: "Arabic calligraphy (الخط العربي — al-khaṭṭ al-ʿarabī) is the artistic practice of handwriting the Arabic script. It is considered one of the highest art forms in Islamic culture, developed over 1,400 years into dozens of distinct styles."
+          text: "Arabic calligraphy (الخط العربي) is the artistic practice of handwriting the Arabic script. It is considered one of the highest art forms in Islamic culture, developed over 1,400 years into dozens of distinct styles."
         },
         {
           title: "The Thuluth Style",
@@ -857,7 +857,7 @@ export const lessons = [
         },
         {
           title: "Tools You'll Need",
-          text: "Traditional Thuluth calligraphy uses a reed pen (qalam) cut at an angle, along with special calligraphy ink. In this app, we'll teach you the principles — the pen angle, proportions, and stroke order — that you can then apply with physical tools."
+          text: "Traditional Thuluth calligraphy uses a reed pen (qalam) cut at an angle, along with special calligraphy ink. In this app, we'll teach you the principles: the pen angle, proportions, and stroke order. You can then apply these with physical tools."
         },
         {
           title: "The Rhombic Dot System",

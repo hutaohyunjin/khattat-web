@@ -12,10 +12,10 @@ const stats = [
 ];
 
 const journey = [
-  { num: '01', title: 'Theory First', body: 'Each lesson begins with structured theory — the history, proportions, and philosophy behind the script. Master the "why" before you practice.' },
+  { num: '01', title: 'Theory First', body: 'Each lesson begins with structured theory: the history, proportions, and philosophy behind the script. Master the "why" before you practice.' },
   { num: '02', title: 'Letter-by-Letter Practice', body: 'Using a simulated calligraphic nib at 40°, you draw each letter on a digital canvas with a ghost guide beneath your stroke.' },
   { num: '03', title: 'XP & Streaks', body: 'Every completed lesson earns XP. Daily streaks keep you accountable. Progress is saved to your personal rank board.' },
-  { num: '04', title: 'Unlock the Next Mission', body: 'Lessons unlock sequentially — just like a game. Nail the fundamentals before moving to the next group of letters.' },
+  { num: '04', title: 'Unlock the Next Mission', body: 'Lessons unlock sequentially, just like a game. Nail the fundamentals before moving to the next group of letters.' },
 ];
 
 const quotes = [
@@ -27,7 +27,7 @@ const quotes = [
   {
     speaker: 'Abdulaziz AlAwadhi',
     role: 'Renowned Calligrapher, Kuwait',
-    text: '"Technological advancements can actually help designers get into arabic calligraphy — we just need a platform for people to do it."',
+    text: '"Technological advancements can actually help designers get into arabic calligraphy. We just need a platform for people to do it."',
   },
 ];
 
@@ -78,7 +78,7 @@ export default function About() {
             FROM EXTINCTION
           </h1>
           <p className="mt-6 max-w-xl" style={{ fontFamily: 'Barlow', fontSize: 16, color: 'var(--ink-mid)', lineHeight: 1.7 }}>
-            In 2021, UNESCO declared Arabic calligraphy an endangered practice. Khattat is a response — a gamified, self-directed learning platform that builds a bridge between traditional methods and digital access, designed for young designers and creatives who want to learn but have no teacher.
+            In 2021, UNESCO declared Arabic calligraphy an endangered practice. Khattat is a response: a gamified, self-directed learning platform that builds a bridge between traditional methods and digital access, designed for young designers and creatives who want to learn but have no teacher.
           </p>
           <div className="mt-8 inline-block px-4 py-2 border" style={{ borderColor: 'var(--zzz-yellow)', background: 'var(--zzz-yellow-pale)' }}>
             <p style={{ fontFamily: 'Space Mono', fontSize: 11, letterSpacing: '0.12em', color: 'var(--zzz-yellow-dim)', textTransform: 'uppercase' }}>
@@ -103,10 +103,10 @@ export default function About() {
               <div className="sys-titlebar"><span className="sys-titlebar-dot" /><span>What is Khattat?</span></div>
               <div className="p-6 space-y-4" style={{ fontFamily: 'Barlow', fontSize: 14, color: 'var(--ink-mid)', lineHeight: 1.8 }}>
                 <p>
-                  Khattat is a <strong style={{ color: 'var(--ink)' }}>gamified learning tool for designers</strong> — not a cultural archive, and not just a font reference library. Its sole purpose is to make the <em>practice</em> of Arabic calligraphy learnable, step-by-step, without a traditional teacher.
+                  Khattat is a <strong style={{ color: 'var(--ink)' }}>gamified learning tool for designers</strong>. Not a cultural archive, and not just a font reference library. Its sole purpose is to make the <em>practice</em> of Arabic calligraphy learnable, step-by-step, without a traditional teacher.
                 </p>
                 <p>
-                  Think of it as Duolingo, but for Arabic calligraphy. It structures a complex, traditionally gatekept art form into a digital, self-directed journey — from theory and Islamic art philosophy, to letter-by-letter drawing practice with XP rewards to maintain motivation.
+                  Think of it as Duolingo, but for Arabic calligraphy. It structures a complex, traditionally gatekept art form into a digital, self-directed journey: from theory and Islamic art philosophy, to letter-by-letter drawing practice with XP rewards to maintain motivation.
                 </p>
                 <p>
                   The platform is for the <strong style={{ color: 'var(--ink)' }}>designer who is curious but doesn't know where to start</strong>. You don't need a reed pen. You don't need an ustaz. You just need to begin.
@@ -166,7 +166,7 @@ export default function About() {
                   Expert calligrapher Jasem AlNasrallah emphasised the importance of fundamentals before freestyle. Thuluth is one of the most foundational and widely taught scripts, making it the natural starting point. Once the basics are mastered here, learners can move to Naskh, Diwani, and beyond.
                 </AccordionItem>
                 <AccordionItem title="The Learning Philosophy">
-                  The platform follows a three-stage model derived from expert consultation: (1) Learn Islamic art philosophy, (2) Learn & practice Arabic calligraphy letter by letter, (3) Apply what is learnt in different design contexts — 3D, graphic design, and speculative work.
+                  The platform follows a three-stage model derived from expert consultation: (1) Learn Islamic art philosophy, (2) Learn and practice Arabic calligraphy letter by letter, (3) Apply what is learnt in different design contexts such as 3D, graphic design, and speculative work.
                 </AccordionItem>
                 <AccordionItem title="Target Audience">
                   Young designers and creatives aged 15–29 who are interested in Arabic calligraphy but lack access to formal instruction or traditional tools. The platform is designed to be used at home, self-directed, like Duolingo.
@@ -192,7 +192,7 @@ export default function About() {
 
           {/* Survey Stats */}
           <div className="sys-window">
-            <div className="sys-titlebar"><span className="sys-titlebar-dot" /><span>Survey Results — 59 Responses</span></div>
+            <div className="sys-titlebar"><span className="sys-titlebar-dot" /><span>Survey Results: 59 Responses</span></div>
             <div className="divide-y" style={{ borderColor: 'var(--rule)' }}>
               {stats.map((s) => (
                 <div key={s.pct} className="p-4 flex gap-4 items-start">
@@ -210,7 +210,7 @@ export default function About() {
               <p style={{ fontFamily: 'Rajdhani', fontWeight: 700, fontSize: 18, color: 'var(--ink)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Suad AlBahar</p>
               <p className="label-mono mt-1" style={{ color: 'var(--zzz-yellow-dim)' }}>MA Graphic Design</p>
               <p className="mt-3" style={{ fontFamily: 'Barlow', fontSize: 13, color: 'var(--ink-mid)', lineHeight: 1.6 }}>
-                This project emerged from a personal frustration — being interested in Arabic calligraphy but having no accessible way to learn it digitally. Khattat is both a research outcome and a working prototype, built to test whether gamification can genuinely lower the barrier to entry for this endangered art form.
+                This project emerged from a personal frustration: being interested in Arabic calligraphy but having no accessible way to learn it digitally. Khattat is both a research outcome and a working prototype, built to test whether gamification can genuinely lower the barrier to entry for this endangered art form.
               </p>
             </div>
           </div>

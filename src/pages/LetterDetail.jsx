@@ -55,7 +55,7 @@ export default function LetterDetail() {
             </p>
             <h1 className="display-xl">{letter.name}</h1>
             <p className="font-mono text-sm mt-2" style={{ color: 'var(--ink-mid)' }}>
-              {letter.transliteration} · {letter.nameAr}
+              {letter.transliteration} / {letter.nameAr}
             </p>
           </div>
           <div className="w-28 h-28 flex items-center justify-center border flex-shrink-0"
@@ -98,7 +98,7 @@ export default function LetterDetail() {
 
               {/* Stroke guide */}
               <div className="sys-window">
-                <div className="sys-titlebar"><span className="sys-titlebar-dot" /><span>Stroke Guide · {letter.strokeGuide.length} steps</span></div>
+                <div className="sys-titlebar"><span className="sys-titlebar-dot" /><span>Stroke Guide: {letter.strokeGuide.length} steps</span></div>
                 <div style={{
                   display: 'grid', gridTemplateColumns: '2rem 1fr',
                   gap: 8, padding: '5px 12px',
@@ -177,7 +177,7 @@ export default function LetterDetail() {
                 <p className="px-4 pt-3 font-mono text-[10px] tracking-wider" style={{ color: 'var(--zzz-yellow-dim)' }}>FOR REAL PAPER PRACTICE</p>
                 <div className="p-4 pt-2 space-y-2">
                   {[
-                    'Use a reed pen (qalam) or calligraphy nib held at a 30–45° angle to the paper — this creates the natural thick-thin contrast of Arabic scripts',
+                    'Use a reed pen (qalam) or calligraphy nib held at a 30 to 45 degree angle to the paper. This creates the natural thick-thin contrast of Arabic scripts.',
                     'Rest your wrist lightly on the paper and pull strokes toward you; never push the nib or it will catch',
                     'Use smooth, slightly absorbent paper (e.g. layout paper or traditional ahar paper) — rough paper will fray your nib',
                     'Follow the stroke order shown in the Learn tab exactly; lift the pen between strokes as indicated',
