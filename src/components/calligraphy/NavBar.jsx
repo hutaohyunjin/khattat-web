@@ -7,7 +7,7 @@ const links = [
   { to: '/styles', label: 'Styles', num: '02' },
   { to: '/practice', label: 'Practice', num: '03' },
   { to: '/progress', label: 'Ranks', num: '04' },
-  { to: '/practice', label: 'Letters', num: '05' },
+  { to: '/about', label: 'About', num: '05' },
 ];
 
 export default function NavBar() {
