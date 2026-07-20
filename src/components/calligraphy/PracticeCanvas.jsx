@@ -1,141 +1,129 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Eraser, Undo2, Redo2, Trash2, Check, Minus, Plus } from 'lucide-react';
 
-// Brush types inspired by Arabic calligraphy tools
+// Helper: draw a filled quadrilateral nib segment between two points
+// nibAngle: the fixed cut angle of the nib (radians), nibWidth: full nib width
+function drawNibSegment(ctx, x1, y1, x2, y2, nibAngle, nibWidth, opacity, color) {
+  const dx = x2 - x1, dy = y2 - y1;
+  if (Math.sqrt(dx * dx + dy * dy) < 0.3) return;
+  ctx.globalAlpha = opacity;
+  ctx.fillStyle = color;
+  ctx.strokeStyle = color;
+  // The nib edge direction (perpendicular cut)
+  const nx = Math.cos(nibAngle) * nibWidth * 0.5;
+  const ny = Math.sin(nibAngle) * nibWidth * 0.5;
+  ctx.beginPath();
+  ctx.moveTo(x1 - nx, y1 - ny);
+  ctx.lineTo(x1 + nx, y1 + ny);
+  ctx.lineTo(x2 + nx, y2 + ny);
+  ctx.lineTo(x2 - nx, y2 - ny);
+  ctx.closePath();
+  ctx.fill();
+}
+
+// Helper: tapered brush segment — wide at start, narrow at end
+function drawTaperedSegment(ctx, x1, y1, x2, y2, w1, w2, opacity, color) {
+  const dx = x2 - x1, dy = y2 - y1;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+  if (dist < 0.3) return;
+  const px = -dy / dist, py = dx / dist; // perpendicular
+  ctx.globalAlpha = opacity;
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(x1 + px * w1, y1 + py * w1);
+  ctx.lineTo(x1 - px * w1, y1 - py * w1);
+  ctx.lineTo(x2 - px * w2, y2 - py * w2);
+  ctx.lineTo(x2 + px * w2, y2 + py * w2);
+  ctx.closePath();
+  ctx.fill();
+}
+
 const BRUSHES = [
   {
-    id: 'thuluth',
-    name: 'Thuluth',
-    nameAr: 'الثلث',
-    description: 'Classic flat nib at 40°',
+    // Reed/Qalam flat nib — classic Thuluth thick-thin character
+    // Horizontal stroke = full width; vertical = thin edge
+    id: 'qalam',
+    name: 'Qalam',
+    nameAr: 'قلم الثلث',
+    description: 'Reed nib at 45° — authentic Thuluth thick/thin',
     draw: (ctx, x, y, px, py, size, opacity, color) => {
-      const angle = 40 * Math.PI / 180;
-      const dx = x - px, dy = y - py;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 0.5) return;
-      ctx.globalAlpha = opacity;
-      ctx.strokeStyle = color;
-      // Variable width based on stroke direction
-      const perpX = Math.cos(angle);
-      const perpY = Math.sin(angle);
-      const strokeAngle = Math.atan2(dy, dx);
-      const widthFactor = Math.abs(Math.sin(strokeAngle - angle));
-      const w = size * (0.15 + 0.85 * widthFactor);
-      ctx.lineWidth = Math.max(1, w);
-      ctx.lineCap = 'square';
-      ctx.lineJoin = 'miter';
-      ctx.beginPath();
-      ctx.moveTo(px, py);
-      ctx.lineTo(x, y);
-      ctx.stroke();
+      drawNibSegment(ctx, px, py, x, y, Math.PI * 0.25, size, opacity, color);
     }
   },
   {
+    // Flat nib at a steeper angle — Naskh style
     id: 'naskh',
     name: 'Naskh',
-    nameAr: 'النسخ',
-    description: 'Rounded nib, even strokes',
+    nameAr: 'قلم النسخ',
+    description: 'Flat nib at 25° — Naskh proportions',
     draw: (ctx, x, y, px, py, size, opacity, color) => {
-      ctx.globalAlpha = opacity;
-      ctx.strokeStyle = color;
-      ctx.lineWidth = size * 0.5;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.beginPath();
-      ctx.moveTo(px, py);
-      ctx.lineTo(x, y);
-      ctx.stroke();
+      drawNibSegment(ctx, px, py, x, y, Math.PI * 0.14, size, opacity, color);
     }
   },
   {
+    // Diwani: flowing tapered brush — thick belly, thin start/end
     id: 'diwani',
     name: 'Diwani',
     nameAr: 'الديواني',
-    description: 'Flowing brush, tapered ends',
+    description: 'Flowing brush — pressure-sensitive taper',
     draw: (ctx, x, y, px, py, size, opacity, color) => {
       const dx = x - px, dy = y - py;
       const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 0.5) return;
-      ctx.globalAlpha = opacity;
-      ctx.fillStyle = color;
-      const angle = Math.atan2(dy, dx);
-      const perpX = -Math.sin(angle);
-      const perpY = Math.cos(angle);
-      const w = size * 0.4;
-      ctx.beginPath();
-      ctx.moveTo(px + perpX * w, py + perpY * w);
-      ctx.quadraticCurveTo(
-        (px + x) / 2 + perpX * w * 0.5,
-        (py + y) / 2 + perpY * w * 0.5,
-        x + perpX * 1,
-        y + perpY * 1
-      );
-      ctx.lineTo(x - perpX * 1, y - perpY * 1);
-      ctx.quadraticCurveTo(
-        (px + x) / 2 - perpX * w * 0.5,
-        (py + y) / 2 - perpY * w * 0.5,
-        px - perpX * w,
-        py - perpY * w
-      );
-      ctx.closePath();
-      ctx.fill();
+      if (dist < 0.3) return;
+      // belly at midpoint, taper both ends
+      const mx = (px + x) / 2, my = (py + y) / 2;
+      drawTaperedSegment(ctx, px, py, mx, my, size * 0.1, size * 0.45, opacity, color);
+      drawTaperedSegment(ctx, mx, my, x, y, size * 0.45, size * 0.08, opacity, color);
     }
   },
   {
-    id: 'ruqah',
-    name: "Ruq'ah",
-    nameAr: 'الرقعة',
-    description: 'Compact, quick strokes',
-    draw: (ctx, x, y, px, py, size, opacity, color) => {
-      ctx.globalAlpha = opacity;
-      ctx.strokeStyle = color;
-      ctx.lineWidth = size * 0.35;
-      ctx.lineCap = 'butt';
-      ctx.lineJoin = 'round';
-      ctx.beginPath();
-      ctx.moveTo(px, py);
-      ctx.lineTo(x, y);
-      ctx.stroke();
-    }
-  },
-  {
+    // Shadow: two overlapping layers — dark core + grey halo
     id: 'shadow',
     name: 'Shadow',
     nameAr: 'خط الظل',
-    description: 'Soft shadow ink effect',
+    description: 'Dual-layer shadow nib',
     draw: (ctx, x, y, px, py, size, opacity, color) => {
-      ctx.globalAlpha = opacity * 0.4;
-      ctx.strokeStyle = color;
-      ctx.lineWidth = size * 0.8;
-      ctx.lineCap = 'round';
-      ctx.filter = 'blur(2px)';
-      ctx.beginPath();
-      ctx.moveTo(px, py);
-      ctx.lineTo(x, y);
-      ctx.stroke();
-      ctx.filter = 'none';
-      ctx.globalAlpha = opacity * 0.9;
-      ctx.lineWidth = size * 0.35;
-      ctx.beginPath();
-      ctx.moveTo(px, py);
-      ctx.lineTo(x, y);
-      ctx.stroke();
+      // Halo (wide, light grey)
+      drawNibSegment(ctx, px, py, x, y, Math.PI * 0.25, size * 1.5, opacity * 0.18, '#555555');
+      // Core flat nib
+      drawNibSegment(ctx, px, py, x, y, Math.PI * 0.25, size * 0.7, opacity, color);
     }
   },
   {
-    id: 'dots',
-    name: 'Ink Dots',
-    nameAr: 'خط نقطي',
-    description: 'Scattered ink drops',
+    // Ruq'ah: narrow upright nib — quick tight strokes
+    id: 'ruqah',
+    name: "Ruq'ah",
+    nameAr: 'الرقعة ب حاده',
+    description: 'Upright narrow nib — compact Ruqah style',
     draw: (ctx, x, y, px, py, size, opacity, color) => {
-      ctx.globalAlpha = opacity;
-      ctx.fillStyle = color;
-      const dist = Math.sqrt((x - px) ** 2 + (y - py) ** 2);
-      if (dist > 4) {
-        const r = (Math.random() * 0.5 + 0.3) * size * 0.25;
-        ctx.beginPath();
-        ctx.arc(x + (Math.random() - 0.5) * size * 0.3, y + (Math.random() - 0.5) * size * 0.3, r, 0, Math.PI * 2);
-        ctx.fill();
+      drawNibSegment(ctx, px, py, x, y, Math.PI * 0.5, size * 0.55, opacity, color);
+    }
+  },
+  {
+    // Ink scatter — خط رسومي / splatter effect
+    id: 'splash',
+    name: 'Ink Splash',
+    nameAr: 'خط رسومي',
+    description: 'Scattered ink drops — expressive marks',
+    draw: (ctx, x, y, px, py, size, opacity, color) => {
+      const dx = x - px, dy = y - py;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      // Main stroke as flat nib
+      drawNibSegment(ctx, px, py, x, y, Math.PI * 0.25, size * 0.6, opacity, color);
+      // Random satellite drops along path
+      if (dist > 2) {
+        const count = Math.floor(dist / 6);
+        for (let i = 0; i < count; i++) {
+          const t = Math.random();
+          const sx = px + dx * t + (Math.random() - 0.5) * size * 0.9;
+          const sy = py + dy * t + (Math.random() - 0.5) * size * 0.9;
+          const r = (Math.random() * 0.4 + 0.1) * size * 0.22;
+          ctx.globalAlpha = opacity * (0.2 + Math.random() * 0.5);
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          ctx.ellipse(sx, sy, r, r * (0.5 + Math.random() * 0.5), Math.random() * Math.PI, 0, Math.PI * 2);
+          ctx.fill();
+        }
       }
     }
   },
