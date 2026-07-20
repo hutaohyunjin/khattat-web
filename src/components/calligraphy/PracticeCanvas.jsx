@@ -40,63 +40,96 @@ function drawTaperedSegment(ctx, x1, y1, x2, y2, w1, w2, opacity, color) {
 
 const BRUSHES = [
   {
-    // Reed/Qalam flat nib — classic Thuluth thick-thin character
-    // Horizontal stroke = full width; vertical = thin edge
-    id: 'qalam',
-    name: 'Qalam',
-    nameAr: 'قلم الثلث',
-    description: 'Reed nib at 45° — authentic Thuluth thick/thin',
-    draw: (ctx, x, y, px, py, size, opacity, color) => {
-      drawNibSegment(ctx, px, py, x, y, Math.PI * 0.25, size, opacity, color);
-    }
-  },
-  {
-    // Flat nib at a steeper angle — Naskh style
-    id: 'naskh',
-    name: 'Naskh',
-    nameAr: 'قلم النسخ',
-    description: 'Flat nib at 25° — Naskh proportions',
-    draw: (ctx, x, y, px, py, size, opacity, color) => {
-      drawNibSegment(ctx, px, py, x, y, Math.PI * 0.14, size, opacity, color);
-    }
-  },
-  {
-    // Diwani: flowing tapered brush — thick belly, thin start/end
-    id: 'diwani',
-    name: 'Diwani',
-    nameAr: 'الديواني',
-    description: 'Flowing brush — pressure-sensitive taper',
+    // Flat Reed — classic 45° nib, authentic thick-thin from stroke angle
+    id: 'flat_reed',
+    name: 'Flat Reed',
+    nameAr: 'قصب مسطح',
+    description: 'Flat cut reed at 45° — full thick/thin variation',
     draw: (ctx, x, y, px, py, size, opacity, color) => {
       const dx = x - px, dy = y - py;
       const dist = Math.sqrt(dx * dx + dy * dy);
       if (dist < 0.3) return;
-      // belly at midpoint, taper both ends
-      const mx = (px + x) / 2, my = (py + y) / 2;
-      drawTaperedSegment(ctx, px, py, mx, my, size * 0.1, size * 0.45, opacity, color);
-      drawTaperedSegment(ctx, mx, my, x, y, size * 0.45, size * 0.08, opacity, color);
+      // The nib cut angle is fixed at 45°
+      // Width = size * |sin(strokeAngle - nibAngle)| — zero when parallel, full when perpendicular
+      const nibAngle = Math.PI * 0.25;
+      const strokeAngle = Math.atan2(dy, dx);
+      const widthFactor = Math.abs(Math.sin(strokeAngle - nibAngle));
+      const nibW = size * Math.max(0.06, widthFactor);
+      drawNibSegment(ctx, px, py, x, y, nibAngle, nibW, opacity, color);
     }
   },
   {
-    // Shadow: two overlapping layers — dark core + grey halo
+    // Broad Edge — wider nib at 35°, fuller strokes like a broad marker
+    id: 'broad_edge',
+    name: 'Broad Edge',
+    nameAr: 'حافة عريضة',
+    description: 'Wide flat nib at 35° — bold thick strokes',
+    draw: (ctx, x, y, px, py, size, opacity, color) => {
+      const dx = x - px, dy = y - py;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 0.3) return;
+      const nibAngle = Math.PI * 0.19;
+      const strokeAngle = Math.atan2(dy, dx);
+      const widthFactor = Math.abs(Math.sin(strokeAngle - nibAngle));
+      const nibW = size * Math.max(0.08, widthFactor);
+      drawNibSegment(ctx, px, py, x, y, nibAngle, nibW, opacity, color);
+    }
+  },
+  {
+    // Tapered Flow — speed-sensitive taper: slow = thick, fast = thin
+    // Simulates the feel of a wet brush lifting off the paper
+    id: 'tapered_flow',
+    name: 'Tapered Flow',
+    nameAr: 'تدفق متناسق',
+    description: 'Speed-tapered — thick on slow strokes, thin on fast',
+    _lastDist: 0,
+    draw: (ctx, x, y, px, py, size, opacity, color) => {
+      const dx = x - px, dy = y - py;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 0.3) return;
+      // Use stroke speed as pressure proxy — faster = thinner
+      const speed = Math.min(dist, 30);
+      const pressureT = 1 - speed / 30; // 0 = fast/thin, 1 = slow/thick
+      const w = size * (0.06 + 0.94 * pressureT);
+      drawTaperedSegment(ctx, px, py, x, y, w, w * 0.92, opacity, color);
+    }
+  },
+  {
+    // Shadow — dual layer: soft grey halo + sharp dark core, same 45° nib
     id: 'shadow',
-    name: 'Shadow',
-    nameAr: 'خط الظل',
-    description: 'Dual-layer shadow nib',
+    name: 'Shadow Ink',
+    nameAr: 'حبر الظل',
+    description: 'Soft grey halo behind a sharp dark core',
     draw: (ctx, x, y, px, py, size, opacity, color) => {
-      // Halo (wide, light grey)
-      drawNibSegment(ctx, px, py, x, y, Math.PI * 0.25, size * 1.5, opacity * 0.18, '#555555');
-      // Core flat nib
-      drawNibSegment(ctx, px, py, x, y, Math.PI * 0.25, size * 0.7, opacity, color);
+      const dx = x - px, dy = y - py;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 0.3) return;
+      const nibAngle = Math.PI * 0.25;
+      const strokeAngle = Math.atan2(dy, dx);
+      const widthFactor = Math.abs(Math.sin(strokeAngle - nibAngle));
+      const coreW = size * Math.max(0.06, widthFactor);
+      // Halo: wider, light grey
+      drawNibSegment(ctx, px, py, x, y, nibAngle, coreW * 2.4, opacity * 0.15, '#444444');
+      // Core: sharp black nib
+      drawNibSegment(ctx, px, py, x, y, nibAngle, coreW, opacity, color);
     }
   },
   {
-    // Ruq'ah: narrow upright nib — quick tight strokes
-    id: 'ruqah',
-    name: "Ruq'ah",
-    nameAr: 'الرقعة ب حاده',
-    description: 'Upright narrow nib — compact Ruqah style',
+    // Upright Sharp — near-vertical nib cut, produces thin hairlines on horizontal,
+    // thick on vertical — typical of the sharp Riqaa/Farsi style
+    id: 'upright_sharp',
+    name: 'Upright Sharp',
+    nameAr: 'قلم حاد عمودي',
+    description: 'Near-vertical nib — thin horizontal, bold vertical',
     draw: (ctx, x, y, px, py, size, opacity, color) => {
-      drawNibSegment(ctx, px, py, x, y, Math.PI * 0.5, size * 0.55, opacity, color);
+      const dx = x - px, dy = y - py;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 0.3) return;
+      const nibAngle = Math.PI * 0.48; // almost vertical cut
+      const strokeAngle = Math.atan2(dy, dx);
+      const widthFactor = Math.abs(Math.sin(strokeAngle - nibAngle));
+      const nibW = size * Math.max(0.04, widthFactor);
+      drawNibSegment(ctx, px, py, x, y, nibAngle, nibW, opacity, color);
     }
   },
 ];
