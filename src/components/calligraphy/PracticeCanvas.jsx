@@ -99,34 +99,6 @@ const BRUSHES = [
       drawNibSegment(ctx, px, py, x, y, Math.PI * 0.5, size * 0.55, opacity, color);
     }
   },
-  {
-    // Ink scatter — خط رسومي / splatter effect
-    id: 'splash',
-    name: 'Ink Splash',
-    nameAr: 'خط رسومي',
-    description: 'Scattered ink drops — expressive marks',
-    draw: (ctx, x, y, px, py, size, opacity, color) => {
-      const dx = x - px, dy = y - py;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      // Main stroke as flat nib
-      drawNibSegment(ctx, px, py, x, y, Math.PI * 0.25, size * 0.6, opacity, color);
-      // Random satellite drops along path
-      if (dist > 2) {
-        const count = Math.floor(dist / 6);
-        for (let i = 0; i < count; i++) {
-          const t = Math.random();
-          const sx = px + dx * t + (Math.random() - 0.5) * size * 0.9;
-          const sy = py + dy * t + (Math.random() - 0.5) * size * 0.9;
-          const r = (Math.random() * 0.4 + 0.1) * size * 0.22;
-          ctx.globalAlpha = opacity * (0.2 + Math.random() * 0.5);
-          ctx.fillStyle = color;
-          ctx.beginPath();
-          ctx.ellipse(sx, sy, r, r * (0.5 + Math.random() * 0.5), Math.random() * Math.PI, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-    }
-  },
 ];
 
 // Draw faint practice guidelines per letter based on stroke type
