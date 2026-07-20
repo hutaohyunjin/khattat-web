@@ -38,8 +38,8 @@ export default function Home() {
               <span style={{ color: 'var(--ink-mid)' }}>ART OF</span><br />
               KHATT
             </h1>
-            <p className="mt-6 max-w-xs" style={{ fontFamily: 'Barlow', fontSize: 16, color: 'var(--ink-mid)', lineHeight: 1.6 }}>
-              Master classical Arabic scripts through structured lessons and guided practice.
+            <p className="mt-6 max-w-xs" style={{ fontFamily: 'Barlow', fontSize: 15, color: 'var(--ink-mid)', lineHeight: 1.7 }}>
+              In 2021, UNESCO declared Arabic calligraphy an endangered practice. Khattat is a response to this. A gamified, self-directed learning platform that builds a bridge between traditional methods and digital access, designed for young designers and creatives who want to learn but have no teacher. So lets get started!
             </p>
           </div>
           {/* Calligraphy image right */}
