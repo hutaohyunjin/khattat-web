@@ -8,67 +8,14 @@ import { Eraser, Undo2, Redo2, Trash2, Check, Minus, Plus } from 'lucide-react';
 
 const BRUSHES = [
   {
-    id: 'flat_reed',
-    name: 'Flat Reed',
-    nameAr: 'قصب مسطح',
-    description: '45° reed nib — thick on diagonals, thin on parallels',
-    nibAngle: Math.PI * 0.25,
+    id: 'qalam',
+    name: 'Qalam',
+    nameAr: 'قلم الثلث',
+    description: '45° reed nib — classic Thuluth thick/thin',
     getWidth: (strokeAngle, size) => {
       const nib = Math.PI * 0.25;
       const factor = Math.abs(Math.sin(strokeAngle - nib));
       return size * Math.max(0.06, factor);
-    },
-    shadow: false,
-  },
-  {
-    id: 'broad_edge',
-    name: 'Broad Edge',
-    nameAr: 'حافة عريضة',
-    description: 'Wide flat nib at 20° — bold, expressive strokes',
-    nibAngle: Math.PI * 0.11,
-    getWidth: (strokeAngle, size) => {
-      const nib = Math.PI * 0.11;
-      const factor = Math.abs(Math.sin(strokeAngle - nib));
-      return size * Math.max(0.07, factor);
-    },
-    shadow: false,
-  },
-  {
-    id: 'tapered_flow',
-    name: 'Tapered Flow',
-    nameAr: 'تدفق ناعم',
-    description: 'Round brush — width follows stroke speed',
-    nibAngle: null, // no fixed nib — speed-based
-    getWidth: (strokeAngle, size, speed) => {
-      // slow = thick, fast = thin (like lifting a brush)
-      const t = Math.max(0, 1 - speed / 22);
-      return size * (0.08 + 0.92 * t);
-    },
-    shadow: false,
-  },
-  {
-    id: 'shadow_ink',
-    name: 'Shadow Ink',
-    nameAr: 'حبر الظل',
-    description: 'Flat reed with a soft grey halo underneath',
-    nibAngle: Math.PI * 0.25,
-    getWidth: (strokeAngle, size) => {
-      const nib = Math.PI * 0.25;
-      const factor = Math.abs(Math.sin(strokeAngle - nib));
-      return size * Math.max(0.06, factor);
-    },
-    shadow: true,
-  },
-  {
-    id: 'upright_sharp',
-    name: 'Upright Sharp',
-    nameAr: 'قلم حاد',
-    description: 'Near-vertical nib — thin horizontal, bold vertical',
-    nibAngle: Math.PI * 0.47,
-    getWidth: (strokeAngle, size) => {
-      const nib = Math.PI * 0.47;
-      const factor = Math.abs(Math.sin(strokeAngle - nib));
-      return size * Math.max(0.04, factor);
     },
     shadow: false,
   },
@@ -237,7 +184,7 @@ export default function PracticeCanvas({ letter, onComplete }) {
   const [drawing, setDrawing] = useState(false);
   const [hasDrawn, setHasDrawn] = useState(false);
   const [tool, setTool] = useState('draw');
-  const [brushIndex, setBrushIndex] = useState(0);
+
   const [brushSize, setBrushSize] = useState(20);
   const [opacity, setOpacity] = useState(1);
   const [history, setHistory] = useState([]);
@@ -371,7 +318,7 @@ export default function PracticeCanvas({ letter, onComplete }) {
       octx.globalCompositeOperation = 'source-over';
       composite();
     } else {
-      const brush = BRUSHES[brushIndex];
+      const brush = BRUSHES[0];
       const rawW = brush.getWidth(smoothAngle, brushSize, dist);
       // Exponentially smooth width too so it eases between thick/thin
       const prevW = prevPt ? prevPt.w : rawW;
@@ -390,7 +337,7 @@ export default function PracticeCanvas({ letter, onComplete }) {
 
     lastPos.current = pos;
     setHasDrawn(true);
-  }, [drawing, tool, brushIndex, brushSize, opacity, composite, drawBackground]);
+  }, [drawing, tool, brushSize, opacity, composite, drawBackground]);
 
   // ── End stroke — commit to offscreen ──
   const endDraw = useCallback((e) => {
@@ -402,14 +349,14 @@ export default function PracticeCanvas({ letter, onComplete }) {
       const off = offscreenRef.current;
       if (off) {
         const octx = off.getContext('2d');
-        const brush = BRUSHES[brushIndex];
+        const brush = BRUSHES[0];
         renderStroke(octx, strokePts.current, opacity, '#0D0D0D', brush.shadow);
       }
     }
     strokePts.current = [];
     lastPos.current = null;
     composite();
-  }, [drawing, tool, brushIndex, opacity, composite]);
+  }, [drawing, tool, opacity, composite]);
 
   // ── Undo ──
   const undo = () => {
@@ -469,48 +416,14 @@ export default function PracticeCanvas({ letter, onComplete }) {
         <span className="sys-titlebar-dot" />
         <span>Practice Canvas</span>
         <span className="ml-auto label-mono" style={{ color: 'var(--ink-faint)' }}>
-          {BRUSHES[brushIndex].nameAr}
+          {BRUSHES[0].nameAr}
         </span>
       </div>
 
       {/* Toolbar */}
       <div className="border-b" style={{ borderColor: 'var(--rule)', background: 'var(--paper-dark)' }}>
-        {/* Row 1: Brush selector */}
-        <div className="flex gap-1 px-3 pt-2 pb-1 flex-wrap">
-          {BRUSHES.map((b, i) => (
-            <button
-              key={b.id}
-              onClick={() => { setBrushIndex(i); setTool('draw'); }}
-              className="px-2 py-1 transition-all"
-              style={{
-                fontFamily: 'Space Mono', fontSize: 9, letterSpacing: '0.08em', textTransform: 'uppercase',
-                background: brushIndex === i && tool === 'draw' ? 'var(--ink)' : 'transparent',
-                color: brushIndex === i && tool === 'draw' ? 'var(--paper)' : 'var(--ink-mid)',
-                border: '1px solid',
-                borderColor: brushIndex === i && tool === 'draw' ? 'var(--ink)' : 'var(--rule)',
-              }}
-              title={b.description}
-            >
-              {b.name}
-            </button>
-          ))}
-          <button
-            onClick={() => setTool('erase')}
-            className="px-2 py-1 transition-all flex items-center gap-1"
-            style={{
-              fontFamily: 'Space Mono', fontSize: 9, letterSpacing: '0.08em', textTransform: 'uppercase',
-              background: tool === 'erase' ? 'var(--zzz-yellow)' : 'transparent',
-              color: tool === 'erase' ? 'var(--ink)' : 'var(--ink-mid)',
-              border: '1px solid',
-              borderColor: tool === 'erase' ? 'var(--zzz-yellow)' : 'var(--rule)',
-            }}
-          >
-            <Eraser className="w-3 h-3" /> Erase
-          </button>
-        </div>
-
-        {/* Row 2: Controls */}
-        <div className="flex items-center gap-4 px-3 pb-2 flex-wrap">
+        {/* Controls */}
+        <div className="flex items-center gap-4 px-3 py-2 flex-wrap">
           <div className="flex items-center gap-1.5">
             <span style={{ fontFamily: 'Space Mono', fontSize: 9, color: 'var(--ink-faint)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Size</span>
             <button onClick={() => setBrushSize(s => Math.max(4, s - 4))}
@@ -536,6 +449,20 @@ export default function PracticeCanvas({ letter, onComplete }) {
             />
             <span style={{ fontFamily: 'Space Mono', fontSize: 9, color: 'var(--ink-mid)', minWidth: 28 }}>{Math.round(opacity * 100)}%</span>
           </div>
+
+          <button
+            onClick={() => setTool(t => t === 'erase' ? 'draw' : 'erase')}
+            className="px-2 py-1 flex items-center gap-1 transition-all"
+            style={{
+              fontFamily: 'Space Mono', fontSize: 9, letterSpacing: '0.08em', textTransform: 'uppercase',
+              background: tool === 'erase' ? 'var(--zzz-yellow)' : 'transparent',
+              color: tool === 'erase' ? 'var(--ink)' : 'var(--ink-mid)',
+              border: '1px solid',
+              borderColor: tool === 'erase' ? 'var(--zzz-yellow)' : 'var(--rule)',
+            }}
+          >
+            <Eraser className="w-3 h-3" /> Erase
+          </button>
 
           <div className="flex items-center gap-1 ml-auto">
             <button onClick={undo} disabled={history.length === 0}
