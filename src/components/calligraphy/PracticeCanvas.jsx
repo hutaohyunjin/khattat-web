@@ -74,6 +74,14 @@ const BRUSHES = [
   },
 ];
 
+// Smallest signed difference between two angles
+function _angleDiff(a, b) {
+  let d = a - b;
+  while (d > Math.PI) d -= Math.PI * 2;
+  while (d < -Math.PI) d += Math.PI * 2;
+  return d;
+}
+
 // ─── Smooth stroke renderer ───────────────────────────────────────────────────
 // Renders a list of {x, y, w} points as a smooth variable-width ribbon
 // using quadratic bezier mid-point chaining (Procreate-style smoothing).
@@ -106,12 +114,24 @@ function renderStroke(ctx, pts, opacity, color, shadow) {
 function _drawRibbon(ctx, pts, widthScale) {
   if (pts.length < 2) return;
 
+  // Smooth widths with a simple moving average to eliminate jagged edges
+  const smoothed = pts.map((p, i) => {
+    const lo = Math.max(0, i - 2), hi = Math.min(pts.length - 1, i + 2);
+    let wSum = 0, aSum = 0, count = 0;
+    for (let j = lo; j <= hi; j++) {
+      wSum += pts[j].w;
+      aSum += pts[j].angle;
+      count++;
+    }
+    return { ...p, w: wSum / count, angle: aSum / count };
+  });
+
   // Build top and bottom edge arrays using mid-point smoothing
   const top = [], bot = [];
 
-  for (let i = 0; i < pts.length; i++) {
-    const { x, y, angle } = pts[i];
-    const w = pts[i].w * widthScale * 0.5;
+  for (let i = 0; i < smoothed.length; i++) {
+    const { x, y, angle } = smoothed[i];
+    const w = smoothed[i].w * widthScale * 0.5;
     // perpendicular to stroke direction
     const px = -Math.sin(angle);
     const py = Math.cos(angle);
@@ -333,6 +353,12 @@ export default function PracticeCanvas({ letter, onComplete }) {
 
     const angle = Math.atan2(dy, dx);
 
+    // Smooth angle using exponential weighted average with previous point
+    const prevPt = strokePts.current[strokePts.current.length - 1];
+    const smoothAngle = prevPt
+      ? prevPt.angle + _angleDiff(angle, prevPt.angle) * 0.35
+      : angle;
+
     if (tool === 'erase') {
       // Erase directly on offscreen
       const off = offscreenRef.current;
@@ -346,8 +372,11 @@ export default function PracticeCanvas({ letter, onComplete }) {
       composite();
     } else {
       const brush = BRUSHES[brushIndex];
-      const w = brush.getWidth(angle, brushSize, dist);
-      strokePts.current.push({ x: pos.x, y: pos.y, w, angle });
+      const rawW = brush.getWidth(smoothAngle, brushSize, dist);
+      // Exponentially smooth width too so it eases between thick/thin
+      const prevW = prevPt ? prevPt.w : rawW;
+      const w = prevW + (rawW - prevW) * 0.25;
+      strokePts.current.push({ x: pos.x, y: pos.y, w, angle: smoothAngle });
 
       // Re-composite bg + stable ink + live stroke preview
       const canvas = getCanvas();
