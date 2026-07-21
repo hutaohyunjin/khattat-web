@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { Eraser, Undo2, Redo2, Trash2, Check, Minus, Plus } from 'lucide-react';
+import { Eraser, Undo2, Redo2, Trash2, Check, Minus, Plus, Download } from 'lucide-react';
 
 // ─── Brush definitions ───────────────────────────────────────────────────────
 // Each brush has: id, name, nameAr, description
@@ -398,6 +398,16 @@ export default function PracticeCanvas({ letter, onComplete }) {
     img.src = next;
   };
 
+  // ── Save / download ──
+  const saveImage = () => {
+    const canvas = getCanvas();
+    if (!canvas) return;
+    const link = document.createElement('a');
+    link.download = `khattat-${letter?.id || 'practice'}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  };
+
   // ── Clear ──
   const clearCanvas = () => {
     saveSnapshot();
@@ -499,8 +509,21 @@ export default function PracticeCanvas({ letter, onComplete }) {
         />
       </div>
 
-      {/* Complete button */}
+      {/* Actions */}
       <div className="border-t flex" style={{ borderColor: 'var(--rule)' }}>
+        <button
+          onClick={saveImage}
+          disabled={!hasDrawn}
+          className="flex items-center justify-center gap-2 py-3 px-4 border-r transition-colors"
+          style={{
+            borderColor: 'var(--rule)',
+            color: hasDrawn ? 'var(--ink-mid)' : 'var(--ink-faint)',
+            cursor: hasDrawn ? 'pointer' : 'not-allowed',
+          }}
+          title="Download as PNG"
+        >
+          <Download className="w-3.5 h-3.5" />
+        </button>
         <button
           onClick={onComplete}
           disabled={!hasDrawn}
