@@ -13,6 +13,7 @@ import LetterDetail from './pages/LetterDetail';
 import Lesson from './pages/Lesson';
 import Progress from './pages/Progress';
 import About from './pages/About';
+import PracticeSheets from './pages/PracticeSheets';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -46,6 +47,7 @@ const AuthenticatedApp = () => {
       <Route path="/letter/:id" element={<LetterDetail />} />
       <Route path="/lesson/:id" element={<Lesson />} />
       <Route path="/progress" element={<Progress />} />
+      <Route path="/sheets" element={<PracticeSheets />} />
       <Route path="/about" element={<About />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
