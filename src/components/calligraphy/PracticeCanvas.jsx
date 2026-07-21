@@ -1,453 +1,248 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Eraser, Undo2, Redo2, Trash2, Check, Minus, Plus } from 'lucide-react';
 
-// Helper: draw a filled quadrilateral nib segment between two points
-// nibAngle: the fixed cut angle of the nib (radians), nibWidth: full nib width
-function drawNibSegment(ctx, x1, y1, x2, y2, nibAngle, nibWidth, opacity, color) {
-  const dx = x2 - x1, dy = y2 - y1;
-  if (Math.sqrt(dx * dx + dy * dy) < 0.3) return;
-  ctx.globalAlpha = opacity;
-  ctx.fillStyle = color;
-  ctx.strokeStyle = color;
-  // The nib edge direction (perpendicular cut)
-  const nx = Math.cos(nibAngle) * nibWidth * 0.5;
-  const ny = Math.sin(nibAngle) * nibWidth * 0.5;
-  ctx.beginPath();
-  ctx.moveTo(x1 - nx, y1 - ny);
-  ctx.lineTo(x1 + nx, y1 + ny);
-  ctx.lineTo(x2 + nx, y2 + ny);
-  ctx.lineTo(x2 - nx, y2 - ny);
-  ctx.closePath();
-  ctx.fill();
-}
-
-// Helper: tapered brush segment — wide at start, narrow at end
-function drawTaperedSegment(ctx, x1, y1, x2, y2, w1, w2, opacity, color) {
-  const dx = x2 - x1, dy = y2 - y1;
-  const dist = Math.sqrt(dx * dx + dy * dy);
-  if (dist < 0.3) return;
-  const px = -dy / dist, py = dx / dist; // perpendicular
-  ctx.globalAlpha = opacity;
-  ctx.fillStyle = color;
-  ctx.beginPath();
-  ctx.moveTo(x1 + px * w1, y1 + py * w1);
-  ctx.lineTo(x1 - px * w1, y1 - py * w1);
-  ctx.lineTo(x2 - px * w2, y2 - py * w2);
-  ctx.lineTo(x2 + px * w2, y2 + py * w2);
-  ctx.closePath();
-  ctx.fill();
-}
+// ─── Brush definitions ───────────────────────────────────────────────────────
+// Each brush has: id, name, nameAr, description
+// and a getWidth(strokeAngle, size) → number function.
+// Rendering is handled centrally via smooth Catmull-Rom splines.
 
 const BRUSHES = [
   {
-    // Flat Reed — classic 45° nib, authentic thick-thin from stroke angle
     id: 'flat_reed',
     name: 'Flat Reed',
     nameAr: 'قصب مسطح',
-    description: 'Flat cut reed at 45° — full thick/thin variation',
-    draw: (ctx, x, y, px, py, size, opacity, color) => {
-      const dx = x - px, dy = y - py;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 0.3) return;
-      // The nib cut angle is fixed at 45°
-      // Width = size * |sin(strokeAngle - nibAngle)| — zero when parallel, full when perpendicular
-      const nibAngle = Math.PI * 0.25;
-      const strokeAngle = Math.atan2(dy, dx);
-      const widthFactor = Math.abs(Math.sin(strokeAngle - nibAngle));
-      const nibW = size * Math.max(0.06, widthFactor);
-      drawNibSegment(ctx, px, py, x, y, nibAngle, nibW, opacity, color);
-    }
+    description: '45° reed nib — thick on diagonals, thin on parallels',
+    nibAngle: Math.PI * 0.25,
+    getWidth: (strokeAngle, size) => {
+      const nib = Math.PI * 0.25;
+      const factor = Math.abs(Math.sin(strokeAngle - nib));
+      return size * Math.max(0.06, factor);
+    },
+    shadow: false,
   },
   {
-    // Broad Edge — wider nib at 35°, fuller strokes like a broad marker
     id: 'broad_edge',
     name: 'Broad Edge',
     nameAr: 'حافة عريضة',
-    description: 'Wide flat nib at 35° — bold thick strokes',
-    draw: (ctx, x, y, px, py, size, opacity, color) => {
-      const dx = x - px, dy = y - py;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 0.3) return;
-      const nibAngle = Math.PI * 0.19;
-      const strokeAngle = Math.atan2(dy, dx);
-      const widthFactor = Math.abs(Math.sin(strokeAngle - nibAngle));
-      const nibW = size * Math.max(0.08, widthFactor);
-      drawNibSegment(ctx, px, py, x, y, nibAngle, nibW, opacity, color);
-    }
+    description: 'Wide flat nib at 20° — bold, expressive strokes',
+    nibAngle: Math.PI * 0.11,
+    getWidth: (strokeAngle, size) => {
+      const nib = Math.PI * 0.11;
+      const factor = Math.abs(Math.sin(strokeAngle - nib));
+      return size * Math.max(0.07, factor);
+    },
+    shadow: false,
   },
   {
-    // Tapered Flow — speed-sensitive taper: slow = thick, fast = thin
-    // Simulates the feel of a wet brush lifting off the paper
     id: 'tapered_flow',
     name: 'Tapered Flow',
-    nameAr: 'تدفق متناسق',
-    description: 'Speed-tapered — thick on slow strokes, thin on fast',
-    _lastDist: 0,
-    draw: (ctx, x, y, px, py, size, opacity, color) => {
-      const dx = x - px, dy = y - py;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 0.3) return;
-      // Use stroke speed as pressure proxy — faster = thinner
-      const speed = Math.min(dist, 30);
-      const pressureT = 1 - speed / 30; // 0 = fast/thin, 1 = slow/thick
-      const w = size * (0.06 + 0.94 * pressureT);
-      drawTaperedSegment(ctx, px, py, x, y, w, w * 0.92, opacity, color);
-    }
+    nameAr: 'تدفق ناعم',
+    description: 'Round brush — width follows stroke speed',
+    nibAngle: null, // no fixed nib — speed-based
+    getWidth: (strokeAngle, size, speed) => {
+      // slow = thick, fast = thin (like lifting a brush)
+      const t = Math.max(0, 1 - speed / 22);
+      return size * (0.08 + 0.92 * t);
+    },
+    shadow: false,
   },
   {
-    // Shadow — dual layer: soft grey halo + sharp dark core, same 45° nib
-    id: 'shadow',
+    id: 'shadow_ink',
     name: 'Shadow Ink',
     nameAr: 'حبر الظل',
-    description: 'Soft grey halo behind a sharp dark core',
-    draw: (ctx, x, y, px, py, size, opacity, color) => {
-      const dx = x - px, dy = y - py;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 0.3) return;
-      const nibAngle = Math.PI * 0.25;
-      const strokeAngle = Math.atan2(dy, dx);
-      const widthFactor = Math.abs(Math.sin(strokeAngle - nibAngle));
-      const coreW = size * Math.max(0.06, widthFactor);
-      // Halo: wider, light grey
-      drawNibSegment(ctx, px, py, x, y, nibAngle, coreW * 2.4, opacity * 0.15, '#444444');
-      // Core: sharp black nib
-      drawNibSegment(ctx, px, py, x, y, nibAngle, coreW, opacity, color);
-    }
+    description: 'Flat reed with a soft grey halo underneath',
+    nibAngle: Math.PI * 0.25,
+    getWidth: (strokeAngle, size) => {
+      const nib = Math.PI * 0.25;
+      const factor = Math.abs(Math.sin(strokeAngle - nib));
+      return size * Math.max(0.06, factor);
+    },
+    shadow: true,
   },
   {
-    // Upright Sharp — near-vertical nib cut, produces thin hairlines on horizontal,
-    // thick on vertical — typical of the sharp Riqaa/Farsi style
     id: 'upright_sharp',
     name: 'Upright Sharp',
-    nameAr: 'قلم حاد عمودي',
+    nameAr: 'قلم حاد',
     description: 'Near-vertical nib — thin horizontal, bold vertical',
-    draw: (ctx, x, y, px, py, size, opacity, color) => {
-      const dx = x - px, dy = y - py;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 0.3) return;
-      const nibAngle = Math.PI * 0.48; // almost vertical cut
-      const strokeAngle = Math.atan2(dy, dx);
-      const widthFactor = Math.abs(Math.sin(strokeAngle - nibAngle));
-      const nibW = size * Math.max(0.04, widthFactor);
-      drawNibSegment(ctx, px, py, x, y, nibAngle, nibW, opacity, color);
-    }
+    nibAngle: Math.PI * 0.47,
+    getWidth: (strokeAngle, size) => {
+      const nib = Math.PI * 0.47;
+      const factor = Math.abs(Math.sin(strokeAngle - nib));
+      return size * Math.max(0.04, factor);
+    },
+    shadow: false,
   },
 ];
 
-// Draw faint practice guidelines per letter based on stroke type
-function drawGuideLines(ctx, letter, w, h) {
+// ─── Smooth stroke renderer ───────────────────────────────────────────────────
+// Renders a list of {x, y, w} points as a smooth variable-width ribbon
+// using quadratic bezier mid-point chaining (Procreate-style smoothing).
+function renderStroke(ctx, pts, opacity, color, shadow) {
+  if (pts.length < 2) return;
+
   ctx.save();
-  ctx.strokeStyle = 'rgba(255, 85, 0, 0.12)';
-  ctx.fillStyle = 'rgba(255, 85, 0, 0.07)';
-  ctx.lineWidth = 1;
-  ctx.setLineDash([4, 6]);
-
-  // Baseline
-  ctx.strokeStyle = 'rgba(0,0,0,0.08)';
-  ctx.lineWidth = 1.5;
-  ctx.setLineDash([]);
-  ctx.beginPath();
-  ctx.moveTo(w * 0.05, h * 0.6);
-  ctx.lineTo(w * 0.95, h * 0.6);
-  ctx.stroke();
-
-  // Upper guide line (cap height)
-  ctx.setLineDash([3, 5]);
-  ctx.strokeStyle = 'rgba(0,0,0,0.05)';
-  ctx.beginPath();
-  ctx.moveTo(w * 0.05, h * 0.25);
-  ctx.lineTo(w * 0.95, h * 0.25);
-  ctx.stroke();
-
-  // Descender line
-  ctx.beginPath();
-  ctx.moveTo(w * 0.05, h * 0.8);
-  ctx.lineTo(w * 0.95, h * 0.8);
-  ctx.stroke();
-
-  ctx.setLineDash([]);
-
-  // Letter-specific guide shapes drawn as very faint orange paths
-  ctx.strokeStyle = 'rgba(255, 85, 0, 0.15)';
-  ctx.lineWidth = 2.5;
+  ctx.globalAlpha = opacity;
+  ctx.fillStyle = color;
+  ctx.strokeStyle = color;
+  ctx.lineJoin = 'round';
   ctx.lineCap = 'round';
 
+  if (shadow) {
+    // Draw halo pass first
+    ctx.globalAlpha = opacity * 0.12;
+    ctx.lineWidth = (pts[0].w + pts[pts.length - 1].w) * 1.8;
+    ctx.fillStyle = '#555';
+    ctx.strokeStyle = '#555';
+    _drawRibbon(ctx, pts, 1.8);
+    ctx.fillStyle = color;
+    ctx.strokeStyle = color;
+    ctx.globalAlpha = opacity;
+  }
+
+  _drawRibbon(ctx, pts, 1.0);
+  ctx.restore();
+}
+
+function _drawRibbon(ctx, pts, widthScale) {
+  if (pts.length < 2) return;
+
+  // Build top and bottom edge arrays using mid-point smoothing
+  const top = [], bot = [];
+
+  for (let i = 0; i < pts.length; i++) {
+    const { x, y, angle } = pts[i];
+    const w = pts[i].w * widthScale * 0.5;
+    // perpendicular to stroke direction
+    const px = -Math.sin(angle);
+    const py = Math.cos(angle);
+    top.push({ x: x + px * w, y: y + py * w });
+    bot.push({ x: x - px * w, y: y - py * w });
+  }
+
+  // Draw smooth filled ribbon
+  ctx.beginPath();
+  // Top edge (forward)
+  _smoothPath(ctx, top, true);
+  // Bottom edge (backward)
+  _smoothPath(ctx, bot.reverse(), false);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function _smoothPath(ctx, pts, moveTo) {
+  if (pts.length === 0) return;
+  if (pts.length === 1) {
+    if (moveTo) ctx.moveTo(pts[0].x, pts[0].y);
+    else ctx.lineTo(pts[0].x, pts[0].y);
+    return;
+  }
+  if (moveTo) ctx.moveTo(pts[0].x, pts[0].y);
+  else ctx.lineTo(pts[0].x, pts[0].y);
+
+  for (let i = 1; i < pts.length - 1; i++) {
+    const mx = (pts[i].x + pts[i + 1].x) / 2;
+    const my = (pts[i].y + pts[i + 1].y) / 2;
+    ctx.quadraticCurveTo(pts[i].x, pts[i].y, mx, my);
+  }
+  const last = pts[pts.length - 1];
+  ctx.lineTo(last.x, last.y);
+}
+
+// ─── Guide lines ─────────────────────────────────────────────────────────────
+function drawGuideLines(ctx, letter, w, h) {
+  ctx.save();
   const cx = w / 2;
-  const cy = h * 0.6; // baseline y
+  const cy = h * 0.6;
 
-  const guides = {
-    alif: () => {
-      // Tall vertical stroke
-      ctx.beginPath();
-      ctx.moveTo(cx, h * 0.2);
-      ctx.lineTo(cx, cy);
-      ctx.stroke();
-    },
-    ba: () => {
-      // Sweeping horizontal bowl
-      ctx.beginPath();
-      ctx.moveTo(cx + w * 0.25, cy - h * 0.05);
-      ctx.quadraticCurveTo(cx, cy + h * 0.15, cx - w * 0.25, cy - h * 0.02);
-      ctx.stroke();
-    },
-    ta: () => {
-      ctx.beginPath();
-      ctx.moveTo(cx + w * 0.25, cy - h * 0.05);
-      ctx.quadraticCurveTo(cx, cy + h * 0.15, cx - w * 0.25, cy - h * 0.02);
-      ctx.stroke();
-    },
-    tha: () => {
-      ctx.beginPath();
-      ctx.moveTo(cx + w * 0.25, cy - h * 0.05);
-      ctx.quadraticCurveTo(cx, cy + h * 0.15, cx - w * 0.25, cy - h * 0.02);
-      ctx.stroke();
-    },
-    jim: () => {
-      // Hook head + deep bowl
-      ctx.beginPath();
-      ctx.moveTo(cx - w * 0.1, h * 0.3);
-      ctx.quadraticCurveTo(cx + w * 0.15, h * 0.3, cx + w * 0.1, cy);
-      ctx.quadraticCurveTo(cx + w * 0.05, cy + h * 0.2, cx - w * 0.15, cy + h * 0.18);
-      ctx.stroke();
-    },
-    ha_small: () => {
-      ctx.beginPath();
-      ctx.moveTo(cx - w * 0.1, h * 0.3);
-      ctx.quadraticCurveTo(cx + w * 0.15, h * 0.3, cx + w * 0.1, cy);
-      ctx.quadraticCurveTo(cx + w * 0.05, cy + h * 0.2, cx - w * 0.15, cy + h * 0.18);
-      ctx.stroke();
-    },
-    kha: () => {
-      ctx.beginPath();
-      ctx.moveTo(cx - w * 0.1, h * 0.3);
-      ctx.quadraticCurveTo(cx + w * 0.15, h * 0.3, cx + w * 0.1, cy);
-      ctx.quadraticCurveTo(cx + w * 0.05, cy + h * 0.2, cx - w * 0.15, cy + h * 0.18);
-      ctx.stroke();
-    },
-    dal: () => {
-      ctx.beginPath();
-      ctx.moveTo(cx + w * 0.1, h * 0.35);
-      ctx.lineTo(cx + w * 0.05, cy);
-      ctx.quadraticCurveTo(cx, cy + h * 0.05, cx - w * 0.12, cy);
-      ctx.stroke();
-    },
-    dhal: () => {
-      ctx.beginPath();
-      ctx.moveTo(cx + w * 0.1, h * 0.35);
-      ctx.lineTo(cx + w * 0.05, cy);
-      ctx.quadraticCurveTo(cx, cy + h * 0.05, cx - w * 0.12, cy);
-      ctx.stroke();
-    },
-    ra: () => {
-      ctx.beginPath();
-      ctx.moveTo(cx, cy);
-      ctx.quadraticCurveTo(cx + w * 0.05, cy + h * 0.18, cx + w * 0.1, cy + h * 0.15);
-      ctx.stroke();
-    },
-    zay: () => {
-      ctx.beginPath();
-      ctx.moveTo(cx, cy);
-      ctx.quadraticCurveTo(cx + w * 0.05, cy + h * 0.18, cx + w * 0.1, cy + h * 0.15);
-      ctx.stroke();
-    },
-    sin: () => {
-      // Three teeth + sweeping tail
-      for (let i = 0; i < 3; i++) {
-        const tx = cx + w * (0.2 - i * 0.15);
-        ctx.beginPath();
-        ctx.moveTo(tx, cy);
-        ctx.lineTo(tx, cy - h * 0.1);
-        ctx.stroke();
-      }
-      ctx.beginPath();
-      ctx.moveTo(cx - w * 0.1, cy);
-      ctx.quadraticCurveTo(cx - w * 0.2, cy + h * 0.18, cx - w * 0.3, cy + h * 0.08);
-      ctx.stroke();
-    },
-    shin: () => {
-      for (let i = 0; i < 3; i++) {
-        const tx = cx + w * (0.2 - i * 0.15);
-        ctx.beginPath();
-        ctx.moveTo(tx, cy);
-        ctx.lineTo(tx, cy - h * 0.1);
-        ctx.stroke();
-      }
-      ctx.beginPath();
-      ctx.moveTo(cx - w * 0.1, cy);
-      ctx.quadraticCurveTo(cx - w * 0.2, cy + h * 0.18, cx - w * 0.3, cy + h * 0.08);
-      ctx.stroke();
-    },
-    sad: () => {
-      ctx.beginPath();
-      ctx.ellipse(cx + w * 0.05, cy - h * 0.05, w * 0.12, h * 0.08, 0, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(cx - w * 0.07, cy);
-      ctx.quadraticCurveTo(cx - w * 0.2, cy + h * 0.18, cx - w * 0.28, cy + h * 0.1);
-      ctx.stroke();
-    },
-    dad: () => {
-      ctx.beginPath();
-      ctx.ellipse(cx + w * 0.05, cy - h * 0.05, w * 0.12, h * 0.08, 0, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(cx - w * 0.07, cy);
-      ctx.quadraticCurveTo(cx - w * 0.2, cy + h * 0.18, cx - w * 0.28, cy + h * 0.1);
-      ctx.stroke();
-    },
-    tah: () => {
-      ctx.beginPath();
-      ctx.ellipse(cx, cy - h * 0.04, w * 0.1, h * 0.06, 0, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(cx + w * 0.1, cy - h * 0.04);
-      ctx.lineTo(cx + w * 0.1, h * 0.2);
-      ctx.stroke();
-    },
-    dhah: () => {
-      ctx.beginPath();
-      ctx.ellipse(cx, cy - h * 0.04, w * 0.1, h * 0.06, 0, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(cx + w * 0.1, cy - h * 0.04);
-      ctx.lineTo(cx + w * 0.1, h * 0.2);
-      ctx.stroke();
-    },
-    ain: () => {
-      ctx.beginPath();
-      ctx.arc(cx + w * 0.1, h * 0.4, h * 0.1, Math.PI * 0.5, Math.PI * 1.5);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(cx + w * 0.05, cy);
-      ctx.quadraticCurveTo(cx, cy + h * 0.2, cx - w * 0.2, cy + h * 0.15);
-      ctx.stroke();
-    },
-    ghain: () => {
-      ctx.beginPath();
-      ctx.arc(cx + w * 0.1, h * 0.4, h * 0.1, Math.PI * 0.5, Math.PI * 1.5);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(cx + w * 0.05, cy);
-      ctx.quadraticCurveTo(cx, cy + h * 0.2, cx - w * 0.2, cy + h * 0.15);
-      ctx.stroke();
-    },
-    fa: () => {
-      ctx.beginPath();
-      ctx.arc(cx + w * 0.1, cy - h * 0.06, h * 0.07, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(cx + w * 0.03, cy - h * 0.06);
-      ctx.quadraticCurveTo(cx - w * 0.15, cy, cx - w * 0.2, cy + h * 0.12);
-      ctx.stroke();
-    },
-    qaf: () => {
-      ctx.beginPath();
-      ctx.arc(cx + w * 0.08, cy - h * 0.04, h * 0.09, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(cx - w * 0.01, cy);
-      ctx.quadraticCurveTo(cx - w * 0.15, cy + h * 0.1, cx - w * 0.18, cy + h * 0.2);
-      ctx.stroke();
-    },
-    kaf: () => {
-      ctx.beginPath();
-      ctx.moveTo(cx - w * 0.2, cy);
-      ctx.lineTo(cx + w * 0.12, cy);
-      ctx.lineTo(cx + w * 0.12, h * 0.2);
-      ctx.stroke();
-    },
-    lam: () => {
-      ctx.beginPath();
-      ctx.moveTo(cx, h * 0.2);
-      ctx.lineTo(cx, cy);
-      ctx.quadraticCurveTo(cx - w * 0.05, cy + h * 0.05, cx - w * 0.12, cy);
-      ctx.stroke();
-    },
-    mim: () => {
-      ctx.beginPath();
-      ctx.arc(cx, cy - h * 0.05, h * 0.08, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(cx, cy + h * 0.03);
-      ctx.lineTo(cx, cy + h * 0.14);
-      ctx.stroke();
-    },
-    nun: () => {
-      ctx.beginPath();
-      ctx.moveTo(cx + w * 0.2, cy - h * 0.03);
-      ctx.quadraticCurveTo(cx, cy + h * 0.1, cx - w * 0.2, cy - h * 0.02);
-      ctx.stroke();
-    },
-    ha_big: () => {
-      ctx.beginPath();
-      ctx.ellipse(cx, cy - h * 0.05, w * 0.1, h * 0.1, 0, 0, Math.PI * 2);
-      ctx.stroke();
-    },
-    waw: () => {
-      ctx.beginPath();
-      ctx.arc(cx, cy - h * 0.1, h * 0.07, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(cx, cy - h * 0.03);
-      ctx.quadraticCurveTo(cx + w * 0.08, cy + h * 0.1, cx + w * 0.12, cy + h * 0.15);
-      ctx.stroke();
-    },
-    ya: () => {
-      ctx.beginPath();
-      ctx.moveTo(cx + w * 0.2, cy - h * 0.02);
-      ctx.quadraticCurveTo(cx, cy + h * 0.06, cx - w * 0.05, cy + h * 0.04);
-      ctx.quadraticCurveTo(cx - w * 0.18, cy + h * 0.02, cx - w * 0.22, cy + h * 0.12);
-      ctx.stroke();
-    },
+  // Baseline
+  ctx.strokeStyle = 'rgba(0,0,0,0.09)';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([]);
+  ctx.beginPath(); ctx.moveTo(w * 0.05, cy); ctx.lineTo(w * 0.95, cy); ctx.stroke();
+
+  // Cap height
+  ctx.setLineDash([3, 5]);
+  ctx.strokeStyle = 'rgba(0,0,0,0.05)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(w * 0.05, h * 0.25); ctx.lineTo(w * 0.95, h * 0.25); ctx.stroke();
+
+  // Descender
+  ctx.beginPath(); ctx.moveTo(w * 0.05, h * 0.82); ctx.lineTo(w * 0.95, h * 0.82); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Letter guide path
+  ctx.strokeStyle = 'rgba(255, 85, 0, 0.16)';
+  ctx.lineWidth = 3;
+  ctx.lineCap = 'round';
+
+  const g = {
+    alif:     () => { ctx.beginPath(); ctx.moveTo(cx, h*0.2); ctx.lineTo(cx, cy); ctx.stroke(); },
+    ba:       () => { ctx.beginPath(); ctx.moveTo(cx+w*0.25,cy-h*0.04); ctx.quadraticCurveTo(cx,cy+h*0.16,cx-w*0.25,cy-h*0.02); ctx.stroke(); },
+    ta:       () => { ctx.beginPath(); ctx.moveTo(cx+w*0.25,cy-h*0.04); ctx.quadraticCurveTo(cx,cy+h*0.16,cx-w*0.25,cy-h*0.02); ctx.stroke(); },
+    tha:      () => { ctx.beginPath(); ctx.moveTo(cx+w*0.25,cy-h*0.04); ctx.quadraticCurveTo(cx,cy+h*0.16,cx-w*0.25,cy-h*0.02); ctx.stroke(); },
+    jim:      () => { ctx.beginPath(); ctx.moveTo(cx-w*0.1,h*0.3); ctx.quadraticCurveTo(cx+w*0.15,h*0.3,cx+w*0.1,cy); ctx.quadraticCurveTo(cx,cy+h*0.2,cx-w*0.15,cy+h*0.18); ctx.stroke(); },
+    ha_small: () => { ctx.beginPath(); ctx.moveTo(cx-w*0.1,h*0.3); ctx.quadraticCurveTo(cx+w*0.15,h*0.3,cx+w*0.1,cy); ctx.quadraticCurveTo(cx,cy+h*0.2,cx-w*0.15,cy+h*0.18); ctx.stroke(); },
+    kha:      () => { ctx.beginPath(); ctx.moveTo(cx-w*0.1,h*0.3); ctx.quadraticCurveTo(cx+w*0.15,h*0.3,cx+w*0.1,cy); ctx.quadraticCurveTo(cx,cy+h*0.2,cx-w*0.15,cy+h*0.18); ctx.stroke(); },
+    dal:      () => { ctx.beginPath(); ctx.moveTo(cx+w*0.1,h*0.35); ctx.lineTo(cx+w*0.05,cy); ctx.quadraticCurveTo(cx,cy+h*0.05,cx-w*0.12,cy); ctx.stroke(); },
+    dhal:     () => { ctx.beginPath(); ctx.moveTo(cx+w*0.1,h*0.35); ctx.lineTo(cx+w*0.05,cy); ctx.quadraticCurveTo(cx,cy+h*0.05,cx-w*0.12,cy); ctx.stroke(); },
+    ra:       () => { ctx.beginPath(); ctx.moveTo(cx,cy); ctx.quadraticCurveTo(cx+w*0.05,cy+h*0.18,cx+w*0.1,cy+h*0.15); ctx.stroke(); },
+    zay:      () => { ctx.beginPath(); ctx.moveTo(cx,cy); ctx.quadraticCurveTo(cx+w*0.05,cy+h*0.18,cx+w*0.1,cy+h*0.15); ctx.stroke(); },
+    sin:      () => { [0,1,2].forEach(i=>{ ctx.beginPath(); ctx.moveTo(cx+w*(0.2-i*0.15),cy); ctx.lineTo(cx+w*(0.2-i*0.15),cy-h*0.1); ctx.stroke(); }); ctx.beginPath(); ctx.moveTo(cx-w*0.1,cy); ctx.quadraticCurveTo(cx-w*0.2,cy+h*0.18,cx-w*0.3,cy+h*0.08); ctx.stroke(); },
+    shin:     () => { [0,1,2].forEach(i=>{ ctx.beginPath(); ctx.moveTo(cx+w*(0.2-i*0.15),cy); ctx.lineTo(cx+w*(0.2-i*0.15),cy-h*0.1); ctx.stroke(); }); ctx.beginPath(); ctx.moveTo(cx-w*0.1,cy); ctx.quadraticCurveTo(cx-w*0.2,cy+h*0.18,cx-w*0.3,cy+h*0.08); ctx.stroke(); },
+    sad:      () => { ctx.beginPath(); ctx.ellipse(cx+w*0.05,cy-h*0.05,w*0.12,h*0.08,0,0,Math.PI*2); ctx.stroke(); ctx.beginPath(); ctx.moveTo(cx-w*0.07,cy); ctx.quadraticCurveTo(cx-w*0.2,cy+h*0.18,cx-w*0.28,cy+h*0.1); ctx.stroke(); },
+    dad:      () => { ctx.beginPath(); ctx.ellipse(cx+w*0.05,cy-h*0.05,w*0.12,h*0.08,0,0,Math.PI*2); ctx.stroke(); ctx.beginPath(); ctx.moveTo(cx-w*0.07,cy); ctx.quadraticCurveTo(cx-w*0.2,cy+h*0.18,cx-w*0.28,cy+h*0.1); ctx.stroke(); },
+    tah:      () => { ctx.beginPath(); ctx.ellipse(cx,cy-h*0.04,w*0.1,h*0.06,0,0,Math.PI*2); ctx.stroke(); ctx.beginPath(); ctx.moveTo(cx+w*0.1,cy-h*0.04); ctx.lineTo(cx+w*0.1,h*0.2); ctx.stroke(); },
+    dhah:     () => { ctx.beginPath(); ctx.ellipse(cx,cy-h*0.04,w*0.1,h*0.06,0,0,Math.PI*2); ctx.stroke(); ctx.beginPath(); ctx.moveTo(cx+w*0.1,cy-h*0.04); ctx.lineTo(cx+w*0.1,h*0.2); ctx.stroke(); },
+    ain:      () => { ctx.beginPath(); ctx.arc(cx+w*0.1,h*0.4,h*0.1,Math.PI*0.5,Math.PI*1.5); ctx.stroke(); ctx.beginPath(); ctx.moveTo(cx+w*0.05,cy); ctx.quadraticCurveTo(cx,cy+h*0.2,cx-w*0.2,cy+h*0.15); ctx.stroke(); },
+    ghain:    () => { ctx.beginPath(); ctx.arc(cx+w*0.1,h*0.4,h*0.1,Math.PI*0.5,Math.PI*1.5); ctx.stroke(); ctx.beginPath(); ctx.moveTo(cx+w*0.05,cy); ctx.quadraticCurveTo(cx,cy+h*0.2,cx-w*0.2,cy+h*0.15); ctx.stroke(); },
+    fa:       () => { ctx.beginPath(); ctx.arc(cx+w*0.1,cy-h*0.06,h*0.07,0,Math.PI*2); ctx.stroke(); ctx.beginPath(); ctx.moveTo(cx+w*0.03,cy-h*0.06); ctx.quadraticCurveTo(cx-w*0.15,cy,cx-w*0.2,cy+h*0.12); ctx.stroke(); },
+    qaf:      () => { ctx.beginPath(); ctx.arc(cx+w*0.08,cy-h*0.04,h*0.09,0,Math.PI*2); ctx.stroke(); ctx.beginPath(); ctx.moveTo(cx-w*0.01,cy); ctx.quadraticCurveTo(cx-w*0.15,cy+h*0.1,cx-w*0.18,cy+h*0.2); ctx.stroke(); },
+    kaf:      () => { ctx.beginPath(); ctx.moveTo(cx-w*0.2,cy); ctx.lineTo(cx+w*0.12,cy); ctx.lineTo(cx+w*0.12,h*0.2); ctx.stroke(); },
+    lam:      () => { ctx.beginPath(); ctx.moveTo(cx,h*0.2); ctx.lineTo(cx,cy); ctx.quadraticCurveTo(cx-w*0.05,cy+h*0.05,cx-w*0.12,cy); ctx.stroke(); },
+    mim:      () => { ctx.beginPath(); ctx.arc(cx,cy-h*0.05,h*0.08,0,Math.PI*2); ctx.stroke(); ctx.beginPath(); ctx.moveTo(cx,cy+h*0.03); ctx.lineTo(cx,cy+h*0.14); ctx.stroke(); },
+    nun:      () => { ctx.beginPath(); ctx.moveTo(cx+w*0.2,cy-h*0.03); ctx.quadraticCurveTo(cx,cy+h*0.1,cx-w*0.2,cy-h*0.02); ctx.stroke(); },
+    ha_big:   () => { ctx.beginPath(); ctx.ellipse(cx,cy-h*0.05,w*0.1,h*0.1,0,0,Math.PI*2); ctx.stroke(); },
+    waw:      () => { ctx.beginPath(); ctx.arc(cx,cy-h*0.1,h*0.07,0,Math.PI*2); ctx.stroke(); ctx.beginPath(); ctx.moveTo(cx,cy-h*0.03); ctx.quadraticCurveTo(cx+w*0.08,cy+h*0.1,cx+w*0.12,cy+h*0.15); ctx.stroke(); },
+    ya:       () => { ctx.beginPath(); ctx.moveTo(cx+w*0.2,cy-h*0.02); ctx.quadraticCurveTo(cx,cy+h*0.06,cx-w*0.05,cy+h*0.04); ctx.quadraticCurveTo(cx-w*0.18,cy+h*0.02,cx-w*0.22,cy+h*0.12); ctx.stroke(); },
   };
-
-  const fn = guides[letter?.id];
+  const fn = g[letter?.id];
   if (fn) fn();
   ctx.restore();
 }
 
+// ─── Main component ───────────────────────────────────────────────────────────
 export default function PracticeCanvas({ letter, onComplete }) {
   const canvasRef = useRef(null);
+  const offscreenRef = useRef(null); // stable drawn content
   const [drawing, setDrawing] = useState(false);
   const [hasDrawn, setHasDrawn] = useState(false);
-  const [tool, setTool] = useState('draw'); // 'draw' | 'erase'
+  const [tool, setTool] = useState('draw');
   const [brushIndex, setBrushIndex] = useState(0);
-  const [brushSize, setBrushSize] = useState(18);
+  const [brushSize, setBrushSize] = useState(20);
   const [opacity, setOpacity] = useState(1);
   const [history, setHistory] = useState([]);
   const [redoStack, setRedoStack] = useState([]);
+
+  // Current stroke point buffer: [{x, y, w, angle}]
+  const strokePts = useRef([]);
   const lastPos = useRef(null);
-  const dpr = window.devicePixelRatio || 1;
+  const dpr = useRef(window.devicePixelRatio || 1).current;
 
   const getCanvas = () => canvasRef.current;
   const getCtx = () => getCanvas()?.getContext('2d');
 
-  const saveSnapshot = useCallback(() => {
-    const canvas = getCanvas();
-    if (!canvas) return;
-    const snap = canvas.toDataURL();
-    setHistory(h => [...h.slice(-20), snap]);
-    setRedoStack([]);
-  }, []);
-
-  // Draw background + guidelines
+  // ── Background ──
   const drawBackground = useCallback((ctx, w, h) => {
     ctx.clearRect(0, 0, w, h);
     ctx.fillStyle = '#F9F7F4';
     ctx.fillRect(0, 0, w, h);
-
-    // Grid
-    ctx.strokeStyle = 'rgba(0,0,0,0.04)';
+    // subtle grid
+    ctx.strokeStyle = 'rgba(0,0,0,0.035)';
     ctx.lineWidth = 1;
-    const step = 20 * dpr;
-    for (let x = 0; x < w; x += step) {
-      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
-    }
-    for (let y = 0; y < h; y += step) {
-      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
-    }
-
-    // Ghost letter
+    const step = 22;
+    for (let gx = 0; gx < w; gx += step) { ctx.beginPath(); ctx.moveTo(gx,0); ctx.lineTo(gx,h); ctx.stroke(); }
+    for (let gy = 0; gy < h; gy += step) { ctx.beginPath(); ctx.moveTo(0,gy); ctx.lineTo(w,gy); ctx.stroke(); }
+    // ghost letter
     if (letter) {
       ctx.font = `${h * 0.55}px 'Noto Naskh Arabic', serif`;
       ctx.fillStyle = 'rgba(0,0,0,0.04)';
@@ -456,29 +251,48 @@ export default function PracticeCanvas({ letter, onComplete }) {
       ctx.direction = 'rtl';
       ctx.fillText(letter.letter, w / 2, h * 0.52);
     }
-
     drawGuideLines(ctx, letter, w, h);
-  }, [letter, dpr]);
+  }, [letter]);
 
-  // Init canvas
+  // ── Composite: bg + offscreen content ──
+  const composite = useCallback(() => {
+    const canvas = getCanvas();
+    if (!canvas) return;
+    const ctx = getCtx();
+    const w = canvas.width / dpr;
+    const h = canvas.height / dpr;
+    drawBackground(ctx, w, h);
+    if (offscreenRef.current) ctx.drawImage(offscreenRef.current, 0, 0, w, h);
+  }, [drawBackground]);
+
+  // ── Init ──
   useEffect(() => {
     const canvas = getCanvas();
     if (!canvas) return;
     const rect = canvas.parentElement.getBoundingClientRect();
-    const w = rect.width || 500;
-    const h = 260;
+    const w = Math.floor(rect.width || 500);
+    const h = 280;
     canvas.width = w * dpr;
     canvas.height = h * dpr;
     canvas.style.width = w + 'px';
     canvas.style.height = h + 'px';
     const ctx = getCtx();
     ctx.scale(dpr, dpr);
+
+    // Create offscreen canvas for stable ink
+    const off = document.createElement('canvas');
+    off.width = w;
+    off.height = h;
+    offscreenRef.current = off;
+
     drawBackground(ctx, w, h);
     setHistory([]);
     setRedoStack([]);
     setHasDrawn(false);
+    strokePts.current = [];
   }, [letter]);
 
+  // ── Pointer helpers ──
   const getPos = (e) => {
     const canvas = getCanvas();
     const rect = canvas.getBoundingClientRect();
@@ -486,100 +300,137 @@ export default function PracticeCanvas({ letter, onComplete }) {
     return { x: src.clientX - rect.left, y: src.clientY - rect.top };
   };
 
+  // ── Snapshot for undo ──
+  const saveSnapshot = useCallback(() => {
+    const off = offscreenRef.current;
+    if (!off) return;
+    setHistory(h => [...h.slice(-20), off.toDataURL()]);
+    setRedoStack([]);
+  }, []);
+
+  // ── Start stroke ──
   const startDraw = (e) => {
     e.preventDefault();
     saveSnapshot();
-    setDrawing(true);
     const pos = getPos(e);
     lastPos.current = pos;
+    strokePts.current = [{ x: pos.x, y: pos.y, w: 0, angle: 0 }];
+    setDrawing(true);
   };
 
-  const draw = (e) => {
+  // ── Draw ──
+  const draw = useCallback((e) => {
     e.preventDefault();
     if (!drawing) return;
     const pos = getPos(e);
-    const ctx = getCtx();
-    const canvas = getCanvas();
-    const w = canvas.width / dpr;
-    const h = canvas.height / dpr;
+    const prev = lastPos.current;
+    if (!prev) return;
+
+    const dx = pos.x - prev.x;
+    const dy = pos.y - prev.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < 1) return;
+
+    const angle = Math.atan2(dy, dx);
 
     if (tool === 'erase') {
-      ctx.globalCompositeOperation = 'destination-out';
-      ctx.globalAlpha = 1;
-      ctx.beginPath();
-      ctx.arc(pos.x, pos.y, brushSize * 1.5, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.globalCompositeOperation = 'source-over';
+      // Erase directly on offscreen
+      const off = offscreenRef.current;
+      const octx = off.getContext('2d');
+      octx.globalCompositeOperation = 'destination-out';
+      octx.globalAlpha = 1;
+      octx.beginPath();
+      octx.arc(pos.x, pos.y, brushSize * 1.8, 0, Math.PI * 2);
+      octx.fill();
+      octx.globalCompositeOperation = 'source-over';
+      composite();
     } else {
       const brush = BRUSHES[brushIndex];
-      ctx.globalCompositeOperation = 'source-over';
-      if (lastPos.current) {
-        brush.draw(ctx, pos.x, pos.y, lastPos.current.x, lastPos.current.y, brushSize, opacity, '#0D0D0D');
-      }
+      const w = brush.getWidth(angle, brushSize, dist);
+      strokePts.current.push({ x: pos.x, y: pos.y, w, angle });
+
+      // Re-composite bg + stable ink + live stroke preview
+      const canvas = getCanvas();
+      const ctx = getCtx();
+      const cw = canvas.width / dpr;
+      const ch = canvas.height / dpr;
+      drawBackground(ctx, cw, ch);
+      if (offscreenRef.current) ctx.drawImage(offscreenRef.current, 0, 0, cw, ch);
+      renderStroke(ctx, strokePts.current, opacity, '#0D0D0D', brush.shadow);
     }
+
     lastPos.current = pos;
     setHasDrawn(true);
-  };
+  }, [drawing, tool, brushIndex, brushSize, opacity, composite, drawBackground]);
 
-  const endDraw = (e) => {
+  // ── End stroke — commit to offscreen ──
+  const endDraw = useCallback((e) => {
     e.preventDefault();
+    if (!drawing) return;
     setDrawing(false);
-    lastPos.current = null;
-    ctx_reset();
-  };
 
-  const ctx_reset = () => {
-    const ctx = getCtx();
-    if (ctx) {
-      ctx.globalAlpha = 1;
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.filter = 'none';
+    if (tool !== 'erase' && strokePts.current.length > 1) {
+      const off = offscreenRef.current;
+      if (off) {
+        const octx = off.getContext('2d');
+        const brush = BRUSHES[brushIndex];
+        renderStroke(octx, strokePts.current, opacity, '#0D0D0D', brush.shadow);
+      }
     }
-  };
+    strokePts.current = [];
+    lastPos.current = null;
+    composite();
+  }, [drawing, tool, brushIndex, opacity, composite]);
 
+  // ── Undo ──
   const undo = () => {
     if (history.length === 0) return;
+    const off = offscreenRef.current;
     const canvas = getCanvas();
-    const ctx = getCtx();
     const w = canvas.width / dpr;
     const h = canvas.height / dpr;
-    const current = canvas.toDataURL();
-    setRedoStack(r => [...r, current]);
+    setRedoStack(r => [...r, off.toDataURL()]);
     const prev = history[history.length - 1];
-    setHistory(h2 => h2.slice(0, -1));
+    setHistory(hh => hh.slice(0, -1));
     const img = new Image();
     img.onload = () => {
-      drawBackground(ctx, w, h);
-      ctx.drawImage(img, 0, 0, w, h);
+      const octx = off.getContext('2d');
+      octx.clearRect(0, 0, w, h);
+      octx.drawImage(img, 0, 0, w, h);
+      composite();
     };
     img.src = prev;
   };
 
+  // ── Redo ──
   const redo = () => {
     if (redoStack.length === 0) return;
+    const off = offscreenRef.current;
     const canvas = getCanvas();
-    const ctx = getCtx();
     const w = canvas.width / dpr;
     const h = canvas.height / dpr;
-    const current = canvas.toDataURL();
-    setHistory(h2 => [...h2, current]);
+    setHistory(hh => [...hh, off.toDataURL()]);
     const next = redoStack[redoStack.length - 1];
     setRedoStack(r => r.slice(0, -1));
     const img = new Image();
     img.onload = () => {
-      drawBackground(ctx, w, h);
-      ctx.drawImage(img, 0, 0, w, h);
+      const octx = off.getContext('2d');
+      octx.clearRect(0, 0, w, h);
+      octx.drawImage(img, 0, 0, w, h);
+      composite();
     };
     img.src = next;
   };
 
+  // ── Clear ──
   const clearCanvas = () => {
-    const canvas = getCanvas();
-    const ctx = getCtx();
-    const w = canvas.width / dpr;
-    const h = canvas.height / dpr;
     saveSnapshot();
-    drawBackground(ctx, w, h);
+    const off = offscreenRef.current;
+    if (off) {
+      const octx = off.getContext('2d');
+      octx.clearRect(0, 0, off.width, off.height);
+    }
+    composite();
     setHasDrawn(false);
   };
 
@@ -595,7 +446,6 @@ export default function PracticeCanvas({ letter, onComplete }) {
 
       {/* Toolbar */}
       <div className="border-b" style={{ borderColor: 'var(--rule)', background: 'var(--paper-dark)' }}>
-
         {/* Row 1: Brush selector */}
         <div className="flex gap-1 px-3 pt-2 pb-1 flex-wrap">
           {BRUSHES.map((b, i) => (
@@ -604,10 +454,7 @@ export default function PracticeCanvas({ letter, onComplete }) {
               onClick={() => { setBrushIndex(i); setTool('draw'); }}
               className="px-2 py-1 transition-all"
               style={{
-                fontFamily: 'Space Mono',
-                fontSize: 9,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
+                fontFamily: 'Space Mono', fontSize: 9, letterSpacing: '0.08em', textTransform: 'uppercase',
                 background: brushIndex === i && tool === 'draw' ? 'var(--ink)' : 'transparent',
                 color: brushIndex === i && tool === 'draw' ? 'var(--paper)' : 'var(--ink-mid)',
                 border: '1px solid',
@@ -622,10 +469,7 @@ export default function PracticeCanvas({ letter, onComplete }) {
             onClick={() => setTool('erase')}
             className="px-2 py-1 transition-all flex items-center gap-1"
             style={{
-              fontFamily: 'Space Mono',
-              fontSize: 9,
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase',
+              fontFamily: 'Space Mono', fontSize: 9, letterSpacing: '0.08em', textTransform: 'uppercase',
               background: tool === 'erase' ? 'var(--zzz-yellow)' : 'transparent',
               color: tool === 'erase' ? 'var(--ink)' : 'var(--ink-mid)',
               border: '1px solid',
@@ -638,7 +482,6 @@ export default function PracticeCanvas({ letter, onComplete }) {
 
         {/* Row 2: Controls */}
         <div className="flex items-center gap-4 px-3 pb-2 flex-wrap">
-          {/* Pen Size */}
           <div className="flex items-center gap-1.5">
             <span style={{ fontFamily: 'Space Mono', fontSize: 9, color: 'var(--ink-faint)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Size</span>
             <button onClick={() => setBrushSize(s => Math.max(4, s - 4))}
@@ -654,7 +497,6 @@ export default function PracticeCanvas({ letter, onComplete }) {
             </button>
           </div>
 
-          {/* Opacity */}
           <div className="flex items-center gap-1.5">
             <span style={{ fontFamily: 'Space Mono', fontSize: 9, color: 'var(--ink-faint)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Opacity</span>
             <input
@@ -666,24 +508,20 @@ export default function PracticeCanvas({ letter, onComplete }) {
             <span style={{ fontFamily: 'Space Mono', fontSize: 9, color: 'var(--ink-mid)', minWidth: 28 }}>{Math.round(opacity * 100)}%</span>
           </div>
 
-          {/* Undo / Redo / Clear */}
           <div className="flex items-center gap-1 ml-auto">
             <button onClick={undo} disabled={history.length === 0}
               className="w-7 h-7 flex items-center justify-center border transition-colors"
-              style={{ borderColor: 'var(--rule)', opacity: history.length === 0 ? 0.3 : 1 }}
-              title="Undo">
+              style={{ borderColor: 'var(--rule)', opacity: history.length === 0 ? 0.3 : 1 }} title="Undo">
               <Undo2 className="w-3.5 h-3.5" style={{ color: 'var(--ink)' }} />
             </button>
             <button onClick={redo} disabled={redoStack.length === 0}
               className="w-7 h-7 flex items-center justify-center border transition-colors"
-              style={{ borderColor: 'var(--rule)', opacity: redoStack.length === 0 ? 0.3 : 1 }}
-              title="Redo">
+              style={{ borderColor: 'var(--rule)', opacity: redoStack.length === 0 ? 0.3 : 1 }} title="Redo">
               <Redo2 className="w-3.5 h-3.5" style={{ color: 'var(--ink)' }} />
             </button>
             <button onClick={clearCanvas}
               className="w-7 h-7 flex items-center justify-center border transition-colors"
-              style={{ borderColor: 'var(--rule)' }}
-              title="Clear">
+              style={{ borderColor: 'var(--rule)' }} title="Clear">
               <Trash2 className="w-3.5 h-3.5" style={{ color: 'var(--destructive)' }} />
             </button>
           </div>
