@@ -13,7 +13,13 @@ export default function Styles() {
 
       <div className="max-w-6xl mx-auto px-6">
         {/* Hero */}
-        <div className="pt-20 pb-10 border-b border-rule">
+        <div className="pt-20 pb-10 border-b border-rule" style={{ position: 'relative', overflow: 'hidden' }}>
+          <div style={{
+            position: 'absolute', top: '-10%', right: '-8%', width: '55%', height: '130%',
+            backgroundImage: 'url(https://media.base44.com/images/public/6a41bd2ca6771bd95aa5d5f2/ec49070dc_3.png)',
+            backgroundSize: 'cover', backgroundPosition: 'left center',
+            mixBlendMode: 'soft-light', opacity: 0.55, pointerEvents: 'none',
+          }} />
           <p className="label-mono mb-4" style={{ color: 'var(--zzz-yellow-dim)' }}>Script Library</p>
           <div className="flex items-center gap-6">
             <h1 className="display-xl">
