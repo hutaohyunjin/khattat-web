@@ -29,8 +29,22 @@ export default function Home() {
       <NavBar />
 
       {/* Hero — two column */}
-      <section className="pt-12 border-b border-rule">
-        <div className="max-w-6xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+      <section className="pt-12 border-b border-rule" style={{ position: 'relative', overflow: 'hidden' }}>
+        {/* Soft-light calligraphy background */}
+        <div style={{
+          position: 'absolute',
+          top: '-10%',
+          right: '-8%',
+          width: '55%',
+          height: '130%',
+          backgroundImage: 'url(https://media.base44.com/images/public/6a41bd2ca6771bd95aa5d5f2/ec49070dc_3.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'left center',
+          mixBlendMode: 'soft-light',
+          opacity: 0.55,
+          pointerEvents: 'none',
+        }} />
+        <div className="max-w-6xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-8 items-center" style={{ position: 'relative' }}>
           <div>
             <p className="label-mono mb-4" style={{ color: 'var(--zzz-yellow-dim)', letterSpacing: '0.2em' }}>Arabic Calligraphy Practice</p>
             <h1 className="display-xl" style={{ fontFamily: 'Rajdhani, ui-sans-serif, sans-serif', fontWeight: 700 }}>
