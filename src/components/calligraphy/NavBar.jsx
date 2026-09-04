@@ -4,11 +4,11 @@ import { Menu, X } from 'lucide-react';
 
 const links = [
   { to: '/', label: 'Home', num: '01' },
-  { to: '/styles', label: 'Styles', num: '02' },
-  { to: '/practice', label: 'Practice', num: '03' },
-  { to: '/gallery', label: 'Gallery', num: '04' },
-  { to: '/progress', label: 'Ranks', num: '05' },
-  { to: '/about', label: 'About', num: '06' },
+  { to: '/about', label: 'About', num: '02' },
+  { to: '/styles', label: 'Styles', num: '03' },
+  { to: '/practice', label: 'Practice', num: '04' },
+  { to: '/gallery', label: 'Gallery', num: '05' },
+  { to: '/progress', label: 'Ranks', num: '06' },
 ];
 
 export default function NavBar() {
