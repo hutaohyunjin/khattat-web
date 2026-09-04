@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import NavBar from '@/components/calligraphy/NavBar';
 import XPBar from '@/components/calligraphy/XPBar';
+import Badges from '@/components/calligraphy/Badges';
 import { useProgress } from '@/hooks/useProgress';
 import { thuluthLetters, lessons, levelTitles, getLevelFromXP } from '@/lib/calligraphyData';
 import { base44 } from '@/api/base44Client';
@@ -245,6 +246,9 @@ export default function Progress() {
             )}
           </div>
         </div>
+
+        {/* Streak Milestones */}
+        <Badges longestStreak={progress?.longest_streak || 0} />
       </div>
     </div>
   );
