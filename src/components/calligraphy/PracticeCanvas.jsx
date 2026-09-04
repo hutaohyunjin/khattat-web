@@ -1,5 +1,7 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { Eraser, Undo2, Redo2, Trash2, Check, Minus, Plus, Download } from 'lucide-react';
+import { Eraser, Undo2, Redo2, Trash2, Check, Minus, Plus, Download, Bookmark } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
+import { useToast } from '@/components/ui/use-toast';
 
 // ─── Brush definitions ───────────────────────────────────────────────────────
 // Each brush has: id, name, nameAr, description
@@ -183,7 +185,9 @@ export default function PracticeCanvas({ letter, onComplete }) {
   const offscreenRef = useRef(null); // stable drawn content
   const [drawing, setDrawing] = useState(false);
   const [hasDrawn, setHasDrawn] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [tool, setTool] = useState('draw');
+  const { toast } = useToast();
 
   const [brushSize, setBrushSize] = useState(20);
   const [opacity, setOpacity] = useState(1);
@@ -408,6 +412,28 @@ export default function PracticeCanvas({ letter, onComplete }) {
     link.click();
   };
 
+  // ── Save to Gallery ──
+  const saveToGallery = async () => {
+    const canvas = getCanvas();
+    if (!canvas) return;
+    setSaving(true);
+    try {
+      const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+      const file = new File([blob], `khattat-${letter?.id || 'practice'}.png`, { type: 'image/png' });
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      await base44.entities.GalleryItem.create({
+        image_url: file_url,
+        title: letter ? `${letter.name} · ${new Date().toLocaleDateString()}` : `Practice · ${new Date().toLocaleDateString()}`,
+        source: 'practice',
+        letter_id: letter?.id || '',
+      });
+      toast({ title: 'Saved to Gallery' });
+    } catch (e) {
+      toast({ title: 'Save failed', variant: 'destructive' });
+    }
+    setSaving(false);
+  };
+
   // ── Clear ──
   const clearCanvas = () => {
     saveSnapshot();
@@ -523,6 +549,20 @@ export default function PracticeCanvas({ letter, onComplete }) {
           title="Download as PNG"
         >
           <Download className="w-3.5 h-3.5" />
+        </button>
+        <button
+          onClick={saveToGallery}
+          disabled={!hasDrawn || saving}
+          className="flex items-center justify-center gap-2 py-3 px-4 border-r transition-colors"
+          style={{
+            borderColor: 'var(--rule)',
+            color: hasDrawn ? 'var(--ink-mid)' : 'var(--ink-faint)',
+            cursor: hasDrawn && !saving ? 'pointer' : 'not-allowed',
+            opacity: saving ? 0.5 : 1,
+          }}
+          title="Save to Gallery"
+        >
+          <Bookmark className="w-3.5 h-3.5" />
         </button>
         <button
           onClick={onComplete}

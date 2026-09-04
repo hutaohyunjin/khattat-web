@@ -1,0 +1,27 @@
+{
+  "name": "GalleryItem",
+  "type": "object",
+  "properties": {
+    "image_url": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string",
+      "default": "Untitled"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "practice",
+        "upload"
+      ],
+      "default": "upload"
+    },
+    "letter_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "image_url"
+  ]
+}

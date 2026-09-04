@@ -9,6 +9,7 @@ import ScrollToTop from './components/ScrollToTop';
 import Home from './pages/Home';
 import Styles from './pages/Styles';
 import Practice from './pages/Practice';
+import Gallery from './pages/Gallery';
 import LetterDetail from './pages/LetterDetail';
 import Lesson from './pages/Lesson';
 import Progress from './pages/Progress';
@@ -43,6 +44,7 @@ const AuthenticatedApp = () => {
       <Route path="/" element={<Home />} />
       <Route path="/styles" element={<Styles />} />
       <Route path="/practice" element={<Practice />} />
+      <Route path="/gallery" element={<Gallery />} />
       <Route path="/letter/:id" element={<LetterDetail />} />
       <Route path="/lesson/:id" element={<Lesson />} />
       <Route path="/progress" element={<Progress />} />
